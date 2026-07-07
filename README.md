@@ -1,38 +1,32 @@
-# My Day Design (나의 하루설계)
+# React + TypeScript + Vite
 
-DAWON 글로벌 — 매일 3분 자기기록 생활설계 웹앱
+This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
 
-## 로컬 실행
+Currently, two official plugins are available:
 
-```bash
-npm install
-cp .env.example .env   # Supabase 키 입력
-npm run dev
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+
+## React Compiler
+
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+
+## Expanding the Oxlint configuration
+
+If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+
+```json
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["react", "typescript", "oxc"],
+  "options": {
+    "typeAware": true
+  },
+  "rules": {
+    "react/rules-of-hooks": "error",
+    "react/only-export-components": ["warn", { "allowConstantExport": true }]
+  }
+}
 ```
 
-## 환경 변수
-
-| 변수 | 설명 |
-|------|------|
-| `VITE_SUPABASE_URL` | Supabase 프로젝트 URL |
-| `VITE_SUPABASE_ANON_KEY` | Supabase anon public key |
-
-## Supabase SQL (순서대로 실행)
-
-1. `supabase/schema.sql` — 일일 기록
-2. `supabase/contents.sql` — 추천 콘텐츠 (선택)
-3. `supabase/subscriptions.sql` — 구독
-4. `supabase/notification_settings.sql` — 알림 설정
-
-## Vercel 배포
-
-- Framework: **Vite**
-- Build Command: `npm run build`
-- Output Directory: `dist`
-- Install Command: `npm install`
-
-Vercel 대시보드 → Settings → Environment Variables 에 Supabase 변수 2개를 추가하세요.
-
-## GitHub
-
-https://github.com/kimmg1237-create/Dawon-app
+See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
