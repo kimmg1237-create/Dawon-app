@@ -1,0 +1,89 @@
+:root {
+  --bg-cream: #fdfbf7;
+  --primary-dark: #2c2c2a;
+  --text-muted: #6e6e6a;
+  --border-color: #eae8e2;
+  --color-yellow: #fff9d4;
+  --color-pink: #ffe3e8;
+  --color-mint: #e1f7ec;
+  --color-blue: #e1f2fb;
+  --color-lavender: #ebe5f9;
+  --color-gold: #f7ead3;
+  --accent-gold: #c5a059;
+
+  --page-padding: clamp(16px, 4vw, 24px);
+  --section-padding-y: clamp(40px, 8vw, 60px);
+  --content-max: 1200px;
+  --touch-min: 44px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--bg-cream);
+  color: var(--primary-dark);
+  line-height: 1.6;
+  overflow-x: hidden;
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+section {
+  max-width: var(--content-max);
+  margin: 0 auto;
+  padding: var(--section-padding-y) var(--page-padding);
+}
+
+.serif-title {
+  font-family: 'Nanum Myeongjo', serif;
+  font-size: clamp(1.5rem, 5vw, 2.625rem);
+  font-weight: 800;
+  margin-bottom: clamp(12px, 3vw, 20px);
+  line-height: 1.4;
+  word-break: keep-all;
+}
+
+.section-title {
+  font-family: 'Nanum Myeongjo', serif;
+  font-size: clamp(1.25rem, 4vw, 1.75rem);
+  margin-bottom: 12px;
+  text-align: center;
+  word-break: keep-all;
+}
+
+.section-subtitle {
+  text-align: center;
+  color: var(--text-muted);
+  margin-bottom: clamp(24px, 5vw, 40px);
+  font-size: clamp(0.875rem, 2.5vw, 1rem);
+  line-height: 1.7;
+  word-break: keep-all;
+}
+
+@media (max-width: 480px) {
+  section {
+    padding-top: 32px;
+    padding-bottom: 32px;
+  }
+}
+
+@media (hover: none) {
+  .content-card:hover {
+    transform: none;
+  }
+}
