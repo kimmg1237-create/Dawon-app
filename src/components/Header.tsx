@@ -1,9 +1,13 @@
 import { useEffect, useState } from 'react'
+import { useAuth } from '../context/AuthContext'
+import { useSubscription } from '../context/SubscriptionContext'
 import './Header.css'
 
 const NAV_ITEMS = [
   { href: '#intro', label: '하루설계' },
   { href: '#record-calendar', label: '실천체크' },
+  { href: '#recommendations', label: '맞춤추천' },
+  { href: '#notifications', label: '알림' },
   { href: '#record-history', label: '기록목록' },
   { href: '#books', label: '선정도서' },
   { href: '#palette', label: '꽃인물화' },
@@ -12,6 +16,8 @@ const NAV_ITEMS = [
 ]
 
 export function Header() {
+  const { user } = useAuth()
+  const { isPremium, plan } = useSubscription()
   const [menuOpen, setMenuOpen] = useState(false)
 
   useEffect(() => {
@@ -30,6 +36,7 @@ export function Header() {
       <div className="nav-container">
         <a href="#intro" className="logo" onClick={closeMenu}>
           DAWON <span>글로벌</span>
+          {user && isPremium && <span className="logo-premium">PRO</span>}
         </a>
 
         <button
@@ -52,8 +59,8 @@ export function Header() {
               </li>
             ))}
             <li>
-              <a href="#pricing" className="btn-start" onClick={closeMenu}>
-                시작하기
+              <a href="#auth" className="btn-start" onClick={closeMenu}>
+                {user ? (plan === 'free' ? '내 계정' : 'PRO') : '로그인'}
               </a>
             </li>
           </ul>

@@ -1,0 +1,67 @@
+.premium-gate {
+  background: var(--color-lavender);
+  border: 1px dashed var(--border-color);
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  margin-top: 12px;
+}
+
+.premium-gate i {
+  font-size: 20px;
+  color: var(--accent-gold);
+  margin-bottom: 8px;
+}
+
+.premium-gate p {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+  line-height: 1.6;
+}
+
+.premium-upgrade-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--primary-dark);
+  color: #fff !important;
+  padding: 10px 18px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  min-height: var(--touch-min);
+}
+
+.premium-loading {
+  font-size: 13px;
+  color: var(--text-muted);
+  padding: 12px 0;
+}
+
+.premium-locked-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.plan-status-badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 12px;
+  background: var(--color-mint);
+  color: var(--primary-dark);
+  margin-bottom: 12px;
+}
+
+.plan-status-badge.premium {
+  background: var(--primary-dark);
+  color: #fff;
+}

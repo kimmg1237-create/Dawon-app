@@ -1,7 +1,11 @@
 import { BOOKS } from '../data/books'
+import { useSubscription } from '../context/SubscriptionContext'
 import './ContentSections.css'
+import './PremiumGate.css'
 
 export function BooksSection() {
+  const { isPremium } = useSubscription()
+
   return (
     <section id="books">
       <h2 className="section-title">대표 선정도서 · 신뢰 콘텐츠</h2>
@@ -13,12 +17,27 @@ export function BooksSection() {
             <h3 className="card-title">{book.title}</h3>
             <p className="card-desc">{book.description}</p>
             <div className="card-links">
-              {book.links.map((link) => (
-                <a key={link.label} href={link.href}>
-                  {link.label}
-                  {link.label.includes('제안서') && <i className="fa-solid fa-arrow-right" />}
-                </a>
-              ))}
+              {book.links.map((link) => {
+                const isPremiumLink =
+                  link.label.includes('전자책') ||
+                  link.label.includes('오디오북') ||
+                  link.label.includes('구매')
+
+                if (isPremiumLink && !isPremium) {
+                  return (
+                    <a key={link.label} href="#pricing" className="premium-locked-link">
+                      <i className="fa-solid fa-lock" /> {link.label}
+                    </a>
+                  )
+                }
+
+                return (
+                  <a key={link.label} href={link.href}>
+                    {link.label}
+                    {link.label.includes('제안서') && <i className="fa-solid fa-arrow-right" />}
+                  </a>
+                )
+              })}
             </div>
           </div>
         ))}

@@ -1,0 +1,127 @@
+.auth-section {
+  padding-top: 24px;
+  padding-bottom: 24px;
+}
+
+.auth-box {
+  max-width: 420px;
+  margin: 0 auto;
+  background: #fff;
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  padding: clamp(24px, 4vw, 32px);
+}
+
+.auth-warning {
+  max-width: 560px;
+}
+
+.auth-code {
+  background: var(--bg-cream);
+  padding: 16px;
+  border-radius: 12px;
+  font-size: 13px;
+  overflow-x: auto;
+  margin: 16px 0;
+  line-height: 1.6;
+}
+
+.auth-hint {
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.auth-loading {
+  text-align: center;
+  color: var(--text-muted);
+}
+
+.auth-logged-in {
+  text-align: center;
+}
+
+.auth-sync-note {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin: 8px 0 16px;
+}
+
+.auth-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.auth-tabs button {
+  padding: 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  background: var(--bg-cream);
+  cursor: pointer;
+  font-weight: 600;
+  min-height: var(--touch-min);
+}
+
+.auth-tabs button.active {
+  background: var(--primary-dark);
+  color: #fff;
+  border-color: var(--primary-dark);
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.auth-form label {
+  font-size: 14px;
+  font-weight: 600;
+  margin-top: 8px;
+}
+
+.auth-form .input-text {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  background: var(--bg-cream);
+  font-size: 16px;
+  min-height: var(--touch-min);
+}
+
+.auth-btn-filled {
+  margin-top: 16px;
+  background: var(--primary-dark);
+  color: #fff;
+  border: none;
+  padding: 14px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  min-height: 52px;
+}
+
+.auth-btn-filled:disabled {
+  opacity: 0.6;
+}
+
+.auth-btn-outline {
+  background: transparent;
+  border: 1px solid var(--primary-dark);
+  color: var(--primary-dark);
+  padding: 10px 20px;
+  border-radius: 20px;
+  cursor: pointer;
+  min-height: var(--touch-min);
+}
+
+.auth-message {
+  margin-top: 16px;
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.6;
+  word-break: keep-all;
+}

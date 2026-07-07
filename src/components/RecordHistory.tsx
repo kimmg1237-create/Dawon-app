@@ -13,10 +13,14 @@ export function RecordHistory() {
   const { records, deleteRecord } = useDayRecordsContext()
   const [selected, setSelected] = useState<DayRecord | null>(null)
 
-  function handleDelete(record: DayRecord) {
+  async function handleDelete(record: DayRecord) {
     if (!confirm(`${formatDateLabel(record.date)} 기록을 삭제할까요?`)) return
-    deleteRecord(record.id)
-    if (selected?.id === record.id) setSelected(null)
+    try {
+      await deleteRecord(record.id)
+      if (selected?.id === record.id) setSelected(null)
+    } catch {
+      alert('삭제에 실패했습니다.')
+    }
   }
 
   if (records.length === 0) {

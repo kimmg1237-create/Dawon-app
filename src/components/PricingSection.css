@@ -1,0 +1,59 @@
+.pricing-current-plan {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 15px;
+}
+
+.pricing-action {
+  margin-top: 20px;
+}
+
+.pricing-btn {
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  min-height: var(--touch-min);
+  border: 1px solid var(--primary-dark);
+}
+
+.pricing-btn.filled {
+  background: var(--primary-dark);
+  color: #fff;
+}
+
+.pricing-btn.outline {
+  background: transparent;
+  color: var(--primary-dark);
+}
+
+.pricing-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.plan-current {
+  display: block;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--accent-gold);
+  padding: 12px;
+}
+
+.pricing-message {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.pricing-note {
+  text-align: center;
+  margin-top: 16px;
+  font-size: 12px;
+  color: var(--text-muted);
+}

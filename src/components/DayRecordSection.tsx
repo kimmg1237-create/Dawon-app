@@ -7,7 +7,7 @@ import './DayRecordSection.css'
 const DEFAULT_MESSAGE = '오늘도 수고했어. 나는 내 하루의 작은 설계자다.'
 
 export function DayRecordSection() {
-  const { monthCount, streak, topEmotion, saveRecord, todayRecord, hasRecordedToday } =
+  const { monthCount, streak, topEmotion, saveRecord, todayRecord, hasRecordedToday, syncing, isCloud } =
     useDayRecordsContext()
 
   const [task, setTask] = useState('')
@@ -28,14 +28,21 @@ export function DayRecordSection() {
     }
   }, [todayRecord])
 
-  function handleSave() {
+  async function handleSave() {
     if (!task || !selectedEmotion) {
       alert('오늘 한 일 기록과 오늘의 감정 선택은 성장을 위한 필수 입력 사항입니다.')
       return
     }
 
-    saveRecord({ task, emotion: selectedEmotion, nextTask, message })
-    setPreviewMsg(`성공적으로 ${hasRecordedToday ? '수정' : '저장'}되었습니다!\n오늘의 다짐: "${message}"`)
+    try {
+      await saveRecord({ task, emotion: selectedEmotion, nextTask, message })
+      setPreviewMsg(
+        `성공적으로 ${hasRecordedToday ? '수정' : '저장'}되었습니다!${isCloud ? ' (클라우드 동기화)' : ''}\n오늘의 다짐: "${message}"`,
+      )
+      document.getElementById('recommendations')?.scrollIntoView({ behavior: 'smooth' })
+    } catch {
+      alert('저장에 실패했습니다. 로그인 상태와 인터넷 연결을 확인해주세요.')
+    }
   }
 
   return (
@@ -43,12 +50,17 @@ export function DayRecordSection() {
       <h2 className="section-title">My Day Design 3분 기록</h2>
       <p className="section-subtitle">오늘의 나를 확인하는 3분, 내 삶을 설계하는 첫걸음입니다.</p>
 
-      {hasRecordedToday && (
+      {syncing && (
+        <p className="today-status pending">
+          <i className="fa-solid fa-cloud-arrow-down" /> 클라우드에서 기록을 불러오는 중...
+        </p>
+      )}
+      {!syncing && hasRecordedToday && (
         <p className="today-status done">
           <i className="fa-solid fa-circle-check" /> 오늘 기록 완료 — 수정 후 다시 저장할 수 있어요.
         </p>
       )}
-      {!hasRecordedToday && (
+      {!syncing && !hasRecordedToday && (
         <p className="today-status pending">
           <i className="fa-regular fa-circle" /> 오늘 아직 기록하지 않았어요.
         </p>
