@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type MouseEvent } from 'react'
+import { isPageHash, scrollToHash } from '../../utils/scroll'
 
 const NAV_ITEMS = [
   { href: '#daily', label: '오늘 3분' },
@@ -21,6 +22,34 @@ export function DawonNav() {
     setOpen(false)
   }
 
+  function goTo(href: string, e: MouseEvent<HTMLAnchorElement>) {
+    close()
+
+    // Legal full-page hashes: let hash routing handle it
+    if (isPageHash(href)) return
+
+    e.preventDefault()
+
+    if (href === '#top' || href === '') {
+      if (window.location.hash) {
+        history.pushState(null, '', window.location.pathname + window.location.search)
+      }
+      scrollToHash('#top', 'smooth')
+      return
+    }
+
+    // Same hash again still needs a re-scroll
+    if (window.location.hash === href) {
+      scrollToHash(href, 'smooth')
+      return
+    }
+
+    // Update URL hash; App hashchange will also scroll (after remount if needed)
+    window.location.hash = href
+    // Scroll immediately when home is already mounted
+    requestAnimationFrame(() => scrollToHash(href, 'smooth'))
+  }
+
   return (
     <>
       <a className="skip" href="#main">
@@ -28,7 +57,7 @@ export function DawonNav() {
       </a>
       <nav className="nav" aria-label="주요 메뉴">
         <div className="wrap nav-inner">
-          <a className="brand" href="#top" aria-label="다원 하루설계 AI 홈" onClick={close}>
+          <a className="brand" href="#top" aria-label="다원 하루설계 AI 홈" onClick={(e) => goTo('#top', e)}>
             <span className="logo">D</span>
             <span>
               다원 하루설계 AI
@@ -48,11 +77,11 @@ export function DawonNav() {
 
           <div className={`nav-links ${open ? 'open' : ''}`}>
             {NAV_ITEMS.map((item) => (
-              <a key={item.href} href={item.href} onClick={close}>
+              <a key={item.href} href={item.href} onClick={(e) => goTo(item.href, e)}>
                 {item.label}
               </a>
             ))}
-            <a className="btn btn-primary btn-small" href="#auth" onClick={close}>
+            <a className="btn btn-primary btn-small" href="#auth" onClick={(e) => goTo('#auth', e)}>
               시작하기
             </a>
           </div>

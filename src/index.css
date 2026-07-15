@@ -20,7 +20,10 @@
     }
 
     *{box-sizing:border-box}
-    html{scroll-behavior:smooth}
+    html{
+      scroll-behavior:smooth;
+      scroll-padding-top:88px;
+    }
     body{
       margin:0;
       font-family:"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
@@ -43,6 +46,13 @@
     }
     .skip:focus{
       left:16px;top:16px;z-index:1000;background:#fff;padding:12px 16px;border-radius:12px
+    }
+    section[id],
+    header[id],
+    #auth,
+    #app,
+    #pricing{
+      scroll-margin-top:88px;
     }
 
     /* Navigation */
