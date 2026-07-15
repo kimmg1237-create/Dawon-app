@@ -1,5 +1,6 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { PATH_CARDS, type PathCategory } from '../../data/paths'
+import { getEbookUrl } from '../../data/ebookFiles'
 
 const TABS: { value: PathCategory | 'all'; label: string }[] = [
   { value: 'all', label: '전체' },
@@ -13,6 +14,7 @@ const TABS: { value: PathCategory | 'all'; label: string }[] = [
 export function DawonPaths() {
   const [tab, setTab] = useState<PathCategory | 'all'>('all')
   const [query, setQuery] = useState('')
+  const [activeId, setActiveId] = useState<string | null>(null)
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
@@ -24,6 +26,31 @@ export function DawonPaths() {
     })
   }, [tab, query])
 
+  const activeCard = activeId ? PATH_CARDS.find((c) => c.id === activeId) ?? null : null
+  const activePdf = activeId ? getEbookUrl(activeId) : null
+
+  useEffect(() => {
+    if (!activeId) return
+    function onKey(e: KeyboardEvent) {
+      if (e.key === 'Escape') setActiveId(null)
+    }
+    document.body.style.overflow = 'hidden'
+    window.addEventListener('keydown', onKey)
+    return () => {
+      document.body.style.overflow = ''
+      window.removeEventListener('keydown', onKey)
+    }
+  }, [activeId])
+
+  function openEbook(pathId: string) {
+    const url = getEbookUrl(pathId)
+    if (!url) {
+      alert('이 길의 PDF가 아직 준비되지 않았습니다.')
+      return
+    }
+    setActiveId(pathId)
+  }
+
   return (
     <section className="section" id="paths">
       <div className="wrap">
@@ -34,7 +61,7 @@ export function DawonPaths() {
           </div>
           <p>
             대표 도서 《나는 내 생활의 설계자》가 전체 지도가 되고, 50권은 지금 필요한 주제로 깊이 들어가는 각각의 길이
-            됩니다.
+            됩니다. 아래 카드를 누르면 전자책(PDF)이 열립니다.
           </p>
         </div>
 
@@ -66,16 +93,63 @@ export function DawonPaths() {
         </div>
 
         <div className="path-grid">
-          {filtered.map((card) => (
-            <article key={card.id} className="card path-card" data-category={card.category} data-title={card.searchTitle}>
-              <span className="path-no">{card.pathNo}</span>
-              <h3>{card.title}</h3>
-              <p>{card.description}</p>
-              <span className="tag">{card.tag}</span>
-            </article>
-          ))}
+          {filtered.map((card) => {
+            const hasPdf = Boolean(getEbookUrl(card.id))
+            return (
+              <article
+                key={card.id}
+                className={`card path-card path-card-btn ${hasPdf ? '' : 'no-pdf'}`}
+                data-category={card.category}
+                data-title={card.searchTitle}
+                role="button"
+                tabIndex={0}
+                onClick={() => openEbook(card.id)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault()
+                    openEbook(card.id)
+                  }
+                }}
+                aria-label={`${card.title} 전자책 보기`}
+              >
+                <span className="path-no">{card.pathNo}</span>
+                <h3>{card.title}</h3>
+                <p>{card.description}</p>
+                <span className="tag">{card.tag}</span>
+                <span className="path-open-hint">{hasPdf ? '클릭하여 PDF 보기 →' : 'PDF 준비 중'}</span>
+              </article>
+            )
+          })}
         </div>
       </div>
+
+      {activeCard && activePdf && (
+        <div
+          className="ebook-modal"
+          role="dialog"
+          aria-modal="true"
+          aria-label={`${activeCard.title} 전자책`}
+          onClick={() => setActiveId(null)}
+        >
+          <div className="ebook-modal-panel" onClick={(e) => e.stopPropagation()}>
+            <div className="ebook-modal-bar">
+              <div>
+                <strong>{activeCard.title}</strong>
+                <span>{activeCard.pathNo}</span>
+              </div>
+              <div className="ebook-modal-actions">
+                <a className="btn btn-soft btn-small" href={activePdf} target="_blank" rel="noopener noreferrer">
+                  새 탭에서 열기
+                </a>
+                <button type="button" className="btn btn-primary btn-small" onClick={() => setActiveId(null)}>
+                  닫기
+                </button>
+              </div>
+            </div>
+            <iframe title={`${activeCard.title} PDF`} src={`${activePdf}#toolbar=1`} className="ebook-frame" />
+          </div>
+        </div>
+      )}
     </section>
   )
 }
