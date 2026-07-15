@@ -25,7 +25,7 @@ export function RecommendationSection() {
     <section id="recommendations">
       <h2 className="section-title">오늘의 맞춤 추천</h2>
       <p className="section-subtitle">
-        오늘의 기분과 기록을 바탕으로 책·영상·노래를 추천합니다.
+        오늘의 기분과 기록을 바탕으로 50개의 길 전자책과 다원작가 Shorts 노래를 추천합니다.
       </p>
 
       {!todayRecord && (
@@ -85,7 +85,7 @@ export function RecommendationSection() {
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    {type === 'book' ? '전자책 보기' : type === 'video' ? '영상 보기' : '노래 듣기'}
+                    {type === 'book' ? '전자책 보기' : type === 'video' ? '영상 보기' : 'Shorts 듣기'}
                     <i className="fa-solid fa-arrow-up-right-from-square" />
                   </a>
                 )}
