@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { PATH_CARDS, type PathCategory } from '../../data/paths'
 import { getEbookUrl } from '../../data/ebookFiles'
+import { getCoverUrl } from '../../data/coverFiles'
 
 const TABS: { value: PathCategory | 'all'; label: string }[] = [
   { value: 'all', label: '전체' },
@@ -95,10 +96,11 @@ export function DawonPaths() {
         <div className="path-grid">
           {filtered.map((card) => {
             const hasPdf = Boolean(getEbookUrl(card.id))
+            const coverUrl = getCoverUrl(card.id)
             return (
               <article
                 key={card.id}
-                className={`card path-card path-card-btn ${hasPdf ? '' : 'no-pdf'}`}
+                className={`card path-card path-card-btn ${hasPdf ? '' : 'no-pdf'} ${coverUrl ? 'has-cover' : ''}`}
                 data-category={card.category}
                 data-title={card.searchTitle}
                 role="button"
@@ -112,6 +114,9 @@ export function DawonPaths() {
                 }}
                 aria-label={`${card.title} 전자책 보기`}
               >
+                {coverUrl ? (
+                  <img className="path-cover" src={coverUrl} alt="" loading="lazy" />
+                ) : null}
                 <span className="path-no">{card.pathNo}</span>
                 <h3>{card.title}</h3>
                 <p>{card.description}</p>
