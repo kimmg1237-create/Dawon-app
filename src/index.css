@@ -249,7 +249,6 @@
     .ebook-modal-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:14px 16px;border-bottom:1px solid var(--line);background:#f7f3ea}
     .ebook-modal-bar strong{display:block;font-size:1rem;color:var(--ink)}
     .ebook-modal-bar span{display:block;font-size:.82rem;color:var(--muted);margin-top:2px}
-    .ebook-modal-actions{display:flex;gap:8px;flex-wrap:wrap}
     .ebook-frame{flex:1;width:100%;border:0;background:#efe9dc}
 
     /* Library */

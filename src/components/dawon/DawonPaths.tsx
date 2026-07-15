@@ -137,16 +137,15 @@ export function DawonPaths() {
                 <strong>{activeCard.title}</strong>
                 <span>{activeCard.pathNo}</span>
               </div>
-              <div className="ebook-modal-actions">
-                <a className="btn btn-soft btn-small" href={activePdf} target="_blank" rel="noopener noreferrer">
-                  새 탭에서 열기
-                </a>
-                <button type="button" className="btn btn-primary btn-small" onClick={() => setActiveId(null)}>
-                  닫기
-                </button>
-              </div>
+              <button type="button" className="btn btn-primary btn-small" onClick={() => setActiveId(null)}>
+                닫기
+              </button>
             </div>
-            <iframe title={`${activeCard.title} PDF`} src={`${activePdf}#toolbar=1`} className="ebook-frame" />
+            <iframe
+              title={`${activeCard.title} PDF`}
+              src={`${activePdf}#toolbar=0&navpanes=0&scrollbar=1`}
+              className="ebook-frame"
+            />
           </div>
         </div>
       )}
