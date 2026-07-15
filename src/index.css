@@ -51,6 +51,7 @@
     header[id],
     #auth,
     #app,
+    #daily,
     #pricing{
       scroll-margin-top:88px;
     }
@@ -426,6 +427,7 @@
 }
 
 #app section,
+#daily,
 #app-section {
   width: min(var(--max), calc(100% - 40px));
   margin-left: auto;

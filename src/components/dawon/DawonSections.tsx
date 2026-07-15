@@ -73,7 +73,7 @@ const STEPS = [
 
 export function DailySteps() {
   return (
-    <section className="section" id="daily">
+    <section className="section" id="daily-intro">
       <div className="wrap">
         <div className="section-head">
           <div className="copy">
@@ -91,6 +91,12 @@ export function DailySteps() {
               <p>{step.desc}</p>
             </article>
           ))}
+        </div>
+
+        <div className="cta-actions" style={{ marginTop: 28, justifyContent: 'center' }}>
+          <a className="btn btn-primary" href="#daily">
+            다원 하루설계 3분 기록 하기
+          </a>
         </div>
       </div>
     </section>
@@ -481,7 +487,7 @@ export function StartCta() {
           </p>
           <span className="status-badge">로그인·3분 기록·구독 체험 가능</span>
           <div className="cta-actions" style={{ marginTop: 18 }}>
-            <a className="btn btn-light" href="#auth">
+            <a className="btn btn-light" href="#daily">
               지금 시작하기
             </a>
             <a className="btn btn-light" href="https://dawon84.com/" target="_blank" rel="noopener noreferrer">

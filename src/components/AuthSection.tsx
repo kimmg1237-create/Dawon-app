@@ -62,13 +62,13 @@ export function AuthSection() {
 
   if (user) {
     return (
-      <section id="auth" className="auth-section">
-        <div className="auth-box auth-logged-in">
-          <p>
-            <i className="fa-solid fa-cloud" /> <strong>{user.email}</strong> 으로 로그인됨
+      <section id="auth" className="auth-section auth-section-compact">
+        <div className="auth-box auth-logged-in auth-logged-in-compact">
+          <p className="auth-logged-line">
+            <i className="fa-solid fa-cloud" /> <strong>{user.email}</strong>
+            <span className="auth-sync-note">클라우드 동기화 중</span>
           </p>
-          <p className="auth-sync-note">기록이 클라우드에 자동 저장·동기화됩니다.</p>
-          <button type="button" className="auth-btn-outline" onClick={() => signOut()}>
+          <button type="button" className="auth-btn-outline auth-btn-compact" onClick={() => signOut()}>
             로그아웃
           </button>
         </div>

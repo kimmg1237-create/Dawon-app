@@ -9,13 +9,14 @@ import { PricingSection } from './PricingSection'
 import { LoginGate } from './LoginGate'
 import { DailyReminderRunner } from './DailyReminderRunner'
 
-/** 마케팅 스토리 아래 실제 로그인·기록·구독 UI */
+/** 마케팅 스토리 아래 실제 기록·로그인·구독 UI */
 export function ProductWorkspace() {
   return (
     <div id="app">
       <DailyReminderRunner />
-      <AuthSection />
+      {/* 3분 기록이 첫 도착점 — 로그인 배너가 위를 가리지 않도록 순서 고정 */}
       <DayRecordSection />
+      <AuthSection />
       <LoginGate feature="맞춤 추천">
         <RecommendationSection />
       </LoginGate>

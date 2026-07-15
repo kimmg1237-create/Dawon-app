@@ -1,4 +1,5 @@
 import { useEffect, useState, type MouseEvent } from 'react'
+import { useAuth } from '../../context/AuthContext'
 import { isPageHash, scrollToHash } from '../../utils/scroll'
 
 const NAV_ITEMS = [
@@ -12,6 +13,7 @@ const NAV_ITEMS = [
 
 export function DawonNav() {
   const [open, setOpen] = useState(false)
+  const { user } = useAuth()
 
   useEffect(() => {
     document.body.classList.toggle('menu-open', open)
@@ -25,7 +27,6 @@ export function DawonNav() {
   function goTo(href: string, e: MouseEvent<HTMLAnchorElement>) {
     close()
 
-    // Legal full-page hashes: let hash routing handle it
     if (isPageHash(href)) return
 
     e.preventDefault()
@@ -38,17 +39,17 @@ export function DawonNav() {
       return
     }
 
-    // Same hash again still needs a re-scroll
     if (window.location.hash === href) {
       scrollToHash(href, 'smooth')
       return
     }
 
-    // Update URL hash; App hashchange will also scroll (after remount if needed)
     window.location.hash = href
-    // Scroll immediately when home is already mounted
     requestAnimationFrame(() => scrollToHash(href, 'smooth'))
   }
+
+  const startHref = user ? '#daily' : '#auth'
+  const startLabel = user ? '3분 기록' : '시작하기'
 
   return (
     <>
@@ -81,8 +82,8 @@ export function DawonNav() {
                 {item.label}
               </a>
             ))}
-            <a className="btn btn-primary btn-small" href="#auth" onClick={(e) => goTo('#auth', e)}>
-              시작하기
+            <a className="btn btn-primary btn-small" href={startHref} onClick={(e) => goTo(startHref, e)}>
+              {startLabel}
             </a>
           </div>
         </div>
