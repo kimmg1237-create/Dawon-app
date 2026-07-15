@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { PATH_CARDS, type PathCategory } from '../../data/paths'
 import { getEbookUrl } from '../../data/ebookFiles'
 import { getCoverUrl } from '../../data/coverFiles'
+import { EbookViewer } from '../EbookViewer'
 
 const TABS: { value: PathCategory | 'all'; label: string }[] = [
   { value: 'all', label: '전체' },
@@ -32,14 +33,9 @@ export function DawonPaths() {
 
   useEffect(() => {
     if (!activeId) return
-    function onKey(e: KeyboardEvent) {
-      if (e.key === 'Escape') setActiveId(null)
-    }
     document.body.style.overflow = 'hidden'
-    window.addEventListener('keydown', onKey)
     return () => {
       document.body.style.overflow = ''
-      window.removeEventListener('keydown', onKey)
     }
   }, [activeId])
 
@@ -129,30 +125,12 @@ export function DawonPaths() {
       </div>
 
       {activeCard && activePdf && (
-        <div
-          className="ebook-modal"
-          role="dialog"
-          aria-modal="true"
-          aria-label={`${activeCard.title} 전자책`}
-          onClick={() => setActiveId(null)}
-        >
-          <div className="ebook-modal-panel" onClick={(e) => e.stopPropagation()}>
-            <div className="ebook-modal-bar">
-              <div>
-                <strong>{activeCard.title}</strong>
-                <span>{activeCard.pathNo}</span>
-              </div>
-              <button type="button" className="btn btn-primary btn-small" onClick={() => setActiveId(null)}>
-                닫기
-              </button>
-            </div>
-            <iframe
-              title={`${activeCard.title} PDF`}
-              src={`${activePdf}#toolbar=0&navpanes=0&scrollbar=1`}
-              className="ebook-frame"
-            />
-          </div>
-        </div>
+        <EbookViewer
+          url={activePdf}
+          title={activeCard.title}
+          subtitle={activeCard.pathNo}
+          onClose={() => setActiveId(null)}
+        />
       )}
     </section>
   )

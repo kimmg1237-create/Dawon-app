@@ -4,6 +4,7 @@ import { EMOTIONS } from '../data/emotions'
 import { useDayRecordsContext } from '../context/DayRecordsContext'
 import { useRecommendations } from '../hooks/useRecommendations'
 import { useSubscription } from '../context/SubscriptionContext'
+import { EbookViewer } from './EbookViewer'
 import './RecommendationSection.css'
 import './PremiumGate.css'
 
@@ -25,19 +26,6 @@ export function RecommendationSection() {
   useEffect(() => {
     setEbookOpen(false)
   }, [emotion, data?.book.id])
-
-  useEffect(() => {
-    if (!ebookOpen) return
-    function onKey(e: KeyboardEvent) {
-      if (e.key === 'Escape') setEbookOpen(false)
-    }
-    document.body.style.overflow = 'hidden'
-    window.addEventListener('keydown', onKey)
-    return () => {
-      document.body.style.overflow = ''
-      window.removeEventListener('keydown', onKey)
-    }
-  }, [ebookOpen])
 
   const book = data?.book
   const ebookSubtitle = book?.description.split(' · ')[0] ?? ''
@@ -126,34 +114,12 @@ export function RecommendationSection() {
       )}
 
       {ebookOpen && book && (
-        <div
-          className="ebook-modal"
-          role="dialog"
-          aria-modal="true"
-          aria-label={`${book.title} 전자책`}
-          onClick={() => setEbookOpen(false)}
-        >
-          <div className="ebook-modal-panel" onClick={(e) => e.stopPropagation()}>
-            <div className="ebook-modal-bar">
-              <div>
-                <strong>{book.title}</strong>
-                <span>{ebookSubtitle || '50개의 길 · 전자책'}</span>
-              </div>
-              <button
-                type="button"
-                className="btn btn-primary btn-small"
-                onClick={() => setEbookOpen(false)}
-              >
-                닫기
-              </button>
-            </div>
-            <iframe
-              title={`${book.title} PDF`}
-              src={`${book.url}#toolbar=0&navpanes=0&scrollbar=1`}
-              className="ebook-frame"
-            />
-          </div>
-        </div>
+        <EbookViewer
+          url={book.url}
+          title={book.title}
+          subtitle={ebookSubtitle || '50개의 길 · 전자책'}
+          onClose={() => setEbookOpen(false)}
+        />
       )}
     </section>
   )

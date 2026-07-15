@@ -101,3 +101,10 @@ export function getDawonSongRecommendation(emotion: Emotion): ContentItem {
   const picked = candidates[pickDailyIndex(candidates.length, emotion)] ?? DAWON_SHORTS[0]
   return shortToSong(picked, emotion)
 }
+
+/** 라이브러리·퀵링크용: 다원작가 Shorts 중 무작위 1곡 */
+export function getRandomDawonShort(): DawonShort {
+  const list = DAWON_SHORTS
+  const index = Math.floor(Math.random() * list.length)
+  return list[index] ?? list[0]
+}

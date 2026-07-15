@@ -11,6 +11,7 @@ const PAGE_HASHES = new Set([
   '#auth',
   '#pricing',
   '#recommendations',
+  '#audiobook',
 ])
 
 export function isPageHash(hash: string): boolean {

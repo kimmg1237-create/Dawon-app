@@ -4,14 +4,16 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
+    "dev": "node scripts/sync-audiobook-index.cjs && vite",
+    "build": "node scripts/sync-audiobook-index.cjs && tsc -b && vite build",
     "lint": "oxlint",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "audiobook:index": "node scripts/sync-audiobook-index.cjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.110.0",
     "@tosspayments/tosspayments-sdk": "^2.7.1",
+    "pdfjs-dist": "^6.1.200",
     "react": "^19.2.7",
     "react-dom": "^19.2.7"
   },

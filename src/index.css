@@ -275,6 +275,17 @@
     .library-card .icon{width:52px;height:52px;border-radius:17px;display:grid;place-items:center;background:rgba(127,152,120,.13);font-size:1.35rem;margin-bottom:18px}
     .library-card h3{font-size:1.25rem;margin-bottom:8px}
     .library-card p{margin:0;color:var(--muted)}
+    .library-card-link{
+      display:flex;flex-direction:column;align-items:flex-start;text-align:left;
+      cursor:pointer;border:1px solid var(--line);width:100%;font:inherit;color:inherit;background:var(--surface);
+      transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+    }
+    .library-card-link:hover,.library-card-link:focus-visible{
+      transform:translateY(-2px);box-shadow:var(--shadow-soft);border-color:rgba(127,152,120,.45);outline:none;
+    }
+    .library-card-soon{opacity:.78}
+    .library-go{display:inline-block;margin-top:16px;font-size:.9rem;font-weight:700;color:var(--green-dark)}
+    .library-card-soon .library-go{color:var(--muted);font-weight:600}
 
     /* Weekly report */
     .report-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:24px}

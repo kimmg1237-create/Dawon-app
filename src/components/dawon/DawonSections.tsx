@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { getRandomDawonShort } from '../../data/dawonShorts'
 
 export function Metrics() {
   return (
@@ -234,6 +235,11 @@ export function RoutesSection() {
 }
 
 export function LibrarySection() {
+  function openRandomShort() {
+    const short = getRandomDawonShort()
+    window.open(short.url, '_blank', 'noopener,noreferrer')
+  }
+
   return (
     <section className="section" id="library">
       <div className="wrap">
@@ -246,25 +252,34 @@ export function LibrarySection() {
         </div>
 
         <div className="library-grid">
-          <article className="card library-card">
+          <a className="card library-card library-card-link" href="#paths" aria-label="전자책 — 50개의 길로 이동">
             <div className="icon">📚</div>
             <h3>전자책</h3>
             <p>50개의 길을 주제별로 읽고, 필요한 한 페이지부터 시작합니다.</p>
-          </article>
-          <article className="card library-card">
+            <span className="library-go">50개의 길 보기 →</span>
+          </a>
+          <a className="card library-card library-card-link" href="#audiobook" aria-label="오디오북 페이지로 이동">
             <div className="icon">🎧</div>
             <h3>오디오북</h3>
-            <p>걷기·청소·휴식 중에도 1~3분부터 들을 수 있습니다.</p>
-          </article>
-          <article className="card library-card">
+            <p>텍스트 파일을 올리면 읽어 드립니다. 걷기·청소·휴식 중에도 들을 수 있습니다.</p>
+            <span className="library-go">오디오북 열기 →</span>
+          </a>
+          <button
+            type="button"
+            className="card library-card library-card-link"
+            onClick={openRandomShort}
+            aria-label="다원작가 Shorts 중 랜덤 30초 노래 듣기"
+          >
             <div className="icon">🎵</div>
             <h3>30초 노래</h3>
-            <p>한 문장을 기억하기 쉬운 음악과 쇼츠 콘텐츠로 확장합니다.</p>
-          </article>
-          <article className="card library-card">
+            <p>다원작가 YouTube Shorts 중 한 곡을 무작위로 듣습니다.</p>
+            <span className="library-go">랜덤 Shorts 듣기 →</span>
+          </button>
+          <article className="card library-card library-card-soon">
             <div className="icon">🃏</div>
             <h3>카드·만화</h3>
             <p>감정카드, 365 실천카드, 가족대화카드, 만화전자책을 연결합니다.</p>
+            <span className="library-go">준비 중</span>
           </article>
         </div>
       </div>

@@ -27,6 +27,7 @@ import { RecommendationSection } from './components/RecommendationSection'
 import { PricingSection } from './components/PricingSection'
 import { LoginGate } from './components/LoginGate'
 import { DailyReminderRunner } from './components/DailyReminderRunner'
+import { AudiobookPage } from './components/AudiobookPage'
 import { isPageHash } from './utils/scroll'
 
 function useHashRoute() {
@@ -111,6 +112,8 @@ function pageForHash(hash: string): ReactNode | null {
       return <DawonPaths />
     case '#library':
       return <LibrarySection />
+    case '#audiobook':
+      return <AudiobookPage />
     case '#faq':
       return <FaqSection />
     case '#pricing':
