@@ -2,11 +2,27 @@ export type Emotion = '기쁨' | '평안' | '감사' | '걱정' | '희망'
 
 export type SubscriptionPlan = 'free' | 'monthly' | 'b2b'
 
+/** 결제·이용 경로 */
+export type SubscriptionSource =
+  | 'trial'
+  | 'toss'
+  | 'play'
+  | 'app_store'
+  | 'manual_b2b'
+  | 'ads'
+  | 'dev'
+
+export type PremiumAccessReason = 'trial' | 'paid' | 'ads' | null
+
 export interface UserSubscription {
   userId: string
   plan: SubscriptionPlan
   status: 'active' | 'cancelled' | 'expired'
   expiresAt: string | null
+  trialEndsAt: string | null
+  adAccessUntil: string | null
+  source: SubscriptionSource
+  externalId: string | null
   updatedAt: string
 }
 

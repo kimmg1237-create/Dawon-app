@@ -79,7 +79,9 @@ export function AuthSection() {
   return (
     <section id="auth" className="auth-section">
       <h2 className="section-title">로그인 / 회원가입</h2>
-      <p className="section-subtitle">계정으로 로그인하면 기록이 클라우드에 안전하게 저장됩니다.</p>
+      <p className="section-subtitle">
+        기능 소개는 로그인 없이 볼 수 있고, 기록·체크·추천·알림은 로그인 후 이용합니다.
+      </p>
 
       <div className="auth-box">
         <div className="auth-tabs">

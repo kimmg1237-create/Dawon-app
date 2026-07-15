@@ -7,24 +7,34 @@ import {
   useState,
   type ReactNode,
 } from 'react'
-import type { SubscriptionPlan, UserSubscription } from '../types'
+import type { PremiumAccessReason, SubscriptionPlan, UserSubscription } from '../types'
 import { useAuth } from './AuthContext'
 import {
+  daysRemaining,
   downgradeToFree,
   fetchSubscription,
-  isPremiumPlan,
+  getPremiumAccessReason,
+  hasPremiumAccess,
   requestB2BPlan,
+  unlockViaAd,
   upgradeToMonthly,
+  AD_UNLOCK_HOURS,
 } from '../services/subscriptionService'
+import { PRODUCT_SPEC } from '../data/productSpec'
 
 interface SubscriptionContextValue {
   subscription: UserSubscription | null
   plan: SubscriptionPlan
   isPremium: boolean
+  accessReason: PremiumAccessReason
+  trialDaysLeft: number | null
+  adHoursLeftLabel: string | null
+  monthlyPriceKrw: number
   loading: boolean
   subscribeMonthly: () => Promise<string | null>
   cancelSubscription: () => Promise<string | null>
   requestB2B: () => Promise<string | null>
+  unlockWithAd: () => Promise<string | null>
   refresh: () => Promise<void>
 }
 
@@ -52,6 +62,10 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
         plan: 'free',
         status: 'active',
         expiresAt: null,
+        trialEndsAt: null,
+        adAccessUntil: null,
+        source: 'trial',
+        externalId: null,
         updatedAt: new Date().toISOString(),
       })
     } finally {
@@ -64,18 +78,26 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
   }, [load])
 
   const plan: SubscriptionPlan = subscription?.plan ?? 'free'
-  const isPremium = subscription
-    ? isPremiumPlan(subscription.plan, subscription.expiresAt)
-    : false
+  const isPremium = subscription ? hasPremiumAccess(subscription) : false
+  const accessReason = subscription ? getPremiumAccessReason(subscription) : null
+  const trialDaysLeft = daysRemaining(subscription?.trialEndsAt)
+
+  const adHoursLeftLabel = useMemo(() => {
+    if (!subscription?.adAccessUntil || accessReason !== 'ads') return null
+    const ms = new Date(subscription.adAccessUntil).getTime() - Date.now()
+    if (ms <= 0) return null
+    const hours = Math.ceil(ms / (1000 * 60 * 60))
+    return `약 ${hours}시간`
+  }, [subscription, accessReason])
 
   const subscribeMonthly = useCallback(async () => {
     if (!user) return '로그인이 필요합니다.'
     try {
-      const sub = await upgradeToMonthly(user.id)
+      const sub = await upgradeToMonthly(user.id, { source: 'dev' })
       setSubscription(sub)
       return null
     } catch {
-      return '구독 처리에 실패했습니다. subscriptions.sql을 실행했는지 확인해주세요.'
+      return '구독 처리에 실패했습니다. Supabase에서 subscriptions.sql을 다시 실행했는지 확인해주세요.'
     }
   }, [user])
 
@@ -101,18 +123,47 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
     }
   }, [user])
 
+  const unlockWithAd = useCallback(async () => {
+    if (!user) return '로그인이 필요합니다.'
+    try {
+      const sub = await unlockViaAd(user.id)
+      setSubscription(sub)
+      return null
+    } catch {
+      return '광고 이용 처리에 실패했습니다. subscriptions.sql 마이그레이션을 확인해주세요.'
+    }
+  }, [user])
+
   const value = useMemo(
     () => ({
       subscription,
       plan,
       isPremium,
+      accessReason,
+      trialDaysLeft,
+      adHoursLeftLabel,
+      monthlyPriceKrw: PRODUCT_SPEC.monthlyPriceKrw,
       loading,
       subscribeMonthly,
       cancelSubscription,
       requestB2B,
+      unlockWithAd,
       refresh: load,
     }),
-    [subscription, plan, isPremium, loading, subscribeMonthly, cancelSubscription, requestB2B, load],
+    [
+      subscription,
+      plan,
+      isPremium,
+      accessReason,
+      trialDaysLeft,
+      adHoursLeftLabel,
+      loading,
+      subscribeMonthly,
+      cancelSubscription,
+      requestB2B,
+      unlockWithAd,
+      load,
+    ],
   )
 
   return <SubscriptionContext.Provider value={value}>{children}</SubscriptionContext.Provider>
@@ -123,3 +174,5 @@ export function useSubscription() {
   if (!ctx) throw new Error('useSubscription must be used within SubscriptionProvider')
   return ctx
 }
+
+export { AD_UNLOCK_HOURS }

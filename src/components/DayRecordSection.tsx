@@ -47,7 +47,7 @@ export function DayRecordSection() {
 
   return (
     <section id="app-section">
-      <h2 className="section-title">My Day Design 3분 기록</h2>
+      <h2 className="section-title">다원 하루설계 3분 기록</h2>
       <p className="section-subtitle">오늘의 나를 확인하는 3분, 내 삶을 설계하는 첫걸음입니다.</p>
 
       {syncing && (

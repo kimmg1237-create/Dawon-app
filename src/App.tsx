@@ -1,50 +1,93 @@
-import { AuthProvider } from './context/AuthContext'
-import { SubscriptionProvider } from './context/SubscriptionContext'
-import { NotificationProvider } from './context/NotificationContext'
-import { DayRecordsProvider } from './context/DayRecordsContext'
-import { Header } from './components/Header'
-import { Hero } from './components/Hero'
-import { AuthSection } from './components/AuthSection'
-import { DayRecordSection } from './components/DayRecordSection'
-import { RecommendationSection } from './components/RecommendationSection'
-import { RecordCalendar } from './components/RecordCalendar'
-import { RecordHistory } from './components/RecordHistory'
-import { MonthlyReportSection } from './components/MonthlyReportSection'
-import { NotificationSettings } from './components/NotificationSettings'
-import { DailyReminderRunner } from './components/DailyReminderRunner'
-import { BooksSection } from './components/BooksSection'
-import { PaletteSection } from './components/PaletteSection'
-import { MusicLibrarySection } from './components/MusicLibrarySection'
-import { CalendarSection } from './components/CalendarSection'
-import { PricingSection } from './components/PricingSection'
-import { Footer } from './components/Footer'
+import { useEffect, useState } from 'react'
+import { DawonNav } from './components/dawon/DawonNav'
+import { DawonHero } from './components/dawon/DawonHero'
+import { DawonDemo } from './components/dawon/DawonDemo'
+import { DawonPaths } from './components/dawon/DawonPaths'
+import {
+  Metrics,
+  Formula,
+  DailySteps,
+  AiSection,
+  RoutesSection,
+  LibrarySection,
+  ReportSection,
+  AudienceSection,
+  TrustSection,
+  FaqSection,
+  StartCta,
+  DawonFooter,
+  TopButton,
+} from './components/dawon/DawonSections'
+import { PrivacyPage, TermsPage } from './components/LegalPages'
+import { ProductWorkspace } from './components/ProductWorkspace'
+import { TossPaymentReturnHandler } from './components/TossPaymentReturnHandler'
+
+function useHashRoute() {
+  const [hash, setHash] = useState(() => window.location.hash)
+
+  useEffect(() => {
+    function onHashChange() {
+      setHash(window.location.hash)
+      window.scrollTo(0, 0)
+    }
+    window.addEventListener('hashchange', onHashChange)
+    return () => window.removeEventListener('hashchange', onHashChange)
+  }, [])
+
+  return hash
+}
 
 function App() {
+  const hash = useHashRoute()
+
+  if (hash === '#terms') {
+    return (
+      <>
+        <DawonNav />
+        <main id="main">
+          <TermsPage />
+        </main>
+        <DawonFooter />
+      </>
+    )
+  }
+
+  if (hash === '#privacy') {
+    return (
+      <>
+        <DawonNav />
+        <main id="main">
+          <PrivacyPage />
+        </main>
+        <DawonFooter />
+      </>
+    )
+  }
+
   return (
-    <AuthProvider>
-      <SubscriptionProvider>
-        <NotificationProvider>
-          <DayRecordsProvider>
-            <DailyReminderRunner />
-            <Header />
-            <Hero />
-            <AuthSection />
-            <DayRecordSection />
-            <RecommendationSection />
-            <RecordCalendar />
-            <RecordHistory />
-            <MonthlyReportSection />
-            <NotificationSettings />
-            <BooksSection />
-            <PaletteSection />
-            <MusicLibrarySection />
-            <CalendarSection />
-            <PricingSection />
-            <Footer />
-          </DayRecordsProvider>
-        </NotificationProvider>
-      </SubscriptionProvider>
-    </AuthProvider>
+    <>
+      <DawonNav />
+      <TossPaymentReturnHandler />
+      <main id="main">
+        <DawonHero />
+        <Metrics />
+        <Formula />
+        <DailySteps />
+        <ProductWorkspace />
+        <AiSection />
+        <RoutesSection />
+        <DawonDemo />
+        <DawonPaths />
+        <LibrarySection />
+        <ReportSection />
+        <AudienceSection />
+        <TrustSection />
+        <FaqSection />
+        <StartCta />
+      </main>
+      <DawonFooter />
+      <TopButton />
+    </>
   )
 }
 

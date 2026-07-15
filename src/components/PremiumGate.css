@@ -33,6 +33,43 @@
   min-height: var(--touch-min);
 }
 
+.premium-gate-sub {
+  font-size: 13px !important;
+  margin-bottom: 16px !important;
+}
+
+.premium-gate-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+
+.premium-ad-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  color: var(--primary-dark);
+  border: 1px solid var(--primary-dark);
+  padding: 10px 18px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  min-height: var(--touch-min);
+  cursor: pointer;
+}
+
+.premium-ad-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.premium-gate-message {
+  margin-top: 12px !important;
+  font-size: 13px !important;
+}
+
 .premium-loading {
   font-size: 13px;
   color: var(--text-muted);
