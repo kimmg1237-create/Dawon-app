@@ -1,6 +1,6 @@
 import { useEffect, useState, type MouseEvent } from 'react'
 import { useAuth } from '../../context/AuthContext'
-import { isPageHash, scrollToHash } from '../../utils/scroll'
+import { goHome, isPageHash } from '../../utils/scroll'
 
 const NAV_ITEMS = [
   { href: '#daily', label: '오늘 3분' },
@@ -27,25 +27,19 @@ export function DawonNav() {
   function goTo(href: string, e: MouseEvent<HTMLAnchorElement>) {
     close()
 
-    if (isPageHash(href)) return
+    if (href === '#top' || href === '' || href === '#home') {
+      e.preventDefault()
+      goHome()
+      return
+    }
+
+    // Standalone menu pages: let the hash change; App will render that page only
+    if (isPageHash(href)) {
+      window.scrollTo(0, 0)
+      return
+    }
 
     e.preventDefault()
-
-    if (href === '#top' || href === '') {
-      if (window.location.hash) {
-        history.pushState(null, '', window.location.pathname + window.location.search)
-      }
-      scrollToHash('#top', 'smooth')
-      return
-    }
-
-    if (window.location.hash === href) {
-      scrollToHash(href, 'smooth')
-      return
-    }
-
-    window.location.hash = href
-    requestAnimationFrame(() => scrollToHash(href, 'smooth'))
   }
 
   const startHref = user ? '#daily' : '#auth'

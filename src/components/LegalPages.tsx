@@ -1,3 +1,4 @@
+import { goHome } from '../utils/scroll'
 import './LegalPages.css'
 
 export const BUSINESS_INFO = {
@@ -23,7 +24,7 @@ export function TermsPage() {
         href="/"
         onClick={(e) => {
           e.preventDefault()
-          window.location.hash = ''
+          goHome()
         }}
       >
         ← 홈으로
@@ -237,7 +238,7 @@ export function PrivacyPage() {
         href="/"
         onClick={(e) => {
           e.preventDefault()
-          window.location.hash = ''
+          goHome()
         }}
       >
         ← 홈으로

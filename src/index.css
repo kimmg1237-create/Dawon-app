@@ -36,6 +36,11 @@
       word-break:keep-all;
     }
     body.menu-open{overflow:hidden}
+    .section-page{
+      min-height:calc(100vh - 180px);
+      padding-top:12px;
+      padding-bottom:48px;
+    }
     a{color:inherit;text-decoration:none}
     button,input,textarea{font:inherit}
     button{color:inherit}

@@ -39,7 +39,12 @@ export function DayRecordSection() {
       setPreviewMsg(
         `성공적으로 ${hasRecordedToday ? '수정' : '저장'}되었습니다!${isCloud ? ' (클라우드 동기화)' : ''}\n오늘의 다짐: "${message}"`,
       )
-      document.getElementById('recommendations')?.scrollIntoView({ behavior: 'smooth' })
+      const rec = document.getElementById('recommendations')
+      if (rec) {
+        rec.scrollIntoView({ behavior: 'smooth' })
+      } else {
+        window.location.hash = '#recommendations'
+      }
     } catch {
       alert('저장에 실패했습니다. 로그인 상태와 인터넷 연결을 확인해주세요.')
     }
