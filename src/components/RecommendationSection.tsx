@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { Emotion } from '../types'
 import { EMOTIONS } from '../data/emotions'
 import { useDayRecordsContext } from '../context/DayRecordsContext'
@@ -16,10 +16,31 @@ const TYPE_LABELS = {
 export function RecommendationSection() {
   const { todayRecord } = useDayRecordsContext()
   const [previewEmotion, setPreviewEmotion] = useState<Emotion | ''>('')
+  const [ebookOpen, setEbookOpen] = useState(false)
 
   const emotion = todayRecord?.emotion ?? (previewEmotion || null)
   const { data, loading } = useRecommendations(emotion)
   const { isPremium } = useSubscription()
+
+  useEffect(() => {
+    setEbookOpen(false)
+  }, [emotion, data?.book.id])
+
+  useEffect(() => {
+    if (!ebookOpen) return
+    function onKey(e: KeyboardEvent) {
+      if (e.key === 'Escape') setEbookOpen(false)
+    }
+    document.body.style.overflow = 'hidden'
+    window.addEventListener('keydown', onKey)
+    return () => {
+      document.body.style.overflow = ''
+      window.removeEventListener('keydown', onKey)
+    }
+  }, [ebookOpen])
+
+  const book = data?.book
+  const ebookSubtitle = book?.description.split(' · ')[0] ?? ''
 
   return (
     <section id="recommendations">
@@ -78,6 +99,15 @@ export function RecommendationSection() {
                   <a href="#pricing" className="premium-locked-link">
                     <i className="fa-solid fa-lock" /> 전자책 보기 (구독 필요)
                   </a>
+                ) : type === 'book' ? (
+                  <button
+                    type="button"
+                    className="recommend-link recommend-link-btn"
+                    onClick={() => setEbookOpen(true)}
+                  >
+                    전자책 보기
+                    <i className="fa-solid fa-book-open" />
+                  </button>
                 ) : (
                   <a
                     href={item.url}
@@ -85,13 +115,44 @@ export function RecommendationSection() {
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    {type === 'book' ? '전자책 보기' : type === 'video' ? '영상 보기' : 'Shorts 듣기'}
+                    {type === 'video' ? '영상 보기' : 'Shorts 듣기'}
                     <i className="fa-solid fa-arrow-up-right-from-square" />
                   </a>
                 )}
               </article>
             )
           })}
+        </div>
+      )}
+
+      {ebookOpen && book && (
+        <div
+          className="ebook-modal"
+          role="dialog"
+          aria-modal="true"
+          aria-label={`${book.title} 전자책`}
+          onClick={() => setEbookOpen(false)}
+        >
+          <div className="ebook-modal-panel" onClick={(e) => e.stopPropagation()}>
+            <div className="ebook-modal-bar">
+              <div>
+                <strong>{book.title}</strong>
+                <span>{ebookSubtitle || '50개의 길 · 전자책'}</span>
+              </div>
+              <button
+                type="button"
+                className="btn btn-primary btn-small"
+                onClick={() => setEbookOpen(false)}
+              >
+                닫기
+              </button>
+            </div>
+            <iframe
+              title={`${book.title} PDF`}
+              src={`${book.url}#toolbar=0&navpanes=0&scrollbar=1`}
+              className="ebook-frame"
+            />
+          </div>
         </div>
       )}
     </section>

@@ -107,3 +107,14 @@
   width: fit-content;
   min-height: var(--touch-min);
 }
+
+button.recommend-link-btn {
+  appearance: none;
+  background: none;
+  border: 0;
+  border-bottom: 1px solid var(--primary-dark);
+  border-radius: 0;
+  cursor: pointer;
+  font: inherit;
+  padding: 0 0 2px;
+}
