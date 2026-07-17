@@ -26,7 +26,7 @@
   height: 32px;
   border: 0;
   border-radius: 999px;
-  background: rgba(127, 152, 120, 0.14);
+  background: rgba(23, 184, 144, 0.14);
   color: var(--green-deep);
   font-size: 1.15rem;
   font-weight: 700;
@@ -35,7 +35,7 @@
 }
 
 .ebook-tool-btn:hover {
-  background: rgba(127, 152, 120, 0.24);
+  background: rgba(23, 184, 144, 0.24);
 }
 
 .ebook-zoom input[type='range'] {
@@ -57,7 +57,7 @@
   display: grid;
   place-items: center;
   background:
-    linear-gradient(180deg, #ebe4d6 0%, #e4dccb 100%);
+    linear-gradient(180deg, #f5f8fa 0%, #e8eef3 100%);
   overflow: hidden;
   user-select: none;
   touch-action: pan-y;
@@ -106,8 +106,8 @@
   display: block;
   max-width: 100%;
   max-height: 100%;
-  background: #fffdf8;
-  box-shadow: 0 18px 40px rgba(40, 48, 40, 0.22);
+  background: #fff;
+  box-shadow: 0 18px 40px rgba(7, 24, 39, 0.22);
   border-radius: 2px;
 }
 
@@ -130,7 +130,7 @@
   height: 44px;
   border: 1px solid var(--line);
   border-radius: 999px;
-  background: rgba(255, 253, 248, 0.92);
+  background: rgba(255, 255, 255, 0.94);
   color: var(--ink);
   font-size: 1.6rem;
   line-height: 1;
@@ -158,7 +158,7 @@
   gap: 12px;
   padding: 12px 16px;
   border-top: 1px solid var(--line);
-  background: #f7f3ea;
+  background: #f5f8fa;
 }
 
 .ebook-page-label {

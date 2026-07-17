@@ -84,7 +84,7 @@
 }
 
 .live-report {
-  background-color: #faf9f5;
+  background-color: #f5f8fa;
   border-radius: 18px;
   padding: clamp(20px, 4vw, 30px);
   display: flex;

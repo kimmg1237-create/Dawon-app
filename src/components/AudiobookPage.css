@@ -42,12 +42,12 @@
 
 .audiobook-library-item:hover,
 .audiobook-library-item:focus-visible {
-  border-color: rgba(127, 152, 120, 0.55);
+  border-color: rgba(23, 184, 144, 0.55);
   outline: none;
 }
 
 .audiobook-library-item.active {
-  background: rgba(127, 152, 120, 0.16);
+  background: rgba(23, 184, 144, 0.16);
   border-color: var(--green-dark);
   color: var(--green-deep);
 }
@@ -81,13 +81,13 @@
   border: 1px solid var(--line);
   border-radius: 16px;
   padding: 16px 18px;
-  background: #fffdf8;
+  background: #fff;
   color: var(--ink);
   line-height: 1.7;
 }
 
 .audiobook-text:focus {
-  outline: 2px solid rgba(127, 152, 120, 0.45);
+  outline: 2px solid rgba(23, 184, 144, 0.45);
   outline-offset: 1px;
 }
 

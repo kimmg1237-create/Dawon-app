@@ -21,7 +21,7 @@
   text-align: center;
   gap: 10px;
   padding: 28px 20px;
-  background: rgba(253, 251, 247, 0.82);
+  background: rgba(245, 248, 250, 0.88);
   backdrop-filter: blur(2px);
   z-index: 2;
 }

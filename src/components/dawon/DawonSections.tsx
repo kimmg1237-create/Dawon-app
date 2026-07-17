@@ -275,12 +275,12 @@ export function LibrarySection() {
             <p>다원작가 YouTube Shorts 중 한 곡을 무작위로 듣습니다.</p>
             <span className="library-go">랜덤 Shorts 듣기 →</span>
           </button>
-          <article className="card library-card library-card-soon">
+          <a className="card library-card library-card-link" href="#comics" aria-label="카드·만화 페이지로 이동">
             <div className="icon">🃏</div>
             <h3>카드·만화</h3>
             <p>감정카드, 365 실천카드, 가족대화카드, 만화전자책을 연결합니다.</p>
-            <span className="library-go">준비 중</span>
-          </article>
+            <span className="library-go">만화전자책 보기 →</span>
+          </a>
         </div>
       </div>
     </section>

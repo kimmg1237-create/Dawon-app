@@ -267,7 +267,7 @@
 }
 
 .check-green {
-  color: green;
+  color: var(--green);
 }
 
 @media (max-width: 480px) {

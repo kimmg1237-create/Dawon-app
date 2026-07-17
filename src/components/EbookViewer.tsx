@@ -90,19 +90,23 @@ export function EbookViewer({ url, title, subtitle, onClose }: EbookViewerProps)
         const availableH = Math.max(240, (stage?.clientHeight ?? 600) - 24)
         const fit = Math.min(availableW / base.width, availableH / base.height)
         const viewport = pdfPage.getViewport({ scale: fit * zoom })
+        const outputScale = Math.min(2, Math.max(1.5, window.devicePixelRatio || 1))
 
         const context = targetCanvas.getContext('2d')
         if (!context) return
 
-        targetCanvas.width = Math.floor(viewport.width)
-        targetCanvas.height = Math.floor(viewport.height)
+        targetCanvas.width = Math.floor(viewport.width * outputScale)
+        targetCanvas.height = Math.floor(viewport.height * outputScale)
         targetCanvas.style.width = `${viewport.width}px`
         targetCanvas.style.height = `${viewport.height}px`
+        context.imageSmoothingEnabled = true
+        context.imageSmoothingQuality = 'high'
 
         await pdfPage.render({
           canvas: targetCanvas,
           canvasContext: context,
           viewport,
+          transform: [outputScale, 0, 0, outputScale, 0, 0],
         }).promise
       } catch {
         if (!cancelled) setError('페이지를 그리지 못했습니다.')

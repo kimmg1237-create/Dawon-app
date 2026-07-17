@@ -28,6 +28,7 @@ import { PricingSection } from './components/PricingSection'
 import { LoginGate } from './components/LoginGate'
 import { DailyReminderRunner } from './components/DailyReminderRunner'
 import { AudiobookPage } from './components/AudiobookPage'
+import { ComicLibraryPage } from './components/ComicLibraryPage'
 import { isPageHash } from './utils/scroll'
 
 function useHashRoute() {
@@ -114,6 +115,8 @@ function pageForHash(hash: string): ReactNode | null {
       return <LibrarySection />
     case '#audiobook':
       return <AudiobookPage />
+    case '#comics':
+      return <ComicLibraryPage />
     case '#faq':
       return <FaqSection />
     case '#pricing':
