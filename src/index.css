@@ -378,3 +378,13 @@ h1 span{color:#b82f42}h1 span::after{background:rgba(213,167,66,.27)}
 .btn-small{padding:9px 14px;font-size:13px}
 .btn-soft{background:#f2f6fa;border-color:#cfdbe6;color:#132a45}
 :root{--shadow-soft:0 12px 32px rgba(7,26,51,.07);--green-dark:#0e5fa9;--green-deep:#071a33}
+
+/* 생애단계 헤더·컨트롤바 가독성 보정: 어두운 배경 위 글자색이 테마 규칙에 덮여 안 보이던 문제 */
+.stage-head h3{color:#fff}
+.stage-head p{color:#cddbe8}
+.stage-head .kicker{color:#7fe3c4}
+.stage-head .stage-tags span{background:rgba(255,255,255,.14);color:#f5efe2;border-color:rgba(255,255,255,.26)}
+.stage-controlbar .compact-field label{color:#f6e9db}
+.stage-controlbar .stage-domains button{background:rgba(255,255,255,.12);color:#eef6fb;border-color:rgba(255,255,255,.28)}
+.stage-controlbar .stage-domains button:hover{background:rgba(255,255,255,.2)}
+.stage-controlbar .stage-domains button.active{background:linear-gradient(135deg,#37a1e8,#1d5da0);color:#fff;border-color:transparent}
