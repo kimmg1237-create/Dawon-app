@@ -1,42 +1,61 @@
+/**
+ * public/covers ? PNG ???(? ?? ??)? paths.ts ? ? ID? ???
+ * src/data/coverFiles.ts ? ?????.
+ * ??: node scripts/generate-cover-map.cjs
+ */
 const fs = require('fs')
 const path = require('path')
 
-const dir = path.join('public', 'covers')
-if (!fs.existsSync(dir)) {
-  fs.mkdirSync(dir, { recursive: true })
-}
+const root = path.join(__dirname, '..')
+const coversDir = path.join(root, 'public', 'covers')
+const pathsFile = path.join(root, 'src', 'data', 'paths.ts')
+const outFile = path.join(root, 'src', 'data', 'coverFiles.ts')
 
-const exts = ['.webp', '.jpg', '.jpeg', '.png']
-const files = fs.readdirSync(dir)
-const byId = new Map()
+const normalize = (s) =>
+  s
+    .normalize('NFC')
+    .replace(/\.(png|webp|jpg|jpeg)$/i, '')
+    .replace(/^\d+[._\s]*/, '')
+    .replace(/[\s,.ï¿½"'ï¿½ï¿½ï¿½ï¿½!?~\-_]/g, '')
+    .toLowerCase()
 
+const source = fs.readFileSync(pathsFile, 'utf8')
+const cards = []
+const re = /id:\s*"(\d+)"[\s\S]*?title:\s*"([^"]+)"/g
+let m
+while ((m = re.exec(source))) cards.push({ id: m[1], title: m[2] })
+
+const files = fs.readdirSync(coversDir).filter((f) => /\.png$/i.test(f))
+const byNorm = new Map()
 for (const f of files) {
-  const lower = f.toLowerCase()
-  const ext = exts.find((e) => lower.endsWith(e))
-  if (!ext) continue
-  const m = f.match(/^(\d{2})/)
-  if (!m) continue
-  const id = m[1]
-  if (!byId.has(id)) byId.set(id, `/covers/${f.replace(/\\/g, '/')}`)
+  const key = normalize(f)
+  // ?? ??? ?? ??? ?? ?? ? ??? ??
+  if (!byNorm.has(key)) byNorm.set(key, f)
 }
 
-const ids = [...byId.keys()].sort()
-const lines = [
-  '/** Auto-generated — run: node scripts/generate-cover-map.cjs */',
-  'export const COVER_BY_ID: Record<string, string> = {',
-]
-for (const id of ids) {
-  lines.push(`  "${id}": "${byId.get(id)}",`)
+const entries = []
+const missing = []
+for (const card of cards) {
+  const file = byNorm.get(normalize(card.title))
+  if (file) {
+    entries.push(`  "${card.id}": "/covers/${encodeURI(file)}",`)
+    byNorm.delete(normalize(card.title))
+  } else {
+    missing.push(`${card.id} ${card.title}`)
+  }
 }
-lines.push('}')
-lines.push('')
-lines.push('export function getCoverUrl(pathId: string): string | null {')
-lines.push('  return COVER_BY_ID[pathId] ?? null')
-lines.push('}')
-lines.push('')
 
-fs.writeFileSync(path.join('src', 'data', 'coverFiles.ts'), lines.join('\n'), 'utf8')
-console.log('wrote src/data/coverFiles.ts covers=' + ids.length)
-if (ids.length === 0) {
-  console.log('Tip: add public/covers/00.webp … 50.webp (or .jpg/.png)')
+const out = `/** Auto-generated ï¿½ run: node scripts/generate-cover-map.cjs */
+export const COVER_BY_ID: Record<string, string> = {
+${entries.join('\n')}
 }
+
+export function getCoverUrl(pathId: string): string | null {
+  return COVER_BY_ID[pathId] ?? null
+}
+`
+fs.writeFileSync(outFile, out, 'utf8')
+console.log(`matched: ${entries.length}/${cards.length}`)
+if (missing.length) console.log('no cover (fallback used):\n' + missing.join('\n'))
+const leftovers = [...byNorm.values()]
+if (leftovers.length) console.log('unmatched cover files:\n' + leftovers.join('\n'))

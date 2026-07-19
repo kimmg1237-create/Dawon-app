@@ -4,7 +4,7 @@
   "framework": "vite",
   "rewrites": [
     {
-      "source": "/((?!ebooks/|covers/).*)",
+      "source": "/((?!ebooks/|covers/|comics/|audiobook-texts/|pdfjs/).*)",
       "destination": "/index.html"
     }
   ]

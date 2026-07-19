@@ -34,3 +34,64 @@ create policy "Users update own records"
 create policy "Users delete own records"
   on public.day_records for delete
   using (auth.uid() = user_id);
+
+-- ============================================================
+-- 바람설계 설문 (Wish Design Portal)
+-- 아래 블록을 day_records 설정 이후 SQL Editor에서 실행하세요.
+-- ============================================================
+
+create table if not exists public.admin_users (
+  user_id uuid primary key references auth.users(id) on delete cascade,
+  created_at timestamptz not null default now()
+);
+
+alter table public.admin_users enable row level security;
+
+-- 관리자 목록은 서버 함수로만 확인 (일반 사용자 직접 조회 불가)
+create policy "No direct read on admin_users"
+  on public.admin_users for select
+  using (false);
+
+create or replace function public.is_wish_admin()
+returns boolean
+language sql
+security definer
+set search_path = public
+stable
+as $$
+  select exists (
+    select 1 from public.admin_users where user_id = auth.uid()
+  );
+$$;
+
+revoke all on function public.is_wish_admin() from public;
+grant execute on function public.is_wish_admin() to authenticated;
+
+create table if not exists public.wish_survey_responses (
+  id text primary key,
+  user_id uuid references auth.users(id) on delete cascade not null,
+  data jsonb not null default '{}'::jsonb,
+  scores jsonb not null default '{}'::jsonb,
+  version text not null default 'portal-v3',
+  submitted_at timestamptz not null default now()
+);
+
+create index if not exists wish_survey_responses_user_id_idx
+  on public.wish_survey_responses (user_id, submitted_at desc);
+
+alter table public.wish_survey_responses enable row level security;
+
+create policy "Users insert own wish responses"
+  on public.wish_survey_responses for insert
+  with check (auth.uid() = user_id);
+
+create policy "Users read own wish responses"
+  on public.wish_survey_responses for select
+  using (auth.uid() = user_id or public.is_wish_admin());
+
+create policy "Admins delete wish responses"
+  on public.wish_survey_responses for delete
+  using (public.is_wish_admin());
+
+-- 관리자 등록 예시 (본인 user UUID로 교체):
+-- insert into public.admin_users (user_id) values ('YOUR-USER-UUID-HERE');

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type MouseEvent } from 'react'
-import { getDocument, GlobalWorkerOptions, type PDFDocumentProxy } from 'pdfjs-dist'
+import { getDocument, GlobalWorkerOptions, type PDFDocumentProxy, type RenderTask } from 'pdfjs-dist'
 import pdfWorker from 'pdfjs-dist/build/pdf.worker.min.mjs?url'
 import './EbookViewer.css'
 
@@ -22,6 +22,7 @@ export function EbookViewer({ url, title, subtitle, onClose }: EbookViewerProps)
   const pdfRef = useRef<PDFDocumentProxy | null>(null)
   const touchX = useRef<number | null>(null)
   const renderToken = useRef(0)
+  const renderTaskRef = useRef<RenderTask | null>(null)
   const pageRef = useRef(1)
   const pageCountRef = useRef(0)
 
@@ -43,7 +44,13 @@ export function EbookViewer({ url, title, subtitle, onClose }: EbookViewerProps)
       setError('')
       setPage(1)
       try {
-        const loadingTask = getDocument({ url })
+        const loadingTask = getDocument({
+          url,
+          cMapUrl: '/pdfjs/cmaps/',
+          cMapPacked: true,
+          standardFontDataUrl: '/pdfjs/standard_fonts/',
+          useSystemFonts: true,
+        })
         const pdf = await loadingTask.promise
         if (cancelled) {
           void pdf.cleanup()
@@ -80,35 +87,51 @@ export function EbookViewer({ url, title, subtitle, onClose }: EbookViewerProps)
       const targetCanvas = canvasRef.current
       if (!targetPdf || !targetCanvas) return
 
+      // 같은 canvas에서 이전 렌더가 진행 중이면 취소해 충돌을 방지합니다.
+      if (renderTaskRef.current) {
+        try {
+          renderTaskRef.current.cancel()
+        } catch {
+          /* 이미 종료된 태스크는 무시합니다. */
+        }
+        renderTaskRef.current = null
+      }
+
       try {
         const pdfPage = await targetPdf.getPage(page)
         if (cancelled || token !== renderToken.current) return
+
+        const context = targetCanvas.getContext('2d')
+        if (!context) {
+          if (!cancelled) setError('페이지를 그리지 못했습니다.')
+          return
+        }
 
         const stage = stageRef.current
         const base = pdfPage.getViewport({ scale: 1 })
         const availableW = Math.max(240, (stage?.clientWidth ?? 800) - 24)
         const availableH = Math.max(240, (stage?.clientHeight ?? 600) - 24)
         const fit = Math.min(availableW / base.width, availableH / base.height)
-        const viewport = pdfPage.getViewport({ scale: fit * zoom })
-        const outputScale = Math.min(2, Math.max(1.5, window.devicePixelRatio || 1))
+        const dpr = Math.min(2, Math.max(1, window.devicePixelRatio || 1))
+        const cssScale = fit * zoom
+        const viewport = pdfPage.getViewport({ scale: cssScale * dpr })
 
-        const context = targetCanvas.getContext('2d')
-        if (!context) return
+        targetCanvas.width = Math.floor(viewport.width)
+        targetCanvas.height = Math.floor(viewport.height)
+        targetCanvas.style.width = `${Math.floor(viewport.width / dpr)}px`
+        targetCanvas.style.height = `${Math.floor(viewport.height / dpr)}px`
 
-        targetCanvas.width = Math.floor(viewport.width * outputScale)
-        targetCanvas.height = Math.floor(viewport.height * outputScale)
-        targetCanvas.style.width = `${viewport.width}px`
-        targetCanvas.style.height = `${viewport.height}px`
-        context.imageSmoothingEnabled = true
-        context.imageSmoothingQuality = 'high'
-
-        await pdfPage.render({
+        const task = pdfPage.render({
           canvas: targetCanvas,
-          canvasContext: context,
           viewport,
-          transform: [outputScale, 0, 0, outputScale, 0, 0],
-        }).promise
-      } catch {
+        })
+        renderTaskRef.current = task
+        await task.promise
+        renderTaskRef.current = null
+        if (!cancelled) setError('')
+      } catch (err) {
+        if (err && (err as { name?: string }).name === 'RenderingCancelledException') return
+        console.error('EbookViewer render 실패:', err)
         if (!cancelled) setError('페이지를 그리지 못했습니다.')
       }
     }
@@ -116,6 +139,14 @@ export function EbookViewer({ url, title, subtitle, onClose }: EbookViewerProps)
     draw()
     return () => {
       cancelled = true
+      if (renderTaskRef.current) {
+        try {
+          renderTaskRef.current.cancel()
+        } catch {
+          /* 이미 종료된 태스크는 무시합니다. */
+        }
+        renderTaskRef.current = null
+      }
     }
   }, [page, pageCount, zoom, loading])
 
@@ -218,8 +249,9 @@ export function EbookViewer({ url, title, subtitle, onClose }: EbookViewerProps)
         >
           {loading && <p className="ebook-status">전자책을 여는 중…</p>}
           {error && <p className="ebook-status ebook-error">{error}</p>}
-          {!loading && !error && (
-            <div className={`ebook-page-shell flip-${flip}`}>
+          {/* 에러가 나도 canvas는 유지해 다음 페이지/재시도 렌더가 가능해야 합니다. */}
+          {!loading && (
+            <div className={`ebook-page-shell flip-${flip}`} hidden={Boolean(error)}>
               <canvas ref={canvasRef} className="ebook-canvas" />
             </div>
           )}
