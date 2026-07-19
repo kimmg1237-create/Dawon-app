@@ -1,0 +1,41 @@
+<section class="section life-stage" id="life-stage">
+  <div class="container">
+    <div class="section-head"><div><div class="kicker">LIFE STAGE SELF DESIGN</div><h2>지금의 나에게 맞는<br>삶의 설계를 시작합니다</h2></div><p>나이는 정답이 아니라 출발점입니다. 가장 가까운 단계를 선택하면 현재 과제, 필요한 역량, 오늘 행동과 7일 실천을 확인할 수 있습니다.</p></div>
+    <div class="stage-tabs" role="tablist" aria-label="생애단계 선택">
+      <button class="stage-tab active" type="button" data-stage="elementary" aria-selected="true"><b>초등학생</b><small>ELEMENTARY</small></button>
+      <button class="stage-tab" type="button" data-stage="middle" aria-selected="false"><b>중학생</b><small>MIDDLE</small></button>
+      <button class="stage-tab" type="button" data-stage="high" aria-selected="false"><b>고등학생</b><small>HIGH SCHOOL</small></button>
+      <button class="stage-tab" type="button" data-stage="college" aria-selected="false"><b>대학생</b><small>COLLEGE</small></button>
+      <button class="stage-tab" type="button" data-stage="youth" aria-selected="false"><b>청년</b><small>YOUTH</small></button>
+      <button class="stage-tab" type="button" data-stage="worker" aria-selected="false"><b>직장인</b><small>WORKER</small></button>
+      <button class="stage-tab" type="button" data-stage="midlife" aria-selected="false"><b>중년</b><small>MIDLIFE</small></button>
+      <button class="stage-tab" type="button" data-stage="senior" aria-selected="false"><b>노년</b><small>SENIOR</small></button>
+    </div>
+    <div class="stage-controlbar">
+      <div class="compact-field"><label for="stageSubtype">현재 상황 세부유형</label><select id="stageSubtype"><option>저학년·놀이와 기본습관</option><option>고학년·선택과 책임</option><option>친구관계가 고민</option><option>공부 시작이 어려움</option></select></div>
+      <div class="compact-field stage-domain-field"><label>집중할 설계 분야</label><div class="stage-domains" id="stageDomains"><button type="button" data-domain="배움">배움</button><button type="button" data-domain="진로와 일">진로와 일</button><button type="button" class="active" data-domain="마음">마음</button><button type="button" data-domain="관계">관계</button><button type="button" data-domain="건강">건강</button><button type="button" data-domain="돈과 생활">돈과 생활</button></div></div>
+      <button class="btn btn-light" type="button" id="simpleModeToggle" aria-pressed="false">쉬운 화면 켜기</button>
+    </div>
+    <article class="stage-shell" aria-live="polite">
+      <header class="stage-head">
+        <div><div class="kicker" id="stageKicker">01 · 기초생활과 호기심 설계</div><h3 id="stageTitle">작은 습관으로 “나는 할 수 있다”를 배웁니다</h3><p id="stageIntro">초등 시기는 성적보다 생활 리듬, 질문하는 힘, 감정 표현, 작은 책임을 익히는 때입니다. 저학년은 놀이와 반복, 고학년은 선택과 기록을 조금씩 늘립니다.</p><div class="stage-tags" id="stageTags"><span>생활습관</span><span>호기심</span><span>감정표현</span><span>작은 책임</span><span>부모 대화</span></div></div>
+        <button class="btn btn-mint" id="stageToSurvey" type="button">이 단계로 설문 시작 →</button>
+      </header>
+      <div class="stage-body">
+        <div class="stage-triple">
+          <section class="stage-card"><h4>현재 성장과제</h4><ul id="stageTasks"><li>잠·식사·준비·정리의 기본 리듬 만들기</li><li>좋아하는 것과 궁금한 것을 말과 그림으로 표현하기</li><li>작은 약속을 스스로 정하고 끝까지 해보기</li></ul></section>
+          <section class="stage-card"><h4>자주 만나는 고민</h4><ul id="stageConcerns"><li>공부하기 싫고 집중이 오래되지 않음</li><li>친구와 다투거나 비교되어 속상함</li><li>실수하면 혼날까 봐 숨기고 싶음</li></ul></section>
+          <section class="stage-card"><h4>키워야 할 핵심역량</h4><ul id="stageSkills"><li>자기관리: 가방·준비물·공간 정리</li><li>표현력: 기분과 필요한 도움 말하기</li><li>실행력: 10분 안에 끝낼 작은 일 선택</li></ul></section>
+        </div>
+        <div class="stage-focus">
+          <section class="stage-question"><h4>나에게 묻는 세 가지</h4><ul id="stageQuestions"><li>오늘 내가 스스로 한 일은 무엇인가?</li><li>지금 내 마음은 어떤 이름인가?</li><li>내일 한 가지 더 해보고 싶은 것은?</li></ul></section>
+          <section class="today-action"><h4>오늘 할 한 가지</h4><strong id="stageToday">내가 스스로 한 일을 하나 찾아 “내가 해냈다”라고 적고, 내일 할 10분 행동을 정합니다.</strong><p id="stageMeasure">성공 기준: 혼자 또는 도움을 받아 실제로 끝내고 표시하기.</p></section>
+        </div>
+        <div class="week-title"><h4>7일 생애단계 실천</h4><span>작게 실행하고 결과를 기록합니다</span></div>
+        <div class="week-grid" id="stageWeek"><div class="week-day"><b>1일</b><span>내가 한 일 찾기</span></div><div class="week-day"><b>2일</b><span>감정 이름 붙이기</span></div><div class="week-day"><b>3일</b><span>책상 10분 정리</span></div><div class="week-day"><b>4일</b><span>궁금한 것 질문</span></div><div class="week-day"><b>5일</b><span>친구에게 좋은 말</span></div><div class="week-day"><b>6일</b><span>가족과 함께하기</span></div><div class="week-day"><b>7일</b><span>잘한 점 발표</span></div></div>
+        <div class="stage-bottom"><div><h4>함께 돕는 사람의 역할</h4><ul id="stageSupport"><li>부모: 대신 해주기보다 선택지를 두 개 주고 기다리기</li><li>교사: 결과보다 시도와 질문을 구체적으로 칭찬하기</li><li>친구: 함께 정한 작은 약속을 확인해주기</li></ul></div><a class="btn btn-primary" href="#survey">맞춤 바람설문 작성</a></div>
+        <div class="stage-recommend" id="stageRecommend"><h4>이 단계에 맞는 책·음악·실천도구</h4><div id="stageRecommendGrid"><div class="stage-rec-card"><b>BOOK</b><span>《자신과의 소통》</span></div><div class="stage-rec-card"><b>MUSIC</b><span>위로·회복·감정 이름 붙이기 음악</span></div><div class="stage-rec-card"><b>ACTION TOOL</b><span>그림·칭찬형 오늘의 미션카드</span></div></div></div>
+      </div>
+    </article>
+  </div>
+</section>

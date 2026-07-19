@@ -95,3 +95,64 @@ create policy "Admins delete wish responses"
 
 -- 관리자 등록 예시 (본인 user UUID로 교체):
 -- insert into public.admin_users (user_id) values ('YOUR-USER-UUID-HERE');
+
+-- ============================================================
+-- 사용자별 운영 데이터 (독립 페이지 저장)
+-- ============================================================
+
+create table if not exists public.user_quick_designs (
+  user_id uuid primary key references auth.users(id) on delete cascade,
+  payload jsonb not null default '{}'::jsonb,
+  updated_at timestamptz not null default now()
+);
+alter table public.user_quick_designs enable row level security;
+create policy "Users manage own quick designs"
+  on public.user_quick_designs for all
+  using (auth.uid() = user_id)
+  with check (auth.uid() = user_id);
+
+create table if not exists public.user_trackers (
+  user_id uuid primary key references auth.users(id) on delete cascade,
+  payload jsonb not null default '{}'::jsonb,
+  updated_at timestamptz not null default now()
+);
+alter table public.user_trackers enable row level security;
+create policy "Users manage own trackers"
+  on public.user_trackers for all
+  using (auth.uid() = user_id)
+  with check (auth.uid() = user_id);
+
+create table if not exists public.user_life_stage_prefs (
+  user_id uuid primary key references auth.users(id) on delete cascade,
+  payload jsonb not null default '{}'::jsonb,
+  updated_at timestamptz not null default now()
+);
+alter table public.user_life_stage_prefs enable row level security;
+create policy "Users manage own life stage prefs"
+  on public.user_life_stage_prefs for all
+  using (auth.uid() = user_id)
+  with check (auth.uid() = user_id);
+
+create table if not exists public.user_quests (
+  user_id uuid primary key references auth.users(id) on delete cascade,
+  payload jsonb not null default '{}'::jsonb,
+  updated_at timestamptz not null default now()
+);
+alter table public.user_quests enable row level security;
+create policy "Users manage own quests"
+  on public.user_quests for all
+  using (auth.uid() = user_id)
+  with check (auth.uid() = user_id);
+
+create table if not exists public.user_ops_data (
+  user_id uuid not null references auth.users(id) on delete cascade,
+  kind text not null,
+  payload jsonb not null default '{}'::jsonb,
+  updated_at timestamptz not null default now(),
+  primary key (user_id, kind)
+);
+alter table public.user_ops_data enable row level security;
+create policy "Users manage own ops data"
+  on public.user_ops_data for all
+  using (auth.uid() = user_id)
+  with check (auth.uid() = user_id);

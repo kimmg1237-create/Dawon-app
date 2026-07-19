@@ -388,3 +388,10 @@ h1 span{color:#b82f42}h1 span::after{background:rgba(213,167,66,.27)}
 .stage-controlbar .stage-domains button{background:rgba(255,255,255,.12);color:#eef6fb;border-color:rgba(255,255,255,.28)}
 .stage-controlbar .stage-domains button:hover{background:rgba(255,255,255,.2)}
 .stage-controlbar .stage-domains button.active{background:linear-gradient(135deg,#37a1e8,#1d5da0);color:#fff;border-color:transparent}
+
+/* 히어로 launch-note */
+.launch-note{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;margin:16px 0 18px;padding:12px 16px;border-radius:14px;background:rgba(7,26,51,.04);border:1px solid rgba(7,26,51,.1);font-size:13px;color:#4f6075;max-width:700px}
+.launch-note b{font-size:11px;letter-spacing:.08em;color:#123a62;background:rgba(36,120,197,.1);padding:5px 9px;border-radius:8px;white-space:nowrap}
+.launch-note span{flex:1;min-width:180px;line-height:1.45}
+.launch-note a{font-weight:800;color:#155f9b;white-space:nowrap}
+.launch-note a:hover{color:#0d2848}

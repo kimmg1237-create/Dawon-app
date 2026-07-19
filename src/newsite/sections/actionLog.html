@@ -1,0 +1,17 @@
+<section class="section soft action-log-section" id="action-log">
+  <div class="container">
+    <div class="section-head"><div><div class="kicker">7-DAY ACTION &amp; RESULT LOG</div><h2>생각한 계획을<br>해본 결과로 바꿉니다</h2></div><p>오늘 완료 여부, 감정 변화, 다른 사람의 반응과 다음 선택을 7일 동안 기록합니다. 기록은 이 브라우저에 저장됩니다.</p></div>
+    <div class="tracker-summary">
+      <div><label for="beforeScore">시작 전 자신감</label><input id="beforeScore" type="range" min="1" max="10" value="5"><b id="beforeScoreValue">5점</b></div>
+      <div><label for="afterScore">현재 자신감</label><input id="afterScore" type="range" min="1" max="10" value="5"><b id="afterScoreValue">5점</b></div>
+      <div class="compare-card"><span>전후 변화</span><strong id="scoreDifference">0점</strong><small id="scoreMessage">점수보다 실제 행동과 배움을 확인하세요.</small></div>
+      <div class="tracker-actions"><button class="btn btn-primary" type="button" id="saveTracker">7일 기록 저장</button><button class="btn btn-light" type="button" id="exportTracker">기록 TXT</button><button class="btn btn-danger" type="button" id="resetTracker">기록 초기화</button></div>
+    </div>
+    <div class="tracker-grid" id="trackerGrid"></div>
+    <div class="tracker-final">
+      <div class="compact-field"><label for="trackerReaction">다른 사람의 반응·도움</label><textarea id="trackerReaction" placeholder="예: 가족이 함께해 주었고, 생각보다 쉽게 시작할 수 있다고 말했습니다."></textarea></div>
+      <div class="compact-field"><label for="trackerDecision">다음 선택</label><select id="trackerDecision"><option>유지한다</option><option>조금 수정한다</option><option>다른 방법을 시도한다</option><option>잠시 중단하고 이유를 확인한다</option></select></div>
+      <div class="compact-field"><label for="trackerNext">다음 7일에 할 한 가지</label><input id="trackerNext" placeholder="예: 같은 시간에 10분씩 계속하기"></div>
+    </div>
+  </div>
+</section>

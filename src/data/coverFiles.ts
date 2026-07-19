@@ -1,4 +1,4 @@
-/** Auto-generated � run: node scripts/generate-cover-map.cjs */
+/** Auto-generated — run: node scripts/generate-cover-map.cjs */
 export const COVER_BY_ID: Record<string, string> = {
   "01": "/covers/%EA%B7%B8%EB%83%A5%20%ED%95%98%EB%8A%94%20%EC%9D%BC%EC%9D%B4%20%EB%8A%A5%EB%A0%A5%EC%9D%B4%20%EB%90%9C%EB%8B%A4.png",
   "02": "/covers/%EA%B8%B0%EB%8F%84%ED%95%98%EB%8A%94%20%EC%86%90,%20%EC%9D%BC%ED%95%98%EB%8A%94%20%EB%A7%88%EC%9D%8C.png",
@@ -15,6 +15,7 @@ export const COVER_BY_ID: Record<string, string> = {
   "13": "/covers/%EA%B0%90%EC%A0%95%20%EC%9D%B4%EB%A6%84%20%EB%B6%99%EC%9D%B4%EA%B8%B0.png",
   "14": "/covers/%EB%A7%88%EC%9D%8C%EC%9D%84%20%EC%A0%95%EB%A6%AC%ED%95%98%EB%8A%94%20%EC%8B%9C%EA%B0%84.png",
   "15": "/covers/%EB%82%98%EC%97%90%EA%B2%8C%20%EB%AC%BB%EA%B3%A0%20%EB%82%98%EC%97%90%EA%B2%8C%20%EB%8B%B5%ED%95%98%EB%8B%A4.png",
+  "16": "/covers/%EB%91%90%EB%A0%A4%EC%9B%80%EC%9D%84%20%EC%A7%80%EB%82%98%EA%B0%80%EB%8A%94%20%ED%86%B5%EB%A1%9C.png",
   "17": "/covers/%EC%83%81%EC%B2%98%EB%8A%94%20%EB%82%B4%20%EC%9E%98%EB%AA%BB%EC%9D%B4%20%EC%95%84%EB%8B%88%EB%8B%A4.png",
   "18": "/covers/%EB%8B%A4%EC%8B%9C%20%EB%82%98%EB%A5%BC%20%EC%84%B8%EC%9A%B0%EB%8A%94%20%ED%86%B5%EB%A1%9C.png",
   "19": "/covers/%ED%95%98%EB%A3%A8%20%ED%95%9C%20%EC%A4%84,%20%EB%82%98%EB%A5%BC%20%EC%82%B4%EB%A6%AC%EB%8A%94%20%EB%A7%90.png",
@@ -30,7 +31,7 @@ export const COVER_BY_ID: Record<string, string> = {
   "29": "/covers/%EC%84%B8%EB%8C%80%EC%99%80%20%EC%84%B8%EB%8C%80%EB%A5%BC%20%EC%9E%87%EB%8A%94%20%EC%83%9D%ED%99%9C.png",
   "30": "/covers/%ED%95%A8%EA%BB%98%20%EC%82%B4%EC%95%84%EA%B0%80%EB%8A%94%20%EC%84%A4%EA%B3%84.png",
   "41": "/covers/%EB%82%98%EB%8A%94%20%EB%82%B4%20%ED%95%98%EB%A3%A8%EC%9D%98%20%EC%9E%91%EC%9D%80%20%EC%84%A4%EA%B3%84%EC%9E%90.png",
-  "42": "/covers/%EA%B4%9C%EC%B0%AE%EC%95%84%20%EC%98%A4%EB%8A%98%EC%9D%98%20%EB%82%98%EB%8F%84%20%EC%9E%90%EB%9D%BC%EA%B3%A0%20%EC%9E%88%EC%96%B4.png",
+  "42": "/covers/%EA%B4%9C%EC%B0%AE%EC%95%84,%20%EC%98%A4%EB%8A%98%EC%9D%98%20%EB%82%98%EB%8F%84%20%EC%9E%90%EB%9D%BC%EA%B3%A0%20%EC%9E%88%EC%96%B4.png",
   "43": "/covers/%EC%B2%AD%EB%85%84%20%EC%9E%90%EA%B8%B0%EC%84%A4%EA%B3%84%20%EB%85%B8%ED%8A%B8.png",
   "44": "/covers/%EB%AC%B4%EB%84%88%EC%A7%84%20%ED%95%98%EB%A3%A8%EC%97%90%EB%8F%84%20%EB%82%98%EB%8A%94%20%EB%82%98%EB%A5%BC%20%EC%84%B8%EC%9A%B4%EB%8B%A4.png",
   "45": "/covers/%EC%A4%91%EB%85%84%EC%9D%98%20%EB%A7%88%EC%9D%8C%EC%A0%95%EB%A6%AC.png",

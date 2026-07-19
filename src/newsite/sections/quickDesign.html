@@ -1,0 +1,36 @@
+<section class="section quick-design-section" id="quick-design">
+  <div class="container">
+    <div class="section-head"><div><div class="kicker">3-MINUTE QUICK SELF DESIGN</div><h2>세 가지만 확인하고<br>오늘의 실천카드를 만듭니다</h2></div><p>처음부터 긴 설문을 작성하지 않아도 됩니다. 현재 단계와 분야, 오늘 행동을 입력하면 7일 시작안과 관련 책·음악을 추천합니다.</p></div>
+    <div class="quick-design-shell">
+      <aside class="quick-guide" id="quickGuide">
+        <span class="mode-badge" id="quickModeBadge">어린이·청소년 쉬운 말 모드</span>
+        <h3 id="quickGuideTitle">오늘 무엇을 해보고 싶나요?</h3>
+        <p id="quickGuideText">길게 쓰지 않아도 됩니다. 기분 한 가지와 오늘 해볼 작은 행동 한 가지만 적어보세요.</p>
+        <div class="emotion-icons" aria-label="감정 빠른 선택">
+          <button type="button" data-emotion="기뻐요">😊<span>기뻐요</span></button><button type="button" data-emotion="괜찮아요">🙂<span>괜찮아요</span></button><button type="button" data-emotion="걱정돼요">😟<span>걱정돼요</span></button><button type="button" data-emotion="속상해요">😢<span>속상해요</span></button><button type="button" data-emotion="화나요">😠<span>화나요</span></button><button type="button" data-emotion="피곤해요">😴<span>피곤해요</span></button>
+        </div>
+        <p class="micro-note">음성 입력은 지원되는 브라우저에서만 작동합니다. 입력 내용은 이 기기의 브라우저에만 저장됩니다.</p>
+      </aside>
+      <div class="quick-form-panel">
+        <form id="quickDesignForm">
+          <div class="quick-fields">
+            <div class="compact-field"><label for="quickStage">1. 나의 생애단계</label><select id="quickStage" required><option value="elementary">초등학생</option><option value="middle">중학생</option><option value="high">고등학생</option><option value="college">대학생</option><option value="youth">청년</option><option value="worker">직장인</option><option value="midlife">중년</option><option value="senior">노년</option></select></div>
+            <div class="compact-field"><label for="quickSubtype">현재 상황</label><select id="quickSubtype" required><option>저학년·놀이와 기본습관</option><option>고학년·선택과 책임</option><option>친구관계가 고민</option><option>공부 시작이 어려움</option></select></div>
+            <div class="compact-field wide"><label>2. 지금 바꾸고 싶은 분야</label><div class="domain-choice" id="quickDomains" role="radiogroup" aria-label="설계 분야"><button type="button" data-domain="배움">배움</button><button type="button" data-domain="진로와 일">진로와 일</button><button type="button" class="active" data-domain="마음">마음</button><button type="button" data-domain="관계">관계</button><button type="button" data-domain="건강">건강</button><button type="button" data-domain="돈과 생활">돈과 생활</button></div></div>
+            <div class="compact-field wide"><label for="quickWish" id="quickWishLabel">오늘 더 잘하고 싶은 것은 무엇인가요?</label><div class="voice-field"><textarea id="quickWish" required maxlength="240" placeholder="예: 아침 준비를 스스로 하고 싶어요"></textarea><button type="button" class="voice-input" data-voice-target="quickWish" aria-label="바람 음성 입력">🎤</button></div></div>
+            <div class="compact-field wide"><label for="quickAction" id="quickActionLabel">오늘 내가 직접 해볼 작은 일</label><div class="voice-field"><input id="quickAction" required maxlength="160" placeholder="예: 자기 전에 가방을 10분 정리해요"><button type="button" class="voice-input" data-voice-target="quickAction" aria-label="행동 음성 입력">🎤</button></div></div>
+            <div class="compact-field"><label for="quickEmotion">지금 감정</label><input id="quickEmotion" placeholder="감정 아이콘을 선택하거나 입력"></div>
+            <div class="compact-field"><label for="quickTime">오늘 사용할 시간</label><select id="quickTime"><option>5분</option><option selected>10분</option><option>20분</option><option>30분</option><option>1시간</option></select></div>
+          </div>
+          <div class="tool-actions"><button class="btn btn-primary" type="submit">오늘의 실천카드 만들기</button><button class="btn btn-light" type="button" id="quickReset">비우기</button><a class="btn btn-outline" href="#survey">정밀 설문으로 더 알아보기</a></div>
+        </form>
+        <div class="mission-card" id="quickResult" aria-live="polite">
+          <div class="mission-head"><span id="missionStage"></span><h3 id="missionTitle"></h3><p id="missionIntro"></p></div>
+          <div class="mission-grid"><div><b>오늘 행동</b><p id="missionAction"></p></div><div><b>완료 기준</b><p id="missionMeasure"></p></div><div><b>도움 요청</b><p id="missionSupport"></p></div><div><b>7일 방향</b><p id="missionWeek"></p></div></div>
+          <div class="mission-recommend" id="missionRecommend"></div>
+          <div class="tool-actions"><button class="btn btn-light" type="button" id="quickCopy">카드 복사</button><button class="btn btn-light" type="button" id="quickDownload">TXT 저장</button><button class="btn btn-mint" type="button" id="quickToTracker">7일 기록 시작</button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,23 @@
+.app-nav-header .navlinks a.nav-active{color:var(--navy);font-weight:900;text-decoration:underline;text-underline-offset:6px}
+.app-nav-header .nav-auth-btn{border:1px solid var(--line);background:#fff;border-radius:10px;padding:8px 12px;font-weight:800;cursor:pointer}
+.app-shell-main{min-height:60vh}
+.app-shell-footer{padding:28px 0 40px;background:linear-gradient(180deg,#06162b,#020a13);color:#edf4fb;margin-top:40px}
+.app-shell-footer .container{display:grid;gap:10px}
+.app-shell-footer a{color:#b7c6d5}
+.app-shell-footer p{margin:0;color:#b7c6d5;font-size:13px}
+.page-banner{padding:28px 0 8px}
+.page-banner h1{margin:8px 0 6px;font-size:clamp(28px,4vw,40px);color:var(--navy);letter-spacing:-.03em}
+.page-banner p{margin:0;color:var(--muted);max-width:720px}
+.auth-gate{margin:18px 0;padding:14px 16px;border-radius:14px;border:1px solid #ead49d;background:#fff8e8;color:#6f5517;display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+.auth-gate a{font-weight:850;color:#123a62}
+.login-card{max-width:440px;margin:40px auto;padding:28px;border:1px solid var(--line);border-radius:22px;background:#fff;box-shadow:var(--shadow)}
+.login-card h1{margin:0 0 8px;font-size:28px;color:var(--navy)}
+.login-card p{color:var(--muted);margin:0 0 18px}
+.login-card label{display:grid;gap:6px;font-size:13px;font-weight:800;margin-bottom:12px}
+.login-card input{border:1px solid var(--line);border-radius:12px;padding:12px 13px}
+.login-card .btn{width:100%;margin-top:8px}
+.login-error{color:#b62e42;font-size:13px;margin:8px 0}
+.mobile-dock-react{position:fixed;left:0;right:0;bottom:0;z-index:50;display:none;grid-template-columns:repeat(5,1fr);gap:4px;padding:8px 10px calc(8px + env(safe-area-inset-bottom));background:rgba(255,255,255,.97);border-top:1px solid #dce5ed}
+.mobile-dock-react a{text-align:center;font-size:11px;font-weight:800;color:#334d66;padding:8px 4px;border-radius:10px;text-decoration:none}
+.mobile-dock-react a.active{background:#eef5fb;color:#123a62}
+@media(max-width:680px){.mobile-dock-react{display:grid}.app-shell-main{padding-bottom:72px}}
