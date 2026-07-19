@@ -3,7 +3,25 @@ import { getDocument, GlobalWorkerOptions, type PDFDocumentProxy, type RenderTas
 import pdfWorker from 'pdfjs-dist/build/pdf.worker.min.mjs?url'
 import './EbookViewer.css'
 
-GlobalWorkerOptions.workerSrc = pdfWorker
+function installPdfWorker() {
+  if (GlobalWorkerOptions.workerSrc) return
+  const workerUrl = new URL(pdfWorker, window.location.origin).href
+  const boot = `
+if (typeof Map !== 'undefined' && typeof Map.prototype.getOrInsertComputed !== 'function') {
+  Map.prototype.getOrInsertComputed = function (key, callbackFn) {
+    if (this.has(key)) return this.get(key)
+    const value = callbackFn(key)
+    this.set(key, value)
+    return value
+  }
+}
+import ${JSON.stringify(workerUrl)};
+`
+  GlobalWorkerOptions.workerSrc = URL.createObjectURL(new Blob([boot], { type: 'text/javascript' }))
+}
+
+installPdfWorker()
+
 
 const ZOOM_MIN = 0.7
 const ZOOM_MAX = 1.8
@@ -49,7 +67,9 @@ export function EbookViewer({ url, title, subtitle, onClose }: EbookViewerProps)
           cMapUrl: '/pdfjs/cmaps/',
           cMapPacked: true,
           standardFontDataUrl: '/pdfjs/standard_fonts/',
+          wasmUrl: '/pdfjs/wasm/',
           useSystemFonts: true,
+          useWorkerFetch: true,
         })
         const pdf = await loadingTask.promise
         if (cancelled) {
@@ -59,7 +79,8 @@ export function EbookViewer({ url, title, subtitle, onClose }: EbookViewerProps)
         void pdfRef.current?.cleanup()
         pdfRef.current = pdf
         setPageCount(pdf.numPages)
-      } catch {
+      } catch (err) {
+        console.error('EbookViewer load 실패:', err)
         if (!cancelled) setError('전자책을 불러오지 못했습니다.')
       } finally {
         if (!cancelled) setLoading(false)
