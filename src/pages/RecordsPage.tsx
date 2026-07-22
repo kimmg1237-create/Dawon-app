@@ -1,5 +1,5 @@
 import { SectionPage } from './SectionPage'
-import { AuthGate } from '../components/AuthGate'
+import { RequireAuthOnInteract } from '../components/RequireAuthOnInteract'
 import { useAuth } from '../context/AuthContext'
 import actionLog from '../newsite/sections/actionLog.html?raw'
 import { useEffect } from 'react'
@@ -28,12 +28,12 @@ export function RecordsPage() {
   }, [user])
 
   return (
-    <AuthGate action="7일 설계" requireLogin>
+    <RequireAuthOnInteract from="/records">
       <SectionPage
         title="7일 설계"
         description="시작 전·현재 자신감과 일별 상태·감정·메모를 날짜형 증거로 남깁니다."
         html={actionLog}
       />
-    </AuthGate>
+    </RequireAuthOnInteract>
   )
 }

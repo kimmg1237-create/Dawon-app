@@ -115,14 +115,7 @@ export function DawonLibrary() {
 
   return (
     <div className="dawon-library">
-      {!user ? (
-        <div className="library-premium-banner">
-          <span>전자책·만화·오디오북 열람은 로그인 후 이용할 수 있습니다.</span>
-          <Link to="/login" state={{ from: '/library' }} className="btn btn-primary btn-small">
-            로그인
-          </Link>
-        </div>
-      ) : paymentsEnabled && !isPremium ? (
+      {paymentsEnabled && user && !isPremium ? (
         <div className="library-premium-banner">
           <span>
             {statusLabel} · 전자책·만화·오디오북 열람은 구독·체험·광고 이용이 필요합니다.
@@ -256,7 +249,17 @@ export function DawonLibrary() {
       )}
 
       {tab === 'audio' && (
-        <div className="library-audio-shell">
+        <div
+          className="library-audio-shell"
+          onClickCapture={(e) => {
+            if (user) return
+            const t = e.target as HTMLElement
+            if (!t.closest('button, a, input, select, [role="button"]')) return
+            e.preventDefault()
+            e.stopPropagation()
+            navigate('/login', { state: { from: '/library' } })
+          }}
+        >
           <PremiumGate feature="오디오북">
             <AudiobookPage />
           </PremiumGate>
