@@ -8,6 +8,7 @@ import { EbookViewer } from '../components/EbookViewer'
 import { AudiobookPage } from '../components/AudiobookPage'
 import { PremiumGate } from '../components/PremiumGate'
 import { useSubscription } from '../context/SubscriptionContext'
+import { useAuth } from '../context/AuthContext'
 
 type LibraryTab = 'ebook' | 'comic' | 'audio'
 
@@ -47,7 +48,8 @@ function BookCover({ card }: { card: PathCard }) {
 }
 
 export function DawonLibrary() {
-  const { isPremium, statusLabel, markContentUsed } = useSubscription()
+  const { isPremium, statusLabel, markContentUsed, paymentsEnabled } = useSubscription()
+  const { user } = useAuth()
   const navigate = useNavigate()
   const [tab, setTab] = useState<LibraryTab>('ebook')
   const [query, setQuery] = useState('')
@@ -71,7 +73,11 @@ export function DawonLibrary() {
   }, [tab, query])
 
   function openBook(card: PathCard, kind: 'ebook' | 'comic') {
-    if (!isPremium) {
+    if (!user) {
+      navigate('/login', { state: { from: '/library' } })
+      return
+    }
+    if (paymentsEnabled && !isPremium) {
       navigate('/subscribe')
       return
     }
@@ -109,7 +115,14 @@ export function DawonLibrary() {
 
   return (
     <div className="dawon-library">
-      {!isPremium ? (
+      {!user ? (
+        <div className="library-premium-banner">
+          <span>전자책·만화·오디오북 열람은 로그인 후 이용할 수 있습니다.</span>
+          <Link to="/login" state={{ from: '/library' }} className="btn btn-primary btn-small">
+            로그인
+          </Link>
+        </div>
+      ) : paymentsEnabled && !isPremium ? (
         <div className="library-premium-banner">
           <span>
             {statusLabel} · 전자책·만화·오디오북 열람은 구독·체험·광고 이용이 필요합니다.

@@ -156,6 +156,16 @@
 .page-banner p{margin:0;color:var(--muted);max-width:720px}
 .auth-gate{margin:18px 0;padding:14px 16px;border-radius:14px;border:1px solid #ead49d;background:#fff8e8;color:#6f5517;display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
 .auth-gate a{font-weight:850;color:#123a62}
+.auth-gate-block{margin:40px auto;max-width:640px;flex-direction:column;align-items:flex-start;gap:14px;padding:22px 20px}
+.auth-gate-block p{margin:8px 0 0;font-size:14px;line-height:1.5;opacity:.9}
+.auth-gate-block a{
+  align-self:flex-start;
+  padding:10px 14px;
+  border-radius:10px;
+  background:var(--navy);
+  color:#fff !important;
+  text-decoration:none;
+}
 .login-card{max-width:440px;margin:40px auto;padding:28px;border:1px solid var(--line);border-radius:22px;background:#fff;box-shadow:var(--shadow)}
 .login-card h1{margin:0 0 8px;font-size:28px;color:var(--navy)}
 .login-card p{color:var(--muted);margin:0 0 18px}
