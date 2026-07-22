@@ -1,5 +1,5 @@
-import { useEffect, useRef } from 'react'
-import { createRoot, type Root } from 'react-dom/client'
+import { useEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { initStrategySite } from '../newsite/initStrategy'
 import { DawonLibrary } from '../newsite/DawonLibrary'
 import sharedChrome from '../newsite/sections/sharedChrome.html?raw'
@@ -12,9 +12,14 @@ type Props = {
   prefixHtml?: string
 }
 
+/**
+ * HTML 조각을 마운트합니다.
+ * 라이브러리는 createRoot가 아니라 createPortal로 렌더해
+ * Auth/Subscription/Router 컨텍스트를 그대로 물려받습니다.
+ */
 export function SectionPage({ html, title, description, mountLibrary, prefixHtml = '' }: Props) {
   const hostRef = useRef<HTMLDivElement>(null)
-  const libraryRoot = useRef<Root | null>(null)
+  const [libraryHost, setLibraryHost] = useState<HTMLElement | null>(null)
 
   useEffect(() => {
     const host = hostRef.current
@@ -22,11 +27,9 @@ export function SectionPage({ html, title, description, mountLibrary, prefixHtml
     host.innerHTML = `${prefixHtml}${html}${sharedChrome}`
 
     if (mountLibrary) {
-      const libraryHost = document.getElementById('dawonLibraryRoot')
-      if (libraryHost) {
-        libraryRoot.current = createRoot(libraryHost)
-        libraryRoot.current.render(<DawonLibrary />)
-      }
+      setLibraryHost(document.getElementById('dawonLibraryRoot'))
+    } else {
+      setLibraryHost(null)
     }
 
     try {
@@ -42,7 +45,8 @@ export function SectionPage({ html, title, description, mountLibrary, prefixHtml
       '#action-log': '/records',
       '#library': '/library',
       '#ops-tools': '/operations',
-      '#survey': '/survey',
+      '#survey': '/quick-design#survey',
+      '#result': '/quick-design#result',
       '#ai-hub': '/operations',
       '#team': '/operations',
       '#idea-lab': '/operations',
@@ -50,6 +54,10 @@ export function SectionPage({ html, title, description, mountLibrary, prefixHtml
     }
     host.querySelectorAll('a[href^="#"]').forEach((a) => {
       const href = a.getAttribute('href') || ''
+      // Same-page anchors (survey under quick-design) stay in-page
+      if ((href === '#survey' || href === '#result' || href === '#quick-design') && host.querySelector(href)) {
+        return
+      }
       const next = routeMap[href]
       if (!next) return
       a.setAttribute('href', next)
@@ -57,18 +65,32 @@ export function SectionPage({ html, title, description, mountLibrary, prefixHtml
     host.querySelectorAll('button#stageToSurvey').forEach((btn) => {
       btn.addEventListener('click', (e) => {
         e.preventDefault()
-        window.location.assign('/survey')
+        const surveyEl = host.querySelector('#survey')
+        if (surveyEl) {
+          surveyEl.scrollIntoView({ behavior: 'smooth', block: 'start' })
+          return
+        }
+        window.location.assign('/quick-design#survey')
       })
     })
 
-    if (localStorage.getItem('dawonLargeText') === '1') document.body.classList.add('large-text')
-    if (localStorage.getItem('dawonHighContrast') === '1') document.body.classList.add('high-contrast')
+    const hash = window.location.hash
+    if (hash) {
+      requestAnimationFrame(() => {
+        host.querySelector(hash)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      })
+    }
+
+    document.body.classList.add('large-text')
+    document.body.classList.remove('high-contrast')
 
     return () => {
-      libraryRoot.current?.unmount()
-      libraryRoot.current = null
+      setLibraryHost(null)
       document.querySelectorAll('[data-dawon-stub="1"]').forEach((n) => n.remove())
-      host.innerHTML = ''
+      // portal이 먼저 내려가도록 다음 틱에 DOM 비움
+      queueMicrotask(() => {
+        if (hostRef.current === host) host.innerHTML = ''
+      })
     }
   }, [html, mountLibrary, prefixHtml])
 
@@ -80,6 +102,7 @@ export function SectionPage({ html, title, description, mountLibrary, prefixHtml
         {description ? <p>{description}</p> : null}
       </div>
       <div ref={hostRef} />
+      {libraryHost ? createPortal(<DawonLibrary />, libraryHost) : null}
     </div>
   )
 }

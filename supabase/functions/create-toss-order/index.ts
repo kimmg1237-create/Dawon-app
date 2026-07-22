@@ -4,6 +4,7 @@ import { createClient } from "jsr:@supabase/supabase-js@2"
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
 }
 
 Deno.serve(async (req) => {
@@ -42,8 +43,13 @@ Deno.serve(async (req) => {
     const amount = body.amount
     const product = body.product === "b2b" ? "b2b" : "monthly"
 
+    const PRICES: Record<string, number> = { monthly: 12900, b2b: 990000 }
+    const expected = PRICES[product]
     if (!orderId || !amount || amount <= 0) {
       return json({ error: "orderId와 amount가 필요합니다." }, 400)
+    }
+    if (amount !== expected) {
+      return json({ error: "결제 금액이 상품과 일치하지 않습니다." }, 400)
     }
 
     const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!

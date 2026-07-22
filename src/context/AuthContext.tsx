@@ -16,9 +16,13 @@ type AuthContextValue = {
   session: Session | null
   user: User | null
   isAdmin: boolean
+  recoveryMode: boolean
   signUp: (email: string, password: string) => Promise<{ error?: string }>
   signIn: (email: string, password: string) => Promise<{ error?: string }>
   signOut: () => Promise<void>
+  requestPasswordReset: (email: string) => Promise<{ error?: string }>
+  updatePassword: (password: string) => Promise<{ error?: string }>
+  clearRecoveryMode: () => void
   refreshAdmin: () => Promise<void>
 }
 
@@ -35,6 +39,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true)
   const [session, setSession] = useState<Session | null>(null)
   const [isAdmin, setIsAdmin] = useState(false)
+  const [recoveryMode, setRecoveryMode] = useState(false)
 
   const refreshAdmin = useCallback(async () => {
     if (!supabase || !session?.user) {
@@ -55,8 +60,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setSession(data.session)
       setLoading(false)
     })
-    const { data: sub } = supabase.auth.onAuthStateChange((_event, next) => {
+    const { data: sub } = supabase.auth.onAuthStateChange((event, next) => {
       setSession(next)
+      if (event === 'PASSWORD_RECOVERY') {
+        setRecoveryMode(true)
+      }
     })
     return () => {
       mounted = false
@@ -75,6 +83,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       session,
       user: session?.user ?? null,
       isAdmin,
+      recoveryMode,
       async signUp(email, password) {
         if (!supabase) return { error: 'Supabase 환경변수가 설정되지 않았습니다.' }
         const { error } = await supabase.auth.signUp({ email, password })
@@ -89,10 +98,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (!supabase) return
         await supabase.auth.signOut()
         setIsAdmin(false)
+        setRecoveryMode(false)
+      },
+      async requestPasswordReset(email) {
+        if (!supabase) return { error: 'Supabase 환경변수가 설정되지 않았습니다.' }
+        const redirectTo = `${window.location.origin}/reset-password`
+        const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), { redirectTo })
+        return { error: error?.message }
+      },
+      async updatePassword(password) {
+        if (!supabase) return { error: 'Supabase 환경변수가 설정되지 않았습니다.' }
+        const { error } = await supabase.auth.updateUser({ password })
+        if (!error) setRecoveryMode(false)
+        return { error: error?.message }
+      },
+      clearRecoveryMode() {
+        setRecoveryMode(false)
       },
       refreshAdmin,
     }),
-    [loading, session, isAdmin, refreshAdmin],
+    [loading, session, isAdmin, recoveryMode, refreshAdmin],
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

@@ -7,11 +7,13 @@ create table if not exists public.payment_orders (
   amount integer not null check (amount > 0),
   product text not null default 'monthly' check (product in ('monthly', 'b2b')),
   status text not null default 'pending'
-    check (status in ('pending', 'paid', 'failed', 'cancelled')),
+    check (status in ('pending', 'paid', 'failed', 'cancelled', 'refunded')),
   payment_key text,
   raw_response jsonb,
   created_at timestamptz not null default now(),
-  paid_at timestamptz
+  paid_at timestamptz,
+  refunded_at timestamptz,
+  refund_reason text
 );
 
 create index if not exists payment_orders_user_id_idx on public.payment_orders (user_id);

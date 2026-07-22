@@ -29,9 +29,9 @@ export function RecordsPage() {
 
   return (
     <>
-      <AuthGate action="7일 기록 저장" />
+      <AuthGate action="7일 설계 저장" />
       <SectionPage
-        title="7일 실천 기록"
+        title="7일 설계"
         description="시작 전·현재 자신감과 일별 상태·감정·메모를 날짜형 증거로 남깁니다."
         html={actionLog}
       />

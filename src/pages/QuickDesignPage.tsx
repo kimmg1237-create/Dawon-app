@@ -1,7 +1,9 @@
 import { SectionPage } from './SectionPage'
 import { AuthGate } from '../components/AuthGate'
 import { useAuth } from '../context/AuthContext'
+import { supabase } from '../lib/supabase'
 import quickDesign from '../newsite/sections/quickDesign.html?raw'
+import survey from '../newsite/sections/survey.html?raw'
 import { useEffect } from 'react'
 import { upsertQuickDesign, fetchQuickDesign } from '../services/userDataService'
 
@@ -34,13 +36,53 @@ export function QuickDesignPage() {
     }
   }, [user])
 
+  useEffect(() => {
+    function onSubmit(e: Event) {
+      const item = (e as CustomEvent).detail as {
+        id: string
+        submittedAt: string
+        data: Record<string, unknown>
+        scores: Record<string, unknown>
+        version: string
+      }
+      if (!user || !supabase || !item) return
+      void supabase
+        .from('wish_survey_responses')
+        .upsert({
+          id: item.id,
+          user_id: user.id,
+          data: item.data,
+          scores: item.scores,
+          version: item.version,
+          submitted_at: item.submittedAt,
+        })
+        .then(({ error }) => {
+          if (!error) {
+            try {
+              const all = JSON.parse(localStorage.getItem('dawonLifeStageWishResponses_v3') || '[]') as {
+                id: string
+              }[]
+              localStorage.setItem(
+                'dawonLifeStageWishResponses_v3',
+                JSON.stringify(all.filter((x) => x.id !== item.id)),
+              )
+            } catch {
+              /* ignore */
+            }
+          }
+        })
+    }
+    window.addEventListener('dawon:wish-submitted', onSubmit)
+    return () => window.removeEventListener('dawon:wish-submitted', onSubmit)
+  }, [user])
+
   return (
     <>
-      <AuthGate action="3분 설계 저장" />
+      <AuthGate action="실천카드·설문 저장" />
       <SectionPage
-        title="3분 빠른 자기설계"
-        description="오늘 가능한 행동 하나를 실천카드로 만들고 7일 기록으로 이어갑니다."
-        html={quickDesign}
+        title="실천카드"
+        description="오늘 가능한 행동 하나를 실천카드로 만들고, 아래에서 바람설계 설문으로 더 자세히 확인할 수 있습니다."
+        html={`${quickDesign}${survey}`}
       />
     </>
   )

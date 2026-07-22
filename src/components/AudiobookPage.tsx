@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { useSubscription } from '../context/SubscriptionContext'
 import './AudiobookPage.css'
 
 const MAX_CHARS = 120_000
@@ -38,6 +39,7 @@ function splitForSpeech(text: string): string[] {
 }
 
 export function AudiobookPage() {
+  const { markContentUsed } = useSubscription()
   const [text, setText] = useState('')
   const [fileName, setFileName] = useState('')
   const [library, setLibrary] = useState<string[]>([])
@@ -110,6 +112,7 @@ export function AudiobookPage() {
     if (!('speechSynthesis' in window)) return
 
     setError('')
+    void markContentUsed()
     window.speechSynthesis.cancel()
 
     const chunks = splitForSpeech(body.slice(0, MAX_CHARS))

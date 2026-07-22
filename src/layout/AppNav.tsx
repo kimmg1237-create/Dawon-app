@@ -1,22 +1,33 @@
+import { useState } from 'react'
 import { NavLink, Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { FEATURES } from '../data/features'
 
-const LINKS = [
-  { to: '/strategy', label: '통합전략' },
-  { to: '/life-stage', label: '생애단계' },
-  { to: '/quick-design', label: '3분 설계' },
-  { to: '/records', label: '7일 기록' },
-  { to: '/library', label: '라이브러리' },
-  { to: '/operations', label: '운영도구' },
+const BASE_LINKS = [
+  { to: '/strategy', label: '실행지도' },
+  { to: '/life-stage', label: '계획방법' },
+  { to: '/quick-design', label: '실천카드' },
+  { to: '/records', label: '7일 설계' },
+  { to: '/library', label: '전자책·오디오북·만화' },
+  { to: '/operations', label: '운영 상담' },
 ] as const
+
+const LINKS = FEATURES.paymentsEnabled
+  ? [...BASE_LINKS, { to: '/subscribe', label: '구독' }]
+  : [...BASE_LINKS]
 
 export function AppNav() {
   const { user, isAdmin, signOut, configured } = useAuth()
+  const [open, setOpen] = useState(false)
+
+  function closeMenu() {
+    setOpen(false)
+  }
 
   return (
     <header className="header app-nav-header">
-      <div className="container nav">
-        <Link className="brand" to="/" aria-label="다원 생애주기 자기설계 홈">
+      <div className="container app-nav">
+        <Link className="brand" to="/" aria-label="다원 생애주기 자기설계 홈" onClick={closeMenu}>
           <span className="brandmark brandmark-logo" aria-hidden="true">
             <svg viewBox="0 0 76 54" role="img">
               <defs>
@@ -50,86 +61,65 @@ export function AppNav() {
             </svg>
           </span>
           <span className="brandtext">
-            DAWON TRIPLE STRATEGY LAB
-            <small>SIGNAL · VALUE · BRAND · ACTION</small>
+            DAWON
+            <small>STRATEGY LAB</small>
           </span>
         </Link>
 
-        <div className="a11y-actions" aria-label="화면 보기 설정">
-          <button
-            type="button"
-            onClick={() => {
-              document.body.classList.toggle('large-text')
-              localStorage.setItem('dawonLargeText', document.body.classList.contains('large-text') ? '1' : '0')
-            }}
-          >
-            글자 크게
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              document.body.classList.toggle('high-contrast')
-              localStorage.setItem(
-                'dawonHighContrast',
-                document.body.classList.contains('high-contrast') ? '1' : '0',
-              )
-            }}
-          >
-            고대비
-          </button>
-        </div>
-
-        <button
-          className="menu"
-          type="button"
-          aria-label="메뉴 열기"
-          onClick={(e) => {
-            const nav = document.getElementById('appNavLinks')
-            const open = nav?.classList.toggle('open')
-            ;(e.currentTarget as HTMLButtonElement).setAttribute('aria-expanded', String(Boolean(open)))
-          }}
+        <nav
+          className={`app-nav-links${open ? ' open' : ''}`}
+          id="appNavLinks"
+          aria-label="주요 메뉴"
         >
-          ☰
-        </button>
-
-        <nav className="navlinks" id="appNavLinks" aria-label="주요 메뉴">
           {LINKS.map((link) => (
             <NavLink
               key={link.to}
               to={link.to}
               className={({ isActive }) => (isActive ? 'nav-active' : undefined)}
-              onClick={() => document.getElementById('appNavLinks')?.classList.remove('open')}
+              onClick={closeMenu}
             >
               {link.label}
             </NavLink>
           ))}
-          <NavLink
-            to="/survey"
-            className={({ isActive }) => (isActive ? 'nav-active' : undefined)}
-            onClick={() => document.getElementById('appNavLinks')?.classList.remove('open')}
-          >
-            설문
-          </NavLink>
           {isAdmin ? (
-            <NavLink to="/admin/responses" className={({ isActive }) => (isActive ? 'nav-active' : undefined)}>
+            <NavLink
+              to="/admin/responses"
+              className={({ isActive }) => (isActive ? 'nav-active' : undefined)}
+              onClick={closeMenu}
+            >
               응답관리
             </NavLink>
           ) : null}
+        </nav>
+
+        <div className="app-nav-actions">
           {configured ? (
             user ? (
               <button type="button" className="nav-auth-btn" onClick={() => void signOut()}>
                 로그아웃
               </button>
             ) : (
-              <NavLink to="/login" className="cta">
+              <NavLink to="/login" className="app-nav-cta" onClick={closeMenu}>
                 로그인
               </NavLink>
             )
           ) : null}
-          <NavLink to="/quick-design" className="cta">
+
+          <NavLink to="/quick-design" className="app-nav-cta primary" onClick={closeMenu}>
             오늘 시작
           </NavLink>
-        </nav>
+
+          <button
+            className="menu app-nav-menu"
+            type="button"
+            aria-label={open ? '메뉴 닫기' : '메뉴 열기'}
+            aria-expanded={open}
+            aria-controls="appNavLinks"
+            onClick={() => setOpen((v) => !v)}
+          >
+            {open ? '✕' : '☰'}
+          </button>
+        </div>
       </div>
     </header>
   )

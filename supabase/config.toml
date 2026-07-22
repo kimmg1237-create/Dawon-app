@@ -1,0 +1,12 @@
+# Supabase local/project config
+# Edge Functions: JWT는 함수 코드에서 직접 검증합니다.
+# verify_jwt=false 가 아니면 OPTIONS 프리플라이트가 401로 막혀 CORS 오류가 납니다.
+
+[functions.create-toss-order]
+verify_jwt = false
+
+[functions.confirm-toss-payment]
+verify_jwt = false
+
+[functions.cancel-toss-payment]
+verify_jwt = false

@@ -1,25 +1,38 @@
 import { Outlet, NavLink } from 'react-router-dom'
 import { AppNav } from './AppNav'
+import { FEATURES } from '../data/features'
 import './AppShell.css'
 
 export function AppShell() {
   return (
     <div className="app-shell">
-      <div className="topline">하루를 확인하고 · 하나를 실천하고 · 경험으로 나를 배웁니다</div>
-      <div className="style-banner">INDEPENDENT STRATEGY PROTOTYPE · DAWON EXECUTION EDITION</div>
+      <div className="topline">오늘을 확인하고, 내일을 설계합니다 · Check Today. Design Tomorrow.</div>
+      <div className="style-banner">DAWON LIFE DESIGN · CHECK → CHOOSE → ACT → RECORD → LEARN → NEXT</div>
       <AppNav />
       <main className="app-shell-main" id="main">
         <Outlet />
       </main>
       <footer className="app-shell-footer">
         <div className="container">
-          <p>DAWON SMALL ACTION LAB · 공개 전략 관점 연구 기반 독립 실행 플랫폼</p>
+          <p>다원 인생설계 · DAWON Life Design · 확인하고 실천하며 다음 하루를 설계합니다</p>
           <p>
-            <NavLink to="/strategy">통합전략</NavLink>
+            <NavLink to="/strategy">실행지도</NavLink>
             {' · '}
-            <NavLink to="/library">라이브러리</NavLink>
+            <NavLink to="/library">전자책·오디오북·만화</NavLink>
             {' · '}
-            <NavLink to="/operations">운영도구</NavLink>
+            <NavLink to="/operations">운영 상담</NavLink>
+            {FEATURES.paymentsEnabled ? (
+              <>
+                {' · '}
+                <NavLink to="/subscribe">구독·결제</NavLink>
+              </>
+            ) : null}
+            {' · '}
+            <NavLink to="/terms">이용약관</NavLink>
+            {' · '}
+            <NavLink to="/refund-policy">환불정책</NavLink>
+            {' · '}
+            <NavLink to="/privacy">개인정보</NavLink>
             {' · '}
             <NavLink to="/login">로그인</NavLink>
           </p>
@@ -29,10 +42,10 @@ export function AppShell() {
         <NavLink to="/" end>
           홈
         </NavLink>
-        <NavLink to="/quick-design">3분</NavLink>
-        <NavLink to="/records">기록</NavLink>
-        <NavLink to="/library">서재</NavLink>
-        <NavLink to="/life-stage">단계</NavLink>
+        <NavLink to="/quick-design">실천</NavLink>
+        <NavLink to="/library">콘텐츠</NavLink>
+        {FEATURES.paymentsEnabled ? <NavLink to="/subscribe">구독</NavLink> : null}
+        <NavLink to="/login">계정</NavLink>
       </nav>
     </div>
   )

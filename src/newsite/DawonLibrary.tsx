@@ -1,10 +1,13 @@
 import { useEffect, useMemo, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { PATH_CARDS, type PathCard } from '../data/paths'
 import { getCoverUrl } from '../data/coverFiles'
 import { getEbookUrl } from '../data/ebookFiles'
 import { getComicUrl } from '../data/comicFiles'
 import { EbookViewer } from '../components/EbookViewer'
 import { AudiobookPage } from '../components/AudiobookPage'
+import { PremiumGate } from '../components/PremiumGate'
+import { useSubscription } from '../context/SubscriptionContext'
 
 type LibraryTab = 'ebook' | 'comic' | 'audio'
 
@@ -44,6 +47,8 @@ function BookCover({ card }: { card: PathCard }) {
 }
 
 export function DawonLibrary() {
+  const { isPremium, statusLabel, markContentUsed } = useSubscription()
+  const navigate = useNavigate()
   const [tab, setTab] = useState<LibraryTab>('ebook')
   const [query, setQuery] = useState('')
   const [slide, setSlide] = useState(0)
@@ -66,8 +71,15 @@ export function DawonLibrary() {
   }, [tab, query])
 
   function openBook(card: PathCard, kind: 'ebook' | 'comic') {
+    if (!isPremium) {
+      navigate('/subscribe')
+      return
+    }
     const url = kind === 'ebook' ? getEbookUrl(card.id) : getComicUrl(card.id)
-    if (url) setOpen({ card, kind, url })
+    if (url) {
+      void markContentUsed()
+      setOpen({ card, kind, url })
+    }
   }
 
   useEffect(() => {
@@ -97,6 +109,16 @@ export function DawonLibrary() {
 
   return (
     <div className="dawon-library">
+      {!isPremium ? (
+        <div className="library-premium-banner">
+          <span>
+            {statusLabel} · 전자책·만화·오디오북 열람은 구독·체험·광고 이용이 필요합니다.
+          </span>
+          <Link to="/subscribe" className="btn btn-primary btn-small">
+            구독·결제
+          </Link>
+        </div>
+      ) : null}
       <div className="library-tabs" role="tablist" aria-label="라이브러리 콘텐츠 유형">
         <button
           type="button"
@@ -222,7 +244,9 @@ export function DawonLibrary() {
 
       {tab === 'audio' && (
         <div className="library-audio-shell">
-          <AudiobookPage />
+          <PremiumGate feature="오디오북">
+            <AudiobookPage />
+          </PremiumGate>
         </div>
       )}
 
