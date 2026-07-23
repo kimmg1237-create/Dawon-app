@@ -202,15 +202,210 @@ $('#quickDesignForm')?.addEventListener('submit',e=>{e.preventDefault();const st
 $('#quickCopy')?.addEventListener('click',()=>copyAny(upgradeQuickText));$('#quickDownload')?.addEventListener('click',()=>{if(!upgradeQuickText)return toast('실천카드를 먼저 만들어 주세요.');downloadFile('DAWON_3분자기설계_'+new Date().toISOString().slice(0,10)+'.txt',upgradeQuickText)});$('#quickReset')?.addEventListener('click',()=>{$('#quickDesignForm').reset();$('#quickResult').classList.remove('show');storage.removeItem(UPGRADE_QUICK_KEY);upgradeQuickText='';upgradeSyncStage('elementary');upgradeSelectedDomain='마음';upgradeRenderDomains($('#quickDomains'),upgradeSelectedDomain,d=>{upgradeSelectedDomain=d;upgradeRenderStageRecommendation()})});$('#quickToTracker')?.addEventListener('click',()=>{if(window.location.pathname!=='/records'){window.history.pushState({},'','/records');window.dispatchEvent(new PopStateEvent('popstate'))}else $('#action-log')?.scrollIntoView({behavior:'smooth'});toast('7일 기록에서 오늘 행동을 확인해보세요.')});
 try{const q=JSON.parse(storage.getItem(UPGRADE_QUICK_KEY)||'null');if(q){$('#quickStage').value=q.stage;upgradeFillSubtype($('#quickSubtype'),q.stage,q.subtype);upgradeSelectedDomain=q.domain||'마음';upgradeRenderDomains($('#quickDomains'),upgradeSelectedDomain,d=>{upgradeSelectedDomain=d;upgradeRenderStageRecommendation()});$('#quickWish').value=q.wish||'';$('#quickAction').value=q.action||'';$('#quickEmotion').value=q.emotion||'';$('#quickTime').value=q.time||'10분';upgradeApplyMode(q.stage)}}catch{}
 
-// Seven-day action tracker.
-function upgradeBuildTracker(data={}){const box=$('#trackerGrid');box.innerHTML=Array.from({length:7},(_,i)=>{const d=(data.days||[])[i]||{};return `<article class="day-log ${d.status==='완료'?'done':''}" data-day="${i}"><h3>${i+1}일차</h3><select data-log="status"><option ${d.status==='시작 전'?'selected':''}>시작 전</option><option ${d.status==='진행 중'?'selected':''}>진행 중</option><option ${d.status==='완료'?'selected':''}>완료</option><option ${d.status==='어려움'?'selected':''}>어려움</option><option ${d.status==='중단'?'selected':''}>중단</option></select><select data-log="emotion"><option>${d.emotion||'감정 선택'}</option><option>기쁨</option><option>편안함</option><option>감사</option><option>불안</option><option>속상함</option><option>피곤함</option><option>자신감</option></select><textarea data-log="note" placeholder="무엇을 했고 무엇을 배웠나요?">${escapeHtml(d.note||'')}</textarea></article>`}).join('');$$('[data-log="status"]',box).forEach(s=>s.onchange=()=>s.closest('.day-log').classList.toggle('done',s.value==='완료'))}
-function upgradeReadTracker(){try{return JSON.parse(storage.getItem(UPGRADE_TRACKER_KEY)||'{}')}catch{return {}}}
-function upgradeGatherTracker(){const days=$$('.day-log').map(x=>({status:$('[data-log="status"]',x).value,emotion:$('[data-log="emotion"]',x).value,note:$('[data-log="note"]',x).value.trim()}));return{before:Number($('#beforeScore').value),after:Number($('#afterScore').value),days,reaction:$('#trackerReaction').value.trim(),decision:$('#trackerDecision').value,next:$('#trackerNext').value.trim(),savedAt:new Date().toISOString()}}
-function upgradeScore(){const a=Number($('#beforeScore').value),b=Number($('#afterScore').value),diff=b-a;$('#beforeScoreValue').textContent=a+'점';$('#afterScoreValue').textContent=b+'점';$('#scoreDifference').textContent=(diff>0?'+':'')+diff+'점';$('#scoreMessage').textContent=diff>0?'실행 경험이 자신감을 높였습니다.':diff<0?'어려움을 실패가 아닌 다음 설계 자료로 기록하세요.':'점수보다 실제 행동과 배움을 확인하세요.'}
-const trackerSaved=upgradeReadTracker();$('#beforeScore').value=trackerSaved.before||5;$('#afterScore').value=trackerSaved.after||5;$('#trackerReaction').value=trackerSaved.reaction||'';$('#trackerDecision').value=trackerSaved.decision||'유지한다';$('#trackerNext').value=trackerSaved.next||'';upgradeBuildTracker(trackerSaved);upgradeScore();['beforeScore','afterScore'].forEach(id=>$('#'+id)?.addEventListener('input',upgradeScore));
-$('#saveTracker')?.addEventListener('click',()=>{storage.setItem(UPGRADE_TRACKER_KEY,JSON.stringify(upgradeGatherTracker()));toast('7일 실행기록을 저장했습니다.')});
-$('#exportTracker')?.addEventListener('click',()=>{const d=upgradeGatherTracker();const text=`DAWON 7일 실행기록\n${new Date().toLocaleString('ko-KR')}\n\n시작 전 자신감: ${d.before}점\n현재 자신감: ${d.after}점\n\n`+d.days.map((x,i)=>`${i+1}일차 · ${x.status} · ${x.emotion}\n${x.note}`).join('\n\n')+`\n\n[다른 사람 반응]\n${d.reaction}\n\n[다음 선택]\n${d.decision}\n${d.next}`;downloadFile('DAWON_7일실행기록_'+new Date().toISOString().slice(0,10)+'.txt',text)});
-$('#resetTracker')?.addEventListener('click',()=>{if(!confirm('7일 실행기록을 모두 지울까요?'))return;storage.removeItem(UPGRADE_TRACKER_KEY);$('#beforeScore').value=5;$('#afterScore').value=5;$('#trackerReaction').value='';$('#trackerNext').value='';upgradeBuildTracker({});upgradeScore();toast('7일 기록을 초기화했습니다.')});
+// Seven-day action tracker — one day at a time.
+const TRACKER_DONE = new Set(['완료', '어려움', '중단', '쉬어감'])
+let trackerActiveDay = 0
+let trackerDaysData = Array.from({ length: 7 }, () => ({ status: '', emotion: '', note: '' }))
+
+function upgradeIsDayLogged(d) {
+  return Boolean(d && TRACKER_DONE.has(d.status))
+}
+function upgradeFindActiveDay(days) {
+  const idx = days.findIndex((d) => !upgradeIsDayLogged(d))
+  return idx === -1 ? 7 : idx
+}
+function upgradeSetChoiceGroup(root, attr, value) {
+  if (!root) return
+  $$('button.tracker-choice', root).forEach((b) => {
+    b.classList.toggle('active', b.getAttribute(attr) === value)
+  })
+}
+function upgradeBindChoiceGroup(rootId, attr, hiddenId) {
+  const root = $('#' + rootId)
+  if (!root || root.dataset.bound === '1') return
+  root.dataset.bound = '1'
+  root.addEventListener('click', (e) => {
+    const btn = e.target.closest('button.tracker-choice')
+    if (!btn) return
+    const val = btn.getAttribute(attr)
+    if (!val) return
+    $('#' + hiddenId).value = val
+    upgradeSetChoiceGroup(root, attr, val)
+  })
+}
+function upgradeRenderProgress() {
+  const box = $('#trackerProgress')
+  if (!box || box.dataset.dawonStub === '1') return
+  const frontier = upgradeFindActiveDay(trackerDaysData)
+  box.innerHTML = Array.from({ length: 7 }, (_, i) => {
+    const d = trackerDaysData[i] || {}
+    const logged = upgradeIsDayLogged(d)
+    const canOpen = logged || i === frontier
+    const active = i === trackerActiveDay
+    const cls = active ? 'is-active' : logged ? 'is-done' : i === frontier ? 'is-open' : 'is-locked'
+    const label = logged ? d.status || '기록됨' : i === frontier ? '오늘' : '잠금'
+    return `<button type="button" class="tracker-step ${cls}" data-step="${i}" ${canOpen ? '' : 'disabled'}><b>${i + 1}</b><span>${label}</span></button>`
+  }).join('')
+  $$('.tracker-step', box).forEach((btn) => {
+    btn.onclick = () => {
+      const i = Number(btn.dataset.step)
+      if (Number.isNaN(i)) return
+      const openTo = upgradeFindActiveDay(trackerDaysData)
+      if (!upgradeIsDayLogged(trackerDaysData[i]) && i !== openTo) return
+      upgradeShowDay(i)
+    }
+  })
+}
+function upgradeRenderHistory() {
+  const box = $('#trackerGrid')
+  if (!box || box.dataset.dawonStub === '1') return
+  const items = trackerDaysData
+    .map((d, i) => ({ d, i }))
+    .filter((x) => upgradeIsDayLogged(x.d) && x.i !== trackerActiveDay)
+  if (!items.length) {
+    box.innerHTML = '<div class="tracker-history-empty">지난 기록은 여기에 쌓입니다. 오늘은 위 카드만 채우면 됩니다.</div>'
+    return
+  }
+  box.innerHTML = items
+    .map(
+      ({ d, i }) =>
+        `<article class="day-log history ${d.status === '완료' ? 'done' : ''}" data-day="${i}"><h3>${i + 1}일차 · ${escapeHtml(d.status)}</h3><p>${escapeHtml(d.emotion || '')}</p><p>${escapeHtml(d.note || '한 줄 기록 없음')}</p><button type="button" class="btn btn-light btn-sm" data-edit-day="${i}">수정</button></article>`,
+    )
+    .join('')
+  $$('[data-edit-day]', box).forEach((b) => {
+    b.onclick = () => upgradeShowDay(Number(b.dataset.editDay))
+  })
+}
+function upgradeShowDay(dayIndex) {
+  const today = $('#trackerToday')
+  const finalBox = $('#trackerFinal')
+  if (dayIndex >= 7) {
+    trackerActiveDay = 7
+    if (today) today.hidden = true
+    if (finalBox) finalBox.hidden = false
+    upgradeRenderProgress()
+    upgradeRenderHistory()
+    $('#trackerMicro').textContent = '7일을 모두 남겼습니다. 아래에서 다음 한 가지만 정해 보세요.'
+    return
+  }
+  trackerActiveDay = dayIndex
+  if (today) today.hidden = false
+  if (finalBox) finalBox.hidden = true
+  const d = trackerDaysData[dayIndex] || { status: '완료', emotion: '자신감', note: '' }
+  const status = TRACKER_DONE.has(d.status) ? d.status : '완료'
+  const emotion = d.emotion && d.emotion !== '감정 선택' ? d.emotion : '자신감'
+  $('#todayStatus').value = status === '중단' ? '쉬어감' : status
+  $('#todayEmotion').value = emotion
+  $('#todayNote').value = d.note || ''
+  upgradeSetChoiceGroup($('#todayStatusChoices'), 'data-status', $('#todayStatus').value)
+  upgradeSetChoiceGroup($('#todayEmotionChoices'), 'data-emotion', emotion)
+  $('#trackerTodayBadge').textContent = `${dayIndex + 1}일차 · ${dayIndex === upgradeFindActiveDay(trackerDaysData) ? '오늘' : '기록 수정'}`
+  $('#trackerTodayHint').textContent =
+    dayIndex === 0
+      ? '처음이에요. 잘한 날·어려운 날·쉬는 날 모두 괜찮습니다.'
+      : '어제보다 조금만 나아도 충분합니다. 한 줄이면 됩니다.'
+  const nextLabel = dayIndex >= 6 ? '마무리로 이동' : `${dayIndex + 2}일차가 열립니다`
+  $('#trackerMicro').textContent = `저장하면 ${nextLabel}.`
+  upgradeRenderProgress()
+  upgradeRenderHistory()
+}
+function upgradeBuildTracker(data = {}) {
+  trackerDaysData = Array.from({ length: 7 }, (_, i) => {
+    const d = (data.days || [])[i] || {}
+    return { status: d.status || '', emotion: d.emotion || '', note: d.note || '' }
+  })
+  trackerActiveDay = upgradeFindActiveDay(trackerDaysData)
+  upgradeBindChoiceGroup('todayStatusChoices', 'data-status', 'todayStatus')
+  upgradeBindChoiceGroup('todayEmotionChoices', 'data-emotion', 'todayEmotion')
+  upgradeShowDay(trackerActiveDay)
+}
+function upgradeReadTracker() {
+  try {
+    return JSON.parse(storage.getItem(UPGRADE_TRACKER_KEY) || '{}')
+  } catch {
+    return {}
+  }
+}
+function upgradeGatherTracker() {
+  return {
+    before: Number($('#beforeScore').value),
+    after: Number($('#afterScore').value),
+    days: trackerDaysData.map((d) => ({ ...d })),
+    reaction: $('#trackerReaction').value.trim(),
+    decision: $('#trackerDecision').value,
+    next: $('#trackerNext').value.trim(),
+    activeDay: trackerActiveDay,
+    savedAt: new Date().toISOString(),
+  }
+}
+function upgradeSaveCurrentDay(statusOverride) {
+  if (trackerActiveDay >= 7) {
+    storage.setItem(UPGRADE_TRACKER_KEY, JSON.stringify(upgradeGatherTracker()))
+    toast('마무리 기록을 저장했습니다.')
+    return
+  }
+  const status = statusOverride || $('#todayStatus').value || '완료'
+  const emotion = $('#todayEmotion').value || '자신감'
+  const note = $('#todayNote').value.trim()
+  trackerDaysData[trackerActiveDay] = { status, emotion, note }
+  const next = upgradeFindActiveDay(trackerDaysData)
+  storage.setItem(UPGRADE_TRACKER_KEY, JSON.stringify(upgradeGatherTracker()))
+  window.dispatchEvent(new CustomEvent('dawon:tracker-saved'))
+  if (statusOverride === '쉬어감') toast(`${trackerActiveDay + 1}일차는 쉬어가기로 남겼습니다.`)
+  else toast(`${trackerActiveDay + 1}일차 기록을 저장했습니다.`)
+  upgradeShowDay(next)
+}
+function upgradeScore() {
+  const a = Number($('#beforeScore').value)
+  const b = Number($('#afterScore').value)
+  const diff = b - a
+  $('#beforeScoreValue').textContent = a + '점'
+  $('#afterScoreValue').textContent = b + '점'
+  $('#scoreDifference').textContent = (diff > 0 ? '+' : '') + diff + '점'
+  $('#scoreMessage').textContent =
+    diff > 0
+      ? '작은 실천이 자신감을 키우고 있습니다.'
+      : diff < 0
+        ? '흔들려도 괜찮습니다. 오늘의 기록만 남기면 됩니다.'
+        : '점수보다 오늘 한 일을 남기는 것이 중요합니다.'
+}
+const trackerSaved = upgradeReadTracker()
+$('#beforeScore').value = trackerSaved.before || 5
+$('#afterScore').value = trackerSaved.after || 5
+$('#trackerReaction').value = trackerSaved.reaction || ''
+$('#trackerDecision').value = trackerSaved.decision || '유지한다'
+$('#trackerNext').value = trackerSaved.next || ''
+upgradeBuildTracker(trackerSaved)
+upgradeScore()
+;['beforeScore', 'afterScore'].forEach((id) => $('#' + id)?.addEventListener('input', upgradeScore))
+$('#saveTracker')?.addEventListener('click', () => upgradeSaveCurrentDay())
+$('#skipTrackerDay')?.addEventListener('click', () => upgradeSaveCurrentDay('쉬어감'))
+$('#saveTrackerFinal')?.addEventListener('click', () => {
+  storage.setItem(UPGRADE_TRACKER_KEY, JSON.stringify(upgradeGatherTracker()))
+  toast('7일 마무리를 저장했습니다.')
+})
+$('#exportTracker')?.addEventListener('click', () => {
+  const d = upgradeGatherTracker()
+  const text =
+    `DAWON 7일 설계 기록\n${new Date().toLocaleString('ko-KR')}\n\n시작 전 자신감: ${d.before}점\n현재 자신감: ${d.after}점\n\n` +
+    d.days
+      .map((x, i) => `${i + 1}일차 · ${x.status || '미기록'} · ${x.emotion || ''}\n${x.note || ''}`)
+      .join('\n\n') +
+    `\n\n[다른 사람 반응]\n${d.reaction}\n\n[다음 선택]\n${d.decision}\n${d.next}`
+  downloadFile('DAWON_7일설계기록_' + new Date().toISOString().slice(0, 10) + '.txt', text)
+})
+$('#resetTracker')?.addEventListener('click', () => {
+  if (!confirm('7일 기록을 처음부터 다시 할까요?')) return
+  storage.removeItem(UPGRADE_TRACKER_KEY)
+  $('#beforeScore').value = 5
+  $('#afterScore').value = 5
+  $('#trackerReaction').value = ''
+  $('#trackerNext').value = ''
+  $('#todayNote').value = ''
+  upgradeBuildTracker({})
+  upgradeScore()
+  toast('7일 기록을 초기화했습니다.')
+})
 
 // Content recommendation engine.
 function upgradeFillRecommendSelects(){const rs=$('#recommendStage'),rd=$('#recommendDomain');rs.innerHTML=Object.keys(stageData).map(k=>`<option value="${k}">${stageData[k].name}</option>`).join('');rd.innerHTML=upgradeDomains.map(x=>`<option>${x}</option>`).join('');rs.value=currentStage;rd.value=upgradeSelectedDomain}

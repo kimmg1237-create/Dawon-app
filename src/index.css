@@ -379,7 +379,148 @@ h1 span{color:#b82f42}h1 span::after{background:rgba(213,167,66,.27)}
 .btn-soft{background:#f2f6fa;border-color:#cfdbe6;color:#132a45}
 :root{--shadow-soft:0 12px 32px rgba(7,26,51,.07);--green-dark:#0e5fa9;--green-deep:#071a33}
 
-/* 생애단계 헤더·컨트롤바 가독성 보정: 어두운 배경 위 글자색이 테마 규칙에 덮여 안 보이던 문제 */
+/* 7일 설계 — 하루씩 기록 UI */
+.tracker-progress{
+  display:grid;
+  grid-template-columns:repeat(7,minmax(0,1fr));
+  gap:8px;
+  margin:0 0 18px;
+}
+.tracker-step{
+  border:1px solid var(--line);
+  background:#fff;
+  border-radius:14px;
+  padding:10px 6px;
+  text-align:center;
+  color:var(--muted);
+  cursor:pointer;
+}
+.tracker-step b{display:block;font-size:16px;color:var(--navy);margin-bottom:2px}
+.tracker-step span{display:block;font-size:10px;font-weight:700}
+.tracker-step.is-active{
+  background:linear-gradient(135deg,#123a62,#1d5da0);
+  color:#fff;
+  border-color:transparent;
+  box-shadow:0 12px 28px rgba(18,58,98,.22);
+}
+.tracker-step.is-active b,
+.tracker-step.is-active span{color:#fff}
+.tracker-step.is-done{
+  background:#eaf8f1;
+  border-color:#b7e4cf;
+  color:#12634e;
+}
+.tracker-step.is-done b{color:#12634e}
+.tracker-step.is-open{
+  background:#eef5fb;
+  border-color:#9fc0df;
+  color:#123a62;
+}
+.tracker-step.is-open b{color:#123a62}
+.tracker-step.is-locked{
+  opacity:.55;
+  cursor:default;
+  background:#f6f8fa;
+}
+.tracker-summary-compact{
+  display:grid;
+  grid-template-columns:1fr 1fr 1.2fr;
+  gap:12px;
+  margin-bottom:16px;
+  padding:16px;
+}
+.tracker-today{
+  background:#fff;
+  border:1px solid rgba(7,26,51,.1);
+  border-radius:24px;
+  padding:22px;
+  box-shadow:0 16px 40px rgba(7,26,51,.08);
+  margin-bottom:18px;
+}
+.tracker-today-head{margin-bottom:16px}
+.tracker-today-badge{
+  display:inline-flex;
+  padding:7px 12px;
+  border-radius:999px;
+  background:rgba(18,58,98,.08);
+  color:#123a62;
+  font-size:12px;
+  font-weight:850;
+}
+.tracker-today-head p{
+  margin:10px 0 0;
+  color:var(--muted);
+  font-size:14px;
+}
+.tracker-today-fields{display:grid;gap:16px}
+.tracker-choice-row{display:flex;flex-wrap:wrap;gap:8px}
+.tracker-choice{
+  border:1px solid var(--line);
+  background:#f7fafc;
+  border-radius:999px;
+  padding:10px 14px;
+  font-size:13px;
+  font-weight:800;
+  color:#24415f;
+}
+.tracker-choice.active{
+  background:linear-gradient(135deg,#2478c5,#123a62);
+  color:#fff;
+  border-color:transparent;
+}
+.tracker-today-actions{margin-top:8px}
+.tracker-micro{
+  margin:12px 0 0;
+  font-size:13px;
+  color:#5b6e7d;
+}
+.tracker-history{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:12px;
+  margin-bottom:18px;
+}
+.tracker-history .day-log{
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:16px;
+  background:#fff;
+}
+.tracker-history .day-log h3{margin:0 0 8px;font-size:16px;color:var(--navy)}
+.tracker-history .day-log p{margin:0 0 6px;font-size:13px;color:var(--muted)}
+.tracker-history-empty{
+  grid-column:1/-1;
+  padding:18px;
+  border:1px dashed #cbd7e0;
+  border-radius:16px;
+  color:var(--muted);
+  background:#fbfcfd;
+  text-align:center;
+}
+.tracker-final{
+  background:#fff;
+  border:1px solid rgba(7,26,51,.1);
+  border-radius:24px;
+  padding:22px;
+  display:grid;
+  gap:14px;
+}
+.tracker-final[hidden]{display:none !important}
+.tracker-final-head{display:grid;gap:4px}
+.tracker-final-head b{font-size:18px;color:var(--navy)}
+.tracker-final-head span{font-size:13px;color:var(--muted)}
+.compact-field small{font-weight:600;color:var(--muted)}
+@media(max-width:980px){
+  .tracker-summary-compact{grid-template-columns:1fr 1fr}
+  .tracker-history{grid-template-columns:1fr 1fr}
+}
+@media(max-width:680px){
+  .tracker-progress{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .tracker-summary-compact,
+  .tracker-history{grid-template-columns:1fr}
+  .tracker-today{padding:18px}
+}
+
 .stage-head h3{color:#fff}
 .stage-head p{color:#cddbe8}
 .stage-head .kicker{color:#7fe3c4}

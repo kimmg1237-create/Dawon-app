@@ -31,7 +31,7 @@ export function RecordsPage() {
     <RequireAuthOnInteract from="/records">
       <SectionPage
         title="7일 설계"
-        description="시작 전·현재 자신감과 일별 상태·감정·메모를 날짜형 증거로 남깁니다."
+        description="하루만 가볍게 기록하고, 저장하면 다음 날이 열립니다."
         html={actionLog}
       />
     </RequireAuthOnInteract>

@@ -328,18 +328,103 @@
 
 <section class="section soft action-log-section" id="action-log">
   <div class="container">
-    <div class="section-head"><div><div class="kicker">7일 도전 · 7-DAY CHALLENGE</div><h2>작은 행동을 7일 동안 실천하고<br>나의 변화를 확인합니다</h2></div><p>매일 완벽하게 성공하는 것이 목표가 아닙니다. 중단하더라도 다시 시작하고, 실천한 날의 감정·어려움·배움과 다음 선택을 기록합니다.</p></div>
-    <div class="tracker-summary">
-      <div><label for="beforeScore">시작 전 자신감</label><input id="beforeScore" type="range" min="1" max="10" value="5"><b id="beforeScoreValue">5점</b></div>
-      <div><label for="afterScore">현재 자신감</label><input id="afterScore" type="range" min="1" max="10" value="5"><b id="afterScoreValue">5점</b></div>
-      <div class="compare-card"><span>전후 변화</span><strong id="scoreDifference">0점</strong><small id="scoreMessage">점수보다 실제 행동과 배움을 확인하세요.</small></div>
-      <div class="tracker-actions"><button class="btn btn-primary" type="button" id="saveTracker">7일 기록 저장</button><button class="btn btn-light" type="button" id="exportTracker">기록 TXT</button><button class="btn btn-danger" type="button" id="resetTracker">기록 초기화</button></div>
+    <div class="section-head">
+      <div>
+        <div class="kicker">7-DAY · ONE DAY AT A TIME</div>
+        <h2>오늘은 하루만<br>가볍게 기록합니다</h2>
+      </div>
+      <p>7일을 한꺼번에 채우지 않아도 됩니다. 오늘 칸만 열고, 저장하면 다음 날이 열립니다. 어려웠던 날도 괜찮습니다.</p>
     </div>
-    <div class="tracker-grid" id="trackerGrid"><article class="day-log " data-day="0"><h3>1일차</h3><select data-log="status"><option>시작 전</option><option>진행 중</option><option>완료</option><option>어려움</option><option>중단</option></select><select data-log="emotion"><option>감정 선택</option><option>기쁨</option><option>편안함</option><option>감사</option><option>불안</option><option>속상함</option><option>피곤함</option><option>자신감</option></select><textarea data-log="note" placeholder="무엇을 했고 무엇을 배웠나요?"></textarea></article><article class="day-log " data-day="1"><h3>2일차</h3><select data-log="status"><option>시작 전</option><option>진행 중</option><option>완료</option><option>어려움</option><option>중단</option></select><select data-log="emotion"><option>감정 선택</option><option>기쁨</option><option>편안함</option><option>감사</option><option>불안</option><option>속상함</option><option>피곤함</option><option>자신감</option></select><textarea data-log="note" placeholder="무엇을 했고 무엇을 배웠나요?"></textarea></article><article class="day-log " data-day="2"><h3>3일차</h3><select data-log="status"><option>시작 전</option><option>진행 중</option><option>완료</option><option>어려움</option><option>중단</option></select><select data-log="emotion"><option>감정 선택</option><option>기쁨</option><option>편안함</option><option>감사</option><option>불안</option><option>속상함</option><option>피곤함</option><option>자신감</option></select><textarea data-log="note" placeholder="무엇을 했고 무엇을 배웠나요?"></textarea></article><article class="day-log " data-day="3"><h3>4일차</h3><select data-log="status"><option>시작 전</option><option>진행 중</option><option>완료</option><option>어려움</option><option>중단</option></select><select data-log="emotion"><option>감정 선택</option><option>기쁨</option><option>편안함</option><option>감사</option><option>불안</option><option>속상함</option><option>피곤함</option><option>자신감</option></select><textarea data-log="note" placeholder="무엇을 했고 무엇을 배웠나요?"></textarea></article><article class="day-log " data-day="4"><h3>5일차</h3><select data-log="status"><option>시작 전</option><option>진행 중</option><option>완료</option><option>어려움</option><option>중단</option></select><select data-log="emotion"><option>감정 선택</option><option>기쁨</option><option>편안함</option><option>감사</option><option>불안</option><option>속상함</option><option>피곤함</option><option>자신감</option></select><textarea data-log="note" placeholder="무엇을 했고 무엇을 배웠나요?"></textarea></article><article class="day-log " data-day="5"><h3>6일차</h3><select data-log="status"><option>시작 전</option><option>진행 중</option><option>완료</option><option>어려움</option><option>중단</option></select><select data-log="emotion"><option>감정 선택</option><option>기쁨</option><option>편안함</option><option>감사</option><option>불안</option><option>속상함</option><option>피곤함</option><option>자신감</option></select><textarea data-log="note" placeholder="무엇을 했고 무엇을 배웠나요?"></textarea></article><article class="day-log " data-day="6"><h3>7일차</h3><select data-log="status"><option>시작 전</option><option>진행 중</option><option>완료</option><option>어려움</option><option>중단</option></select><select data-log="emotion"><option>감정 선택</option><option>기쁨</option><option>편안함</option><option>감사</option><option>불안</option><option>속상함</option><option>피곤함</option><option>자신감</option></select><textarea data-log="note" placeholder="무엇을 했고 무엇을 배웠나요?"></textarea></article></div>
-    <div class="tracker-final">
-      <div class="compact-field"><label for="trackerReaction">다른 사람의 반응·도움</label><textarea id="trackerReaction" placeholder="예: 가족이 함께해 주었고, 생각보다 쉽게 시작할 수 있다고 말했습니다."></textarea></div>
-      <div class="compact-field"><label for="trackerDecision">다음 선택</label><select id="trackerDecision"><option>유지한다</option><option>조금 수정한다</option><option>다른 방법을 시도한다</option><option>잠시 중단하고 이유를 확인한다</option></select></div>
-      <div class="compact-field"><label for="trackerNext">다음 7일에 할 한 가지</label><input id="trackerNext" placeholder="예: 같은 시간에 10분씩 계속하기"></div>
+
+    <div class="tracker-progress" id="trackerProgress" aria-label="7일 진행"></div>
+
+    <div class="tracker-summary tracker-summary-compact">
+      <div>
+        <label for="beforeScore">시작 전 자신감</label>
+        <input id="beforeScore" type="range" min="1" max="10" value="5" />
+        <b id="beforeScoreValue">5점</b>
+      </div>
+      <div>
+        <label for="afterScore">지금 자신감</label>
+        <input id="afterScore" type="range" min="1" max="10" value="5" />
+        <b id="afterScoreValue">5점</b>
+      </div>
+      <div class="compare-card">
+        <span>전후 변화</span>
+        <strong id="scoreDifference">0점</strong>
+        <small id="scoreMessage">점수보다 오늘 한 일을 남기는 것이 중요합니다.</small>
+      </div>
+    </div>
+
+    <div class="tracker-today" id="trackerToday">
+      <div class="tracker-today-head">
+        <span class="tracker-today-badge" id="trackerTodayBadge">1일차 · 오늘</span>
+        <p id="trackerTodayHint">세 가지만 고르면 됩니다. 길게 쓰지 않아도 괜찮아요.</p>
+      </div>
+      <div class="tracker-today-fields">
+        <div class="compact-field">
+          <label for="todayStatus">오늘 상태는?</label>
+          <div class="tracker-choice-row" id="todayStatusChoices" role="group" aria-label="오늘 상태">
+            <button type="button" class="tracker-choice active" data-status="완료">잘했어요</button>
+            <button type="button" class="tracker-choice" data-status="어려움">어려웠어요</button>
+            <button type="button" class="tracker-choice" data-status="쉬어감">오늘은 쉬었어요</button>
+          </div>
+          <input type="hidden" id="todayStatus" value="완료" />
+        </div>
+        <div class="compact-field">
+          <label for="todayEmotion">지금 감정</label>
+          <div class="tracker-choice-row" id="todayEmotionChoices" role="group" aria-label="감정">
+            <button type="button" class="tracker-choice" data-emotion="기쁨">기쁨</button>
+            <button type="button" class="tracker-choice" data-emotion="편안함">편안함</button>
+            <button type="button" class="tracker-choice" data-emotion="감사">감사</button>
+            <button type="button" class="tracker-choice" data-emotion="불안">불안</button>
+            <button type="button" class="tracker-choice" data-emotion="속상함">속상함</button>
+            <button type="button" class="tracker-choice" data-emotion="피곤함">피곤함</button>
+            <button type="button" class="tracker-choice active" data-emotion="자신감">자신감</button>
+          </div>
+          <input type="hidden" id="todayEmotion" value="자신감" />
+        </div>
+        <div class="compact-field">
+          <label for="todayNote">한 줄 기록 <small>(선택)</small></label>
+          <textarea id="todayNote" maxlength="280" placeholder="예: 10분만 정리했다. 생각보다 괜찮았다."></textarea>
+        </div>
+      </div>
+      <div class="tracker-actions tracker-today-actions">
+        <button class="btn btn-primary" type="button" id="saveTracker">오늘 기록 저장</button>
+        <button class="btn btn-light" type="button" id="skipTrackerDay">오늘 쉬고 다음으로</button>
+        <button class="btn btn-outline" type="button" id="exportTracker">기록 TXT</button>
+        <button class="btn btn-danger" type="button" id="resetTracker">처음부터</button>
+      </div>
+      <p class="tracker-micro" id="trackerMicro">저장하면 2일차가 열립니다.</p>
+    </div>
+
+    <div class="tracker-grid tracker-history" id="trackerGrid" aria-label="지난 기록"></div>
+
+    <div class="tracker-final" id="trackerFinal" hidden>
+      <div class="tracker-final-head">
+        <b>7일 마무리</b>
+        <span>모든 날을 남겨 두셨다면, 다음 한 가지만 정하면 됩니다.</span>
+      </div>
+      <div class="compact-field">
+        <label for="trackerReaction">다른 사람의 반응·도움</label>
+        <textarea id="trackerReaction" placeholder="예: 가족이 함께해 주었고, 생각보다 쉽게 시작할 수 있다고 말했습니다."></textarea>
+      </div>
+      <div class="compact-field">
+        <label for="trackerDecision">다음 선택</label>
+        <select id="trackerDecision">
+          <option>유지한다</option>
+          <option>조금 수정한다</option>
+          <option>다른 방법을 시도한다</option>
+          <option>잠시 중단하고 이유를 확인한다</option>
+        </select>
+      </div>
+      <div class="compact-field">
+        <label for="trackerNext">다음 7일에 할 한 가지</label>
+        <input id="trackerNext" placeholder="예: 같은 시간에 10분씩 계속하기" />
+      </div>
+      <div class="tracker-actions">
+        <button class="btn btn-mint" type="button" id="saveTrackerFinal">마무리 저장</button>
+      </div>
     </div>
   </div>
 </section>
