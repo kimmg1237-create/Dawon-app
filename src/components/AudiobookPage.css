@@ -29,6 +29,9 @@
 
 .audiobook-library-item {
   appearance: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   border: 1px solid var(--line);
   background: #fff;
   color: var(--ink);
@@ -38,6 +41,14 @@
   font-size: 0.9rem;
   font-weight: 600;
   cursor: pointer;
+}
+
+.audiobook-library-cover {
+  width: 28px;
+  height: 36px;
+  object-fit: cover;
+  border-radius: 4px;
+  flex-shrink: 0;
 }
 
 .audiobook-library-item:hover,

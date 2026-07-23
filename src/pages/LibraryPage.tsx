@@ -1,11 +1,15 @@
 import { SectionPage } from './SectionPage'
+import { useSiteCopy } from '../context/SiteCopyContext'
 import library from '../newsite/sections/library.html?raw'
 
 export function LibraryPage() {
+  const { copy } = useSiteCopy()
+  const page = copy.pages.library
   return (
     <SectionPage
-      title="전자책·오디오북·만화"
-      description="50개의 길 전자책, 오디오북, 만화형 전자책을 검색하고 바로 엽니다."
+      title={page.title}
+      description={page.description}
+      sectionCopy={page}
       html={library}
       mountLibrary
     />

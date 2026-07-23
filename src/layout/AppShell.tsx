@@ -1,30 +1,33 @@
 import { Outlet, NavLink } from 'react-router-dom'
 import { AppNav } from './AppNav'
 import { FEATURES } from '../data/features'
+import { useSiteCopy } from '../context/SiteCopyContext'
 import './AppShell.css'
 
 export function AppShell() {
+  const { copy } = useSiteCopy()
+
   return (
     <div className="app-shell">
-      <div className="topline">오늘을 확인하고, 내일을 설계합니다 · Check Today. Design Tomorrow.</div>
-      <div className="style-banner">DAWON LIFE DESIGN · CHECK → CHOOSE → ACT → RECORD → LEARN → NEXT</div>
+      <div className="topline">{copy.chrome.topline}</div>
+      <div className="style-banner">{copy.chrome.styleBanner}</div>
       <AppNav />
       <main className="app-shell-main" id="main">
         <Outlet />
       </main>
       <footer className="app-shell-footer">
         <div className="container">
-          <p>다원 인생설계 · DAWON Life Design · 확인하고 실천하며 다음 하루를 설계합니다</p>
+          <p>{copy.footer.tagline}</p>
           <p>
-            <NavLink to="/strategy">실행지도</NavLink>
+            <NavLink to="/strategy">{copy.footer.strategy}</NavLink>
             {' · '}
-            <NavLink to="/library">전자책·오디오북·만화</NavLink>
+            <NavLink to="/library">{copy.footer.library}</NavLink>
             {' · '}
-            <NavLink to="/operations">운영 상담</NavLink>
+            <NavLink to="/operations">{copy.footer.operations}</NavLink>
             {FEATURES.paymentsEnabled ? (
               <>
                 {' · '}
-                <NavLink to="/subscribe">구독·결제</NavLink>
+                <NavLink to="/subscribe">{copy.footer.subscribe}</NavLink>
               </>
             ) : null}
             {' · '}
@@ -40,12 +43,12 @@ export function AppShell() {
       </footer>
       <nav className="mobile-dock-react" aria-label="모바일 바로가기">
         <NavLink to="/" end>
-          홈
+          {copy.dock.home}
         </NavLink>
-        <NavLink to="/quick-design">실천</NavLink>
-        <NavLink to="/library">콘텐츠</NavLink>
-        {FEATURES.paymentsEnabled ? <NavLink to="/subscribe">구독</NavLink> : null}
-        <NavLink to="/login">계정</NavLink>
+        <NavLink to="/quick-design">{copy.dock.practice}</NavLink>
+        <NavLink to="/library">{copy.dock.content}</NavLink>
+        {FEATURES.paymentsEnabled ? <NavLink to="/subscribe">{copy.dock.subscribe}</NavLink> : null}
+        <NavLink to="/login">{copy.dock.account}</NavLink>
       </nav>
     </div>
   )

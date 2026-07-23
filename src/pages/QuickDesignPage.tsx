@@ -1,6 +1,7 @@
 import { SectionPage } from './SectionPage'
 import { AuthGate } from '../components/AuthGate'
 import { useAuth } from '../context/AuthContext'
+import { useSiteCopy } from '../context/SiteCopyContext'
 import { supabase } from '../lib/supabase'
 import quickDesign from '../newsite/sections/quickDesign.html?raw'
 import survey from '../newsite/sections/survey.html?raw'
@@ -9,6 +10,8 @@ import { upsertQuickDesign, fetchQuickDesign } from '../services/userDataService
 
 export function QuickDesignPage() {
   const { user } = useAuth()
+  const { copy } = useSiteCopy()
+  const page = copy.pages.quickDesign
 
   useEffect(() => {
     if (!user) return
@@ -80,8 +83,9 @@ export function QuickDesignPage() {
     <>
       <AuthGate action="실천카드·설문 저장" />
       <SectionPage
-        title="실천카드"
-        description="오늘 가능한 행동 하나를 실천카드로 만들고, 아래에서 바람설계 설문으로 더 자세히 확인할 수 있습니다."
+        title={page.title}
+        description={page.description}
+        sectionCopy={page}
         html={`${quickDesign}${survey}`}
       />
     </>

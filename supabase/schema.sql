@@ -311,3 +311,146 @@ drop policy if exists "Users insert own refund requests" on public.refund_reques
 create policy "Users insert own refund requests"
   on public.refund_requests for insert
   with check (auth.uid() = user_id);
+
+-- ============================================================
+-- 사이트 문구 (관리자 CMS)
+-- ============================================================
+
+create table if not exists public.site_copy (
+  id text primary key default 'default',
+  payload jsonb not null default '{}'::jsonb,
+  updated_at timestamptz not null default now()
+);
+
+alter table public.site_copy enable row level security;
+
+drop policy if exists "Anyone can read site copy" on public.site_copy;
+create policy "Anyone can read site copy"
+  on public.site_copy for select
+  using (true);
+
+drop policy if exists "Admins upsert site copy" on public.site_copy;
+create policy "Admins upsert site copy"
+  on public.site_copy for insert
+  with check (public.is_wish_admin());
+
+drop policy if exists "Admins update site copy" on public.site_copy;
+create policy "Admins update site copy"
+  on public.site_copy for update
+  using (public.is_wish_admin())
+  with check (public.is_wish_admin());
+
+insert into public.site_copy (id, payload)
+values ('default', '{}'::jsonb)
+on conflict (id) do nothing;
+
+-- ============================================================
+-- 라이브러리 메타데이터 (전자책·만화·오디오북)
+-- ============================================================
+
+create table if not exists public.library_items (
+  id text primary key,
+  title text not null,
+  description text not null default '',
+  category text not null default 'life'
+    check (category in ('life', 'mind', 'relation', 'future', 'age')),
+  tag text not null default '',
+  path_no text not null default '',
+  sort_order integer not null default 0,
+  published boolean not null default true,
+  cover_path text,
+  ebook_cover_path text,
+  comic_cover_path text,
+  audiobook_cover_path text,
+  ebook_pdf_path text,
+  comic_pdf_path text,
+  audiobook_text_path text,
+  updated_at timestamptz not null default now()
+);
+
+alter table public.library_items
+  add column if not exists ebook_cover_path text,
+  add column if not exists comic_cover_path text,
+  add column if not exists audiobook_cover_path text;
+
+update public.library_items
+set
+  ebook_cover_path = coalesce(ebook_cover_path, cover_path),
+  comic_cover_path = coalesce(comic_cover_path, cover_path),
+  audiobook_cover_path = coalesce(audiobook_cover_path, cover_path)
+where cover_path is not null;
+
+create index if not exists library_items_sort_idx
+  on public.library_items (published, sort_order, id);
+
+alter table public.library_items enable row level security;
+
+drop policy if exists "Anyone read published library items" on public.library_items;
+create policy "Anyone read published library items"
+  on public.library_items for select
+  using (published = true or public.is_wish_admin());
+
+drop policy if exists "Admins insert library items" on public.library_items;
+create policy "Admins insert library items"
+  on public.library_items for insert
+  with check (public.is_wish_admin());
+
+drop policy if exists "Admins update library items" on public.library_items;
+create policy "Admins update library items"
+  on public.library_items for update
+  using (public.is_wish_admin())
+  with check (public.is_wish_admin());
+
+drop policy if exists "Admins delete library items" on public.library_items;
+create policy "Admins delete library items"
+  on public.library_items for delete
+  using (public.is_wish_admin());
+
+-- ============================================================
+-- Storage 버킷 (라이브러리 파일)
+-- Supabase Dashboard → Storage 에서도 생성 가능합니다.
+-- ============================================================
+
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values
+  ('library-covers', 'library-covers', true, 10485760, array['image/png','image/jpeg','image/webp','image/gif']),
+  ('library-ebooks', 'library-ebooks', true, 104857600, array['application/pdf']),
+  ('library-comics', 'library-comics', true, 104857600, array['application/pdf']),
+  ('library-audiobooks', 'library-audiobooks', true, 20971520, array['text/plain','text/markdown','application/octet-stream'])
+on conflict (id) do update set
+  public = excluded.public,
+  file_size_limit = excluded.file_size_limit,
+  allowed_mime_types = excluded.allowed_mime_types;
+
+drop policy if exists "Public read library covers" on storage.objects;
+create policy "Public read library covers"
+  on storage.objects for select
+  using (bucket_id in ('library-covers','library-ebooks','library-comics','library-audiobooks'));
+
+drop policy if exists "Admins upload library files" on storage.objects;
+create policy "Admins upload library files"
+  on storage.objects for insert
+  with check (
+    bucket_id in ('library-covers','library-ebooks','library-comics','library-audiobooks')
+    and public.is_wish_admin()
+  );
+
+drop policy if exists "Admins update library files" on storage.objects;
+create policy "Admins update library files"
+  on storage.objects for update
+  using (
+    bucket_id in ('library-covers','library-ebooks','library-comics','library-audiobooks')
+    and public.is_wish_admin()
+  )
+  with check (
+    bucket_id in ('library-covers','library-ebooks','library-comics','library-audiobooks')
+    and public.is_wish_admin()
+  );
+
+drop policy if exists "Admins delete library files" on storage.objects;
+create policy "Admins delete library files"
+  on storage.objects for delete
+  using (
+    bucket_id in ('library-covers','library-ebooks','library-comics','library-audiobooks')
+    and public.is_wish_admin()
+  );

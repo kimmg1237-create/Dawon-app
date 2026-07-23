@@ -9,8 +9,10 @@ import { QuickDesignPage } from './pages/QuickDesignPage'
 import { RecordsPage } from './pages/RecordsPage'
 import { LibraryPage } from './pages/LibraryPage'
 import { OperationsPage } from './pages/OperationsPage'
+import { AdminPage } from './pages/AdminPage'
 import { AdminResponsesPage } from './pages/AdminResponsesPage'
 import { LoginPage } from './pages/LoginPage'
+import { SiteCopyProvider } from './context/SiteCopyContext'
 import { ResetPasswordPage } from './pages/ResetPasswordPage'
 import { SubscribePage } from './pages/SubscribePage'
 import { PaymentSuccessPage } from './pages/PaymentSuccessPage'
@@ -44,6 +46,7 @@ function AppRoutes() {
           <Route path="library" element={<LibraryPage />} />
           <Route path="operations" element={<OperationsPage />} />
           <Route path="survey" element={<Navigate to="/quick-design#survey" replace />} />
+          <Route path="admin" element={<AdminPage />} />
           <Route path="admin/responses" element={<AdminResponsesPage />} />
           <Route path="login" element={<LoginPage />} />
           <Route path="reset-password" element={<ResetPasswordPage />} />
@@ -74,7 +77,9 @@ export default function App() {
     <BrowserRouter>
       <AuthProvider>
         <SubscriptionProvider>
-          <AppRoutes />
+          <SiteCopyProvider>
+            <AppRoutes />
+          </SiteCopyProvider>
         </SubscriptionProvider>
       </AuthProvider>
     </BrowserRouter>

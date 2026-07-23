@@ -1,24 +1,23 @@
 import { useState } from 'react'
 import { NavLink, Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { useSiteCopy } from '../context/SiteCopyContext'
 import { FEATURES } from '../data/features'
-
-const BASE_LINKS = [
-  { to: '/strategy', label: '실행지도' },
-  { to: '/life-stage', label: '계획방법' },
-  { to: '/quick-design', label: '실천카드' },
-  { to: '/records', label: '7일 설계' },
-  { to: '/library', label: '전자책·오디오북·만화' },
-  { to: '/operations', label: '운영 상담' },
-] as const
-
-const LINKS = FEATURES.paymentsEnabled
-  ? [...BASE_LINKS, { to: '/subscribe', label: '구독' }]
-  : [...BASE_LINKS]
 
 export function AppNav() {
   const { user, isAdmin, signOut, configured } = useAuth()
+  const { copy } = useSiteCopy()
   const [open, setOpen] = useState(false)
+
+  const links = [
+    { to: '/strategy', label: copy.nav.strategy },
+    { to: '/life-stage', label: copy.nav.lifeStage },
+    { to: '/quick-design', label: copy.nav.quickDesign },
+    { to: '/records', label: copy.nav.records },
+    { to: '/library', label: copy.nav.library },
+    { to: '/operations', label: copy.nav.operations },
+    ...(FEATURES.paymentsEnabled ? [{ to: '/subscribe', label: copy.nav.subscribe }] : []),
+  ]
 
   function closeMenu() {
     setOpen(false)
@@ -71,7 +70,7 @@ export function AppNav() {
           id="appNavLinks"
           aria-label="주요 메뉴"
         >
-          {LINKS.map((link) => (
+          {links.map((link) => (
             <NavLink
               key={link.to}
               to={link.to}
@@ -83,11 +82,11 @@ export function AppNav() {
           ))}
           {isAdmin ? (
             <NavLink
-              to="/admin/responses"
+              to="/admin"
               className={({ isActive }) => (isActive ? 'nav-active' : undefined)}
               onClick={closeMenu}
             >
-              응답관리
+              관리
             </NavLink>
           ) : null}
         </nav>
@@ -106,7 +105,7 @@ export function AppNav() {
           ) : null}
 
           <NavLink to="/quick-design" className="app-nav-cta primary" onClick={closeMenu}>
-            오늘 시작
+            {copy.nav.startCta}
           </NavLink>
 
           <button

@@ -1,19 +1,18 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { PATH_CARDS, type PathCard } from '../data/paths'
-import { getCoverUrl } from '../data/coverFiles'
-import { getEbookUrl } from '../data/ebookFiles'
-import { getComicUrl } from '../data/comicFiles'
 import { EbookViewer } from '../components/EbookViewer'
 import { AudiobookPage } from '../components/AudiobookPage'
 import { PremiumGate } from '../components/PremiumGate'
 import { useSubscription } from '../context/SubscriptionContext'
 import { useAuth } from '../context/AuthContext'
+import { fetchLibraryItems } from '../services/libraryService'
+import { loadAudiobookIndex } from '../data/libraryStaticAssets'
+import { coverUrlForCard, mergeLibraryCards, type LibraryCard } from '../services/libraryCatalog'
 
 type LibraryTab = 'ebook' | 'comic' | 'audio'
 
 interface OpenBook {
-  card: PathCard
+  card: LibraryCard
   kind: 'ebook' | 'comic'
   url: string
 }
@@ -24,9 +23,9 @@ function normalizeTitle(value: string): string {
   return value.replace(/[《》\s,.·'"!?~\-_]/g, '').toLowerCase()
 }
 
-function BookCover({ card }: { card: PathCard }) {
+function BookCover({ card, tab }: { card: LibraryCard; tab: 'ebook' | 'comic' }) {
   const [failed, setFailed] = useState(false)
-  const cover = getCoverUrl(card.id)
+  const cover = coverUrlForCard(card, tab)
 
   if (!cover || failed) {
     return (
@@ -55,14 +54,40 @@ export function DawonLibrary() {
   const [query, setQuery] = useState('')
   const [slide, setSlide] = useState(0)
   const [open, setOpen] = useState<OpenBook | null>(null)
+  const [cards, setCards] = useState<LibraryCard[]>(() => mergeLibraryCards([]))
+
+  useEffect(() => {
+    let cancelled = false
+    void (async () => {
+      const [rows, index] = await Promise.all([fetchLibraryItems(false), loadAudiobookIndex()])
+      if (!cancelled) setCards(mergeLibraryCards(rows, false, index))
+    })()
+    return () => {
+      cancelled = true
+    }
+  }, [])
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
-    if (!q) return PATH_CARDS
-    return PATH_CARDS.filter((card) =>
+    if (!q) return cards
+    return cards.filter((card) =>
       `${card.id} ${card.title} ${card.searchTitle} ${card.tag}`.toLowerCase().includes(q),
     )
-  }, [query])
+  }, [query, cards])
+
+  const audioExtras = useMemo(
+    () =>
+      cards
+        .filter((c) => c.audiobookTextUrl)
+        .map((c) => ({
+          id: c.id,
+          title: c.title,
+          url: c.audiobookTextUrl!,
+          coverUrl: c.audiobookCoverUrl,
+          fromUpload: c.hasUploadedAudiobookText,
+        })),
+    [cards],
+  )
 
   const totalSlides = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
   const safeSlide = Math.min(slide, totalSlides - 1)
@@ -72,7 +97,7 @@ export function DawonLibrary() {
     setSlide(0)
   }, [tab, query])
 
-  function openBook(card: PathCard, kind: 'ebook' | 'comic') {
+  function openBook(card: LibraryCard, kind: 'ebook' | 'comic') {
     if (!user) {
       navigate('/login', { state: { from: '/library' } })
       return
@@ -81,7 +106,7 @@ export function DawonLibrary() {
       navigate('/subscribe')
       return
     }
-    const url = kind === 'ebook' ? getEbookUrl(card.id) : getComicUrl(card.id)
+    const url = kind === 'ebook' ? card.ebookUrl : card.comicUrl
     if (url) {
       void markContentUsed()
       setOpen({ card, kind, url })
@@ -93,7 +118,7 @@ export function DawonLibrary() {
       const title = (e as CustomEvent<{ title?: string }>).detail?.title
       if (!title) return
       const target = normalizeTitle(title)
-      const card = PATH_CARDS.find((c) => normalizeTitle(c.title) === target)
+      const card = cards.find((c) => normalizeTitle(c.title) === target)
       if (!card) return
       setTab('ebook')
       openBook(card, 'ebook')
@@ -101,7 +126,7 @@ export function DawonLibrary() {
     }
     window.addEventListener('dawon:open-book', onOpenBook)
     return () => window.removeEventListener('dawon:open-book', onOpenBook)
-  }, [])
+  }, [cards, user, paymentsEnabled, isPremium])
 
   function goPrev() {
     setSlide((s) => Math.max(0, s - 1))
@@ -133,7 +158,7 @@ export function DawonLibrary() {
           aria-selected={tab === 'ebook'}
           onClick={() => setTab('ebook')}
         >
-          ▤ 50개의 길 {PATH_CARDS.length}권
+          ▤ 50개의 길 {cards.length}권
         </button>
         <button
           type="button"
@@ -151,7 +176,7 @@ export function DawonLibrary() {
           aria-selected={tab === 'comic'}
           onClick={() => setTab('comic')}
         >
-          ◔ 만화 {PATH_CARDS.length}권
+          ◔ 만화 {cards.length}권
         </button>
       </div>
 
@@ -193,7 +218,7 @@ export function DawonLibrary() {
                       className="book-card"
                       onClick={() => openBook(card, tab === 'ebook' ? 'ebook' : 'comic')}
                     >
-                      <BookCover card={card} />
+                      <BookCover card={card} tab={tab === 'ebook' ? 'ebook' : 'comic'} />
                       <span className="book-body">
                         <span className="book-no">{card.pathNo}</span>
                         <h3>{card.title}</h3>
@@ -261,7 +286,7 @@ export function DawonLibrary() {
           }}
         >
           <PremiumGate feature="오디오북">
-            <AudiobookPage />
+            <AudiobookPage extraTexts={audioExtras} />
           </PremiumGate>
         </div>
       )}

@@ -1,12 +1,15 @@
 import { SectionPage } from './SectionPage'
 import { RequireAuthOnInteract } from '../components/RequireAuthOnInteract'
 import { useAuth } from '../context/AuthContext'
+import { useSiteCopy } from '../context/SiteCopyContext'
 import actionLog from '../newsite/sections/actionLog.html?raw'
 import { useEffect } from 'react'
 import { fetchTracker, upsertTracker } from '../services/userDataService'
 
 export function RecordsPage() {
   const { user } = useAuth()
+  const { copy } = useSiteCopy()
+  const page = copy.pages.records
 
   useEffect(() => {
     if (!user) return
@@ -29,11 +32,7 @@ export function RecordsPage() {
 
   return (
     <RequireAuthOnInteract from="/records">
-      <SectionPage
-        title="7일 설계"
-        description="하루만 가볍게 기록하고, 저장하면 다음 날이 열립니다."
-        html={actionLog}
-      />
+      <SectionPage title={page.title} description={page.description} sectionCopy={page} html={actionLog} />
     </RequireAuthOnInteract>
   )
 }

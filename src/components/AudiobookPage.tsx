@@ -4,6 +4,13 @@ import './AudiobookPage.css'
 
 const MAX_CHARS = 120_000
 
+export type AudiobookExtraText = {
+  id: string
+  title: string
+  url: string
+  coverUrl?: string | null
+}
+
 function pickKoreanVoice(voices: SpeechSynthesisVoice[]): SpeechSynthesisVoice | null {
   return (
     voices.find((v) => v.lang.toLowerCase().startsWith('ko')) ??
@@ -38,7 +45,7 @@ function splitForSpeech(text: string): string[] {
   return chunks.length > 0 ? chunks : [text.slice(0, 1800)]
 }
 
-export function AudiobookPage() {
+export function AudiobookPage({ extraTexts = [] }: { extraTexts?: AudiobookExtraText[] }) {
   const { markContentUsed } = useSubscription()
   const [text, setText] = useState('')
   const [fileName, setFileName] = useState('')
@@ -94,6 +101,20 @@ export function AudiobookPage() {
       stop()
     } catch {
       setError(`폴더에서 "${name}"을(를) 불러오지 못했습니다.`)
+    }
+  }
+
+  async function loadExtraText(item: AudiobookExtraText) {
+    try {
+      const res = await fetch(item.url)
+      if (!res.ok) throw new Error('not found')
+      const raw = await res.text()
+      setText(raw.replace(/\u0000/g, '').slice(0, MAX_CHARS))
+      setFileName(item.title)
+      setError('')
+      stop()
+    } catch {
+      setError(`“${item.title}” 텍스트를 불러오지 못했습니다.`)
     }
   }
 
@@ -187,12 +208,33 @@ export function AudiobookPage() {
             <h2 style={{ marginTop: 16 }}>텍스트를 올리면, 읽어 드립니다.</h2>
           </div>
           <p>
-            <code>public/audiobook-texts</code> 폴더에 .txt를 넣거나, 아래에서 바로 파일을 올린 뒤 재생하세요.
+            관리자가 올린 텍스트와 기본 폴더 텍스트를 고르거나, 아래에서 바로 파일을 올린 뒤 재생하세요.
             (브라우저 음성 읽기)
           </p>
         </div>
 
         <div className="audiobook-panel card">
+          {extraTexts.length > 0 && (
+            <div className="audiobook-library">
+              <p className="audiobook-label">책 목록 (기본 + 업로드)</p>
+              <div className="audiobook-library-list">
+                {extraTexts.map((item) => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    className={`audiobook-library-item ${fileName === item.title ? 'active' : ''}`}
+                    onClick={() => void loadExtraText(item)}
+                  >
+                    {item.coverUrl ? (
+                      <img className="audiobook-library-cover" src={item.coverUrl} alt="" loading="lazy" />
+                    ) : null}
+                    <span>{item.title}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
           {library.length > 0 && (
             <div className="audiobook-library">
               <p className="audiobook-label">폴더 텍스트</p>
