@@ -130,7 +130,7 @@ h1 span::after{content:"";position:absolute;left:0;right:0;bottom:2px;height:12p
 .quick-icon{background:linear-gradient(145deg,rgba(47,143,88,.12),rgba(29,159,192,.12));color:var(--brown)}
 .section{position:relative}
 .section::before{content:"";position:absolute;left:0;right:0;top:0;height:1px;background:linear-gradient(90deg,transparent,rgba(90,55,40,.12),transparent)}
-.section h2,.panel-title,.survey-header h3,.report-head h3,.stage-head h3{color:var(--brown)}
+.section h2,.panel-title,.survey-header h3,.report-head h3{color:var(--brown)}
 .section.soft{background:linear-gradient(180deg,rgba(255,255,255,.35),rgba(247,241,234,.78))}
 .stage-tabs{gap:12px}
 .stage-tab{background:#fffaf6;border:1px solid #e7d7ca;color:var(--brown);border-radius:18px;box-shadow:0 8px 22px rgba(56,30,17,.05)}
@@ -280,7 +280,7 @@ h1,.lead,.panel-title,.lens-card h3{word-break:keep-all}
  linear-gradient(180deg,#fbfdff 0%,#f2f7fb 68%,#fff 100%)}
 .hero::after{background:conic-gradient(from 30deg,rgba(227,77,89,.12),rgba(43,134,207,.14),rgba(213,167,66,.13),rgba(227,77,89,.12))}
 .eyebrow,.kicker{color:#155f9b}.eyebrow:before{background:linear-gradient(90deg,#e34d59,#2478c5)}
-h1,.section h2,.panel-title,.survey-header h3,.stage-head h3{color:var(--navy)}
+h1,.section h2,.panel-title,.survey-header h3{color:var(--navy)}
 h1 span{color:#b82f42}h1 span::after{background:rgba(213,167,66,.27)}
 .lead{color:#4f6075}
 .hero-guidance{background:rgba(255,255,255,.86);border-color:#d6e1ea;color:#53667c}
@@ -436,3 +436,19 @@ header.app-nav-header .menu.app-nav-menu{
   }
 }
 header.app-nav-header .navlinks{display:none !important}
+
+/* 생애단계 헤더: 어두운 그라데이션 위 제목 가독성 */
+.stage-head h3,
+#stageTitle{
+  color:#fff !important;
+  text-shadow:0 1px 2px rgba(0,0,0,.28);
+}
+.stage-head p,
+#stageIntro{color:#d7e4ef !important}
+.stage-head .kicker,
+#stageKicker{color:#8eecc9 !important}
+.stage-head .stage-tags span{
+  background:rgba(255,255,255,.14);
+  color:#f5efe2;
+  border-color:rgba(255,255,255,.26);
+}
