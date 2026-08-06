@@ -14,6 +14,8 @@ import {
 import { tossClientKey, tossConfigured } from '../lib/toss'
 import { createTossOrder, generateOrderId } from '../services/paymentService'
 
+const isTestPay = tossClientKey.startsWith('test_')
+
 type PlanId = PayProduct | 'free'
 
 const PLANS: {
@@ -179,6 +181,13 @@ export function SubscribePage() {
         {!configured ? (
           <div className="subscribe-alert warn">
             Supabase 로그인 설정 후 결제·구독 저장이 가능합니다.
+          </div>
+        ) : null}
+
+        {isTestPay ? (
+          <div className="subscribe-alert warn">
+            테스트 결제 모드입니다. 실제 카드 출금은 되지 않으며, 토스 개발자센터 테스트 결제 내역에만
+            남습니다. 실결제에는 `live_ck_` / `live_sk_` 키가 필요합니다.
           </div>
         ) : null}
 

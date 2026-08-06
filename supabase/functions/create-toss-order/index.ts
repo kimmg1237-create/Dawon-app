@@ -40,16 +40,21 @@ Deno.serve(async (req) => {
     }
 
     const orderId = body.orderId?.trim()
-    const amount = body.amount
+    const amount = Number(body.amount)
     const product = body.product === "b2b" ? "b2b" : "monthly"
 
     const PRICES: Record<string, number> = { monthly: 12900, b2b: 990000 }
     const expected = PRICES[product]
-    if (!orderId || !amount || amount <= 0) {
+    if (!orderId || !Number.isFinite(amount) || amount <= 0) {
       return json({ error: "orderId와 amount가 필요합니다." }, 400)
     }
     if (amount !== expected) {
-      return json({ error: "결제 금액이 상품과 일치하지 않습니다." }, 400)
+      return json(
+        {
+          error: `결제 금액이 상품과 일치하지 않습니다. (요청 ${amount}원 / 기대 ${expected}원)`,
+        },
+        400,
+      )
     }
 
     const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
@@ -64,7 +69,17 @@ Deno.serve(async (req) => {
     })
 
     if (insertError) {
-      return json({ error: insertError.message }, 400)
+      const msg = insertError.message || ''
+      if (/relation .*payment_orders.* does not exist|Could not find the table/i.test(msg)) {
+        return json(
+          {
+            error:
+              'payment_orders 테이블이 없습니다. Supabase SQL Editor에서 supabase/payments.sql 을 실행해 주세요.',
+          },
+          400,
+        )
+      }
+      return json({ error: `주문 저장 실패: ${msg}` }, 400)
     }
 
     return json({
