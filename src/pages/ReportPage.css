@@ -1,0 +1,163 @@
+.report-page {
+  padding-top: 12px;
+}
+
+.report-kpis {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.report-kpis > div {
+  background: #fff;
+  border: 1px solid var(--line, #d9e4ec);
+  border-radius: 18px;
+  padding: 16px;
+}
+
+.report-kpis span {
+  display: block;
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--muted, #5d7285);
+  margin-bottom: 6px;
+}
+
+.report-kpis b {
+  font-size: clamp(18px, 2.4vw, 26px);
+  color: var(--navy, #0d2744);
+  letter-spacing: -0.03em;
+}
+
+.report-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 22px;
+}
+
+.report-actions .btn {
+  text-decoration: none;
+}
+
+.report-grid {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: 16px;
+}
+
+.report-panel {
+  background: #fff;
+  border: 1px solid var(--line, #d9e4ec);
+  border-radius: 20px;
+  padding: 18px;
+}
+
+.report-panel h3 {
+  margin: 0 0 14px;
+  color: var(--navy, #0d2744);
+  font-size: 18px;
+}
+
+.report-panel .muted {
+  color: var(--muted, #5d7285);
+  font-size: 14px;
+}
+
+.report-bars {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.report-bars li > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+
+.report-bars b {
+  color: var(--navy, #0d2744);
+}
+
+.report-bars span {
+  color: var(--muted, #5d7285);
+}
+
+.report-bars i {
+  display: block;
+  height: 8px;
+  border-radius: 999px;
+  background: #e8f1f6;
+  overflow: hidden;
+}
+
+.report-bars em {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #174d7d, #17b890);
+  border-radius: inherit;
+}
+
+.report-days {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+  max-height: 520px;
+  overflow: auto;
+}
+
+.report-days li {
+  border: 1px solid #e4eef4;
+  border-radius: 14px;
+  padding: 12px;
+  background: #f8fbfd;
+}
+
+.report-days li > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+
+.report-days b {
+  color: var(--navy, #0d2744);
+  font-size: 13px;
+}
+
+.report-days span {
+  font-size: 12px;
+  color: var(--muted, #5d7285);
+}
+
+.report-days p {
+  margin: 0;
+  font-size: 14px;
+  color: #334155;
+  line-height: 1.45;
+}
+
+@media (max-width: 960px) {
+  .report-kpis {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .report-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  .report-kpis {
+    grid-template-columns: 1fr;
+  }
+}

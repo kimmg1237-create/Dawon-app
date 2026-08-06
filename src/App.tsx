@@ -6,6 +6,7 @@ import { HomePage } from './pages/HomePage'
 import { StrategyPage } from './pages/StrategyPage'
 import { LifeStagePage } from './pages/LifeStagePage'
 import { QuickDesignPage } from './pages/QuickDesignPage'
+import { ReportPage } from './pages/ReportPage'
 import { RecordsPage } from './pages/RecordsPage'
 import { LibraryPage } from './pages/LibraryPage'
 import { OperationsPage } from './pages/OperationsPage'
@@ -42,6 +43,7 @@ function AppRoutes() {
           <Route path="strategy" element={<StrategyPage />} />
           <Route path="life-stage" element={<LifeStagePage />} />
           <Route path="quick-design" element={<QuickDesignPage />} />
+          <Route path="report" element={<ReportPage />} />
           <Route path="records" element={<RecordsPage />} />
           <Route path="library" element={<LibraryPage />} />
           <Route path="operations" element={<OperationsPage />} />

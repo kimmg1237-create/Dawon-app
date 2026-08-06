@@ -422,6 +422,19 @@ h1 span{color:#b82f42}h1 span::after{background:rgba(213,167,66,.27)}
   cursor:default;
   background:#f6f8fa;
 }
+.tracker-handoff{
+  margin:0 0 16px;
+  padding:14px 16px;
+  border-radius:16px;
+  border:1px solid #b7e4cf;
+  background:linear-gradient(135deg,#eaf8f1,#f4fbfd);
+}
+.tracker-handoff b{display:block;color:#12634e;font-size:13px;margin-bottom:4px}
+.tracker-handoff p{margin:0 0 6px;color:var(--navy);font-size:14px;line-height:1.45}
+.tracker-handoff small{color:var(--muted);font-size:12px}
+.today-intro{padding:8px 0 0}
+.today-intro .lead-inline{max-width:640px;color:var(--muted);margin:10px 0 0;font-size:15px}
+.today-intro h2{font-size:clamp(26px,3.5vw,40px);letter-spacing:-.04em;line-height:1.2;margin:8px 0 0;color:var(--navy)}
 .tracker-summary-compact{
   display:grid;
   grid-template-columns:1fr 1fr 1.2fr;

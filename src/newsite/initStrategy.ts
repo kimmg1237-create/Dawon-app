@@ -233,6 +233,18 @@ function upgradeBindChoiceGroup(rootId, attr, hiddenId) {
     upgradeSetChoiceGroup(root, attr, val)
   })
 }
+function upgradeShowHandoffBanner() {
+  const box = $('#trackerHandoff')
+  const noteEl = $('#trackerHandoffNote')
+  if (!box || !noteEl) return
+  const d = trackerDaysData[trackerActiveDay]
+  if (d && d.note && !upgradeIsDayLogged(d)) {
+    box.hidden = false
+    noteEl.textContent = d.note
+  } else {
+    box.hidden = true
+  }
+}
 function upgradeRenderProgress() {
   const box = $('#trackerProgress')
   if (!box || box.dataset.dawonStub === '1') return
@@ -308,6 +320,7 @@ function upgradeShowDay(dayIndex) {
   $('#trackerMicro').textContent = `저장하면 ${nextLabel}.`
   upgradeRenderProgress()
   upgradeRenderHistory()
+  upgradeShowHandoffBanner()
 }
 function upgradeBuildTracker(data = {}) {
   trackerDaysData = Array.from({ length: 7 }, (_, i) => {
@@ -380,6 +393,17 @@ upgradeScore()
 ;['beforeScore', 'afterScore'].forEach((id) => $('#' + id)?.addEventListener('input', upgradeScore))
 $('#saveTracker')?.addEventListener('click', () => upgradeSaveCurrentDay())
 $('#skipTrackerDay')?.addEventListener('click', () => upgradeSaveCurrentDay('쉬어감'))
+upgradeShowHandoffBanner()
+window.addEventListener('dawon:tracker-seeded', () => {
+  const fresh = upgradeReadTracker()
+  $('#beforeScore').value = fresh.before || 5
+  $('#afterScore').value = fresh.after || 5
+  if (fresh.next) $('#trackerNext').value = fresh.next
+  upgradeBuildTracker(fresh)
+  upgradeScore()
+  upgradeShowHandoffBanner()
+  toast('오늘설계 한 줄을 7일 노트에 넣었습니다.')
+})
 $('#saveTrackerFinal')?.addEventListener('click', () => {
   storage.setItem(UPGRADE_TRACKER_KEY, JSON.stringify(upgradeGatherTracker()))
   toast('7일 마무리를 저장했습니다.')

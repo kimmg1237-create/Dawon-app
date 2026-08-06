@@ -21,6 +21,10 @@ export function AppShell() {
           <p>
             <NavLink to="/strategy">{copy.footer.strategy}</NavLink>
             {' · '}
+            <NavLink to="/quick-design">{copy.nav.quickDesign}</NavLink>
+            {' · '}
+            <NavLink to="/report">{copy.nav.report}</NavLink>
+            {' · '}
             <NavLink to="/library">{copy.footer.library}</NavLink>
             {' · '}
             <NavLink to="/operations">{copy.footer.operations}</NavLink>

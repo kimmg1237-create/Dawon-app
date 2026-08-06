@@ -22,12 +22,13 @@ import './AdminPage.css'
 
 type Tab = 'copy' | 'library' | 'responses'
 
-const PAGE_KEYS = ['strategy', 'lifeStage', 'quickDesign', 'records', 'library', 'operations'] as const
+const PAGE_KEYS = ['strategy', 'lifeStage', 'quickDesign', 'records', 'report', 'library', 'operations'] as const
 const PAGE_LABELS: Record<(typeof PAGE_KEYS)[number], string> = {
   strategy: '실행지도',
   lifeStage: '계획방법',
-  quickDesign: '실천카드',
+  quickDesign: '오늘설계',
   records: '7일 설계',
+  report: '성장리포트',
   library: '전자책·오디오북·만화',
   operations: '운영 상담',
 }

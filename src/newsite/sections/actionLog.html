@@ -8,7 +8,13 @@
       <p data-copy="lead">7일을 한꺼번에 채우지 않아도 됩니다. 오늘 칸만 열고, 저장하면 다음 날이 열립니다. 어려웠던 날도 괜찮습니다.</p>
     </div>
 
-    <div class="tracker-progress" id="trackerProgress" aria-label="7일 진행"></div>
+    <div className="tracker-progress" id="trackerProgress" aria-label="7일 진행"></div>
+
+    <div class="tracker-handoff" id="trackerHandoff" hidden>
+      <b>오늘설계에서 가져온 한 줄</b>
+      <p id="trackerHandoffNote"></p>
+      <small>아래에서 상태·감정을 고르고 저장하면 다음 날이 열립니다.</small>
+    </div>
 
     <div class="tracker-summary tracker-summary-compact">
       <div>

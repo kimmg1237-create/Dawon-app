@@ -13,7 +13,18 @@ export async function fetchSiteCopy(): Promise<SiteCopy> {
     }
   }
   const { data, error } = await supabase.from('site_copy').select('payload').eq('id', COPY_ID).maybeSingle()
-  if (error || !data) {
+  if (error) {
+    // 테이블 미생성(PGRST205) 등은 기본/로컬 문구로 폴백
+    if (error.code !== 'PGRST205' && !/Could not find the table/i.test(error.message)) {
+      console.warn('[site_copy]', error.message)
+    }
+    try {
+      return mergeSiteCopy(JSON.parse(localStorage.getItem(LOCAL_KEY) || 'null'))
+    } catch {
+      return mergeSiteCopy(null)
+    }
+  }
+  if (!data) {
     try {
       return mergeSiteCopy(JSON.parse(localStorage.getItem(LOCAL_KEY) || 'null'))
     } catch {

@@ -12,6 +12,7 @@ type Props = {
   mountLibrary?: boolean
   prefixHtml?: string
   sectionCopy?: PageCopy
+  hideBanner?: boolean
 }
 
 function applySectionCopy(host: HTMLElement, sectionCopy?: PageCopy) {
@@ -32,7 +33,15 @@ function applySectionCopy(host: HTMLElement, sectionCopy?: PageCopy) {
  * 라이브러리는 createRoot가 아니라 createPortal로 렌더해
  * Auth/Subscription/Router 컨텍스트를 그대로 물려받습니다.
  */
-export function SectionPage({ html, title, description, mountLibrary, prefixHtml = '', sectionCopy }: Props) {
+export function SectionPage({
+  html,
+  title,
+  description,
+  mountLibrary,
+  prefixHtml = '',
+  sectionCopy,
+  hideBanner = false,
+}: Props) {
   const hostRef = useRef<HTMLDivElement>(null)
   const [libraryHost, setLibraryHost] = useState<HTMLElement | null>(null)
 
@@ -110,11 +119,13 @@ export function SectionPage({ html, title, description, mountLibrary, prefixHtml
 
   return (
     <div className="section-page">
-      <div className="container page-banner">
-        <div className="eyebrow">DAWON EXECUTION</div>
-        <h1>{title}</h1>
-        {description ? <p>{description}</p> : null}
-      </div>
+      {hideBanner ? null : (
+        <div className="container page-banner">
+          <div className="eyebrow">DAWON EXECUTION</div>
+          <h1>{title}</h1>
+          {description ? <p>{description}</p> : null}
+        </div>
+      )}
       <div ref={hostRef} />
       {libraryHost ? createPortal(<DawonLibrary />, libraryHost) : null}
     </div>

@@ -14,6 +14,7 @@ export function AppNav() {
     { to: '/life-stage', label: copy.nav.lifeStage },
     { to: '/quick-design', label: copy.nav.quickDesign },
     { to: '/records', label: copy.nav.records },
+    { to: '/report', label: copy.nav.report },
     { to: '/library', label: copy.nav.library },
     { to: '/operations', label: copy.nav.operations },
     ...(FEATURES.paymentsEnabled ? [{ to: '/subscribe', label: copy.nav.subscribe }] : []),

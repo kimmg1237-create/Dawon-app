@@ -26,8 +26,14 @@ export function RecordsPage() {
         /* ignore */
       }
     }
+    window.addEventListener('dawon:tracker-saved', sync)
+    window.addEventListener('dawon:tracker-seeded', sync)
     const timer = window.setInterval(sync, 8000)
-    return () => window.clearInterval(timer)
+    return () => {
+      window.removeEventListener('dawon:tracker-saved', sync)
+      window.removeEventListener('dawon:tracker-seeded', sync)
+      window.clearInterval(timer)
+    }
   }, [user])
 
   return (
