@@ -89,7 +89,7 @@ export function normalizeTracker(data: TrackerPayload = {}): {
         decision: w.decision || '유지한다',
         next: w.next || '',
         days: Array.from({ length: 7 }, (_, i) => {
-          const d = w.days?.[i] || {}
+          const d: Partial<TrackerDay> = w.days?.[i] || {}
           return {
             status: d.status || '',
             emotion: d.emotion || '',
@@ -107,13 +107,13 @@ export function normalizeTracker(data: TrackerPayload = {}): {
   }
 
   const startDate = data.weekStart || toYMD(new Date())
-  const days = Array.from({ length: 7 }, (_, i) => {
-    const d = data.days?.[i] || {}
+  const days = emptyDays(startDate).map((base, i) => {
+    const d: Partial<TrackerDay> = data.days?.[i] || {}
     return {
       status: d.status || '',
       emotion: d.emotion || '',
       note: d.note || '',
-      date: d.date || addDaysYMD(startDate, i),
+      date: d.date || base.date,
     }
   })
   return {
