@@ -4,6 +4,12 @@ import { initStrategySite } from '../newsite/initStrategy'
 import { DawonLibrary } from '../newsite/DawonLibrary'
 import sharedChrome from '../newsite/sections/sharedChrome.html?raw'
 import { h2ToHtml, type PageCopy } from '../data/siteCopyDefaults'
+import {
+  advanceJourney,
+  ensureJourneyFromUrl,
+  isJourneyActive,
+  patchJourney,
+} from '../services/journeyService'
 
 type Props = {
   html: string
@@ -50,6 +56,7 @@ export function SectionPage({
     if (!host) return
     host.innerHTML = `${prefixHtml}${html}${sharedChrome}`
     applySectionCopy(host, sectionCopy)
+    ensureJourneyFromUrl()
 
     if (mountLibrary) {
       setLibraryHost(document.getElementById('dawonLibraryRoot'))
@@ -63,19 +70,21 @@ export function SectionPage({
       console.error('섹션 초기화 오류', error)
     }
 
+    const journeyQs = isJourneyActive() ? '?journey=1' : ''
+    const strategyHref = isJourneyActive() ? '/operations?journey=1#strategy' : '/operations#strategy'
     const routeMap: Record<string, string> = {
-      '#quick-design': '/quick-design',
-      '#life-stage': '/life-stage',
+      '#quick-design': `/quick-design${journeyQs}`,
+      '#life-stage': `/life-stage${journeyQs}`,
       '#integrated-strategy': '/strategy',
-      '#action-log': '/records',
+      '#action-log': `/records${journeyQs}`,
       '#library': '/library',
-      '#ops-tools': '/operations',
-      '#survey': '/quick-design#survey',
-      '#result': '/quick-design#result',
-      '#ai-hub': '/operations',
-      '#team': '/operations',
-      '#idea-lab': '/operations',
-      '#strategy': '/operations',
+      '#ops-tools': `/operations${journeyQs}`,
+      '#survey': `/quick-design${journeyQs}#survey`,
+      '#result': `/quick-design${journeyQs}#result`,
+      '#ai-hub': '/operations#ai-hub',
+      '#team': '/operations#team',
+      '#idea-lab': '/operations#idea-lab',
+      '#strategy': strategyHref,
     }
     host.querySelectorAll('a[href^="#"]').forEach((a) => {
       const href = a.getAttribute('href') || ''
@@ -86,16 +95,46 @@ export function SectionPage({
       if (!next) return
       a.setAttribute('href', next)
     })
-    host.querySelectorAll('button#stageToSurvey').forEach((btn) => {
-      btn.addEventListener('click', (e) => {
-        e.preventDefault()
-        const surveyEl = host.querySelector('#survey')
-        if (surveyEl) {
-          surveyEl.scrollIntoView({ behavior: 'smooth', block: 'start' })
-          return
+
+    const wishHref = `/quick-design${isJourneyActive() ? '?journey=1' : ''}#survey`
+    host.querySelectorAll('a#stageToWishLink, a[href="/quick-design#survey"]').forEach((a) => {
+      a.setAttribute('href', wishHref)
+      a.addEventListener('click', () => {
+        const active = document.querySelector('.stage-tab.active') as HTMLElement | null
+        const stage = active?.dataset.stage
+        if (stage && isJourneyActive()) {
+          patchJourney({ lifeStage: stage, step: 'quick-design' })
+          advanceJourney('quick-design')
         }
-        window.location.assign('/quick-design#survey')
       })
+    })
+
+    host.querySelectorAll('button#stageToSurvey').forEach((btn) => {
+      btn.addEventListener(
+        'click',
+        (e) => {
+          e.preventDefault()
+          e.stopImmediatePropagation()
+          const active = host.querySelector('.stage-tab.active') as HTMLElement | null
+          const stage = active?.dataset.stage
+          const surveyEl = host.querySelector('#survey')
+          if (stage && isJourneyActive()) {
+            patchJourney({ lifeStage: stage, step: 'quick-design' })
+            advanceJourney('quick-design')
+          } else if (stage) {
+            patchJourney({ lifeStage: stage })
+          }
+          if (surveyEl && host.querySelector('#surveyForm') && !host.querySelector('#surveyForm')?.closest('[hidden]')) {
+            const realForm = document.querySelector('#survey #surveyForm')
+            if (realForm && host.contains(realForm)) {
+              surveyEl.scrollIntoView({ behavior: 'smooth', block: 'start' })
+              return
+            }
+          }
+          window.location.assign(`/quick-design${isJourneyActive() ? '?journey=1' : ''}#survey`)
+        },
+        true,
+      )
     })
 
     const hash = window.location.hash

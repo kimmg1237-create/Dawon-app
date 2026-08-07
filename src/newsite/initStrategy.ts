@@ -5,6 +5,24 @@
  * DOM은 strategyBody.html 마크업을 그대로 사용합니다.
  */
 
+import {
+  advanceJourney,
+  captureWishForJourney,
+  clearJourney,
+  ensureJourneyFromUrl,
+  isJourneyActive,
+  patchJourney,
+  readJourney,
+  startJourney,
+} from '../services/journeyService'
+import {
+  addDaysYMD,
+  normalizeTracker,
+  parseYMD,
+  seedTrackerFromDay,
+  toYMD,
+} from '../services/trackerHandoff'
+
 function initMainSite() {
 'use strict';
 const DRAFT_KEY='dawonLifeStageWishDraft_v3', RESPONSE_KEY='dawonLifeStageWishResponses_v3';
@@ -71,16 +89,38 @@ function makeReport(d,id){const s=score(d),stage=stageData[d.lifeStage]||stageDa
 ${d.strengthEvidence||''}`],['현재 어려움',`${textValue(d.obstacles)} · ${d.supportNeed||''}`],['7일 첫 행동',`${d.firstAction||''}
 언제: ${d.actionWhen||''}
 첫 대상: ${d.firstCustomer||''}`]];$('#summaryGrid').innerHTML=summaries.map(x=>`<div class="summary"><h4>${escapeHtml(x[0])}</h4><p>${escapeHtml(x[1]||'')}</p></div>`).join('');const contentRec=typeof upgradeRecommendation==='function'?upgradeRecommendation(d.lifeStage,d.lifeDomain||'마음'):{book:'관련 도서 추천',music:'관련 음악 추천',action:stage.today};const rec=[['추천 책',contentRec.book],['추천 음악',contentRec.music],['추천 행동',contentRec.action],['생애단계 오늘 행동',stage.today],['생애단계 성공 기준',stage.measure],['7일 기본 리듬',stage.week.map((x,i)=>`${i+1}일차 ${x}`).join(' → ')],['검증 기준',d.successMetric||'실행 전 확인 기준을 더 구체화하세요.'],['전문가 공동설계',`${textValue(d.experts)} 분야와 ${d.consultMode||'선호 방식 미정'} 방식으로 상의하세요.`],['다원식 다음 질문','실천 후 무엇이 달라졌고, 무엇을 유지·수정·중단할지 기록하세요.'],['주의 문구','이 보고서는 자기확인과 상담 준비용이며 의료·법률·재무 진단이 아닙니다.']];$('#recommendGrid').innerHTML=rec.map(x=>`<div class="recommend"><h4>${escapeHtml(x[0])}</h4><p>${escapeHtml(x[1])}</p></div>`).join('');$('#result').classList.add('show');setTimeout(()=>$('#result').scrollIntoView({behavior:'smooth'}),100)}
-function submit(e){e.preventDefault();for(let i=0;i<8;i++){if(!validatePage(i)){showPage(i);return}}const d=getValues(),id='DW-'+new Date().toISOString().slice(0,10).replaceAll('-','')+'-'+Math.random().toString(36).slice(2,7).toUpperCase(),item={id,submittedAt:new Date().toISOString(),data:d,scores:score(d),version:'life-stage-wish-v4'};const all=JSON.parse(storage.getItem(RESPONSE_KEY)||'[]');all.unshift(item);storage.setItem(RESPONSE_KEY,JSON.stringify(all));storage.removeItem(DRAFT_KEY);makeReport(d,id);renderAdmin();window.dispatchEvent(new CustomEvent('dawon:wish-submitted',{detail:item}));toast('응답이 제출되고 보고서가 생성되었습니다.')}
-function reportText(){return `다원 바람설계 보고서\n${$('#responseId').textContent}\n\n핵심 바람\n${$('#reportTitle').textContent}\n\n`+$$('.summary,.recommend').map(x=>`${$('h4',x).textContent}\n${$('p',x).textContent}`).join('\n\n')}
+function submit(e){e.preventDefault();for(let i=0;i<8;i++){if(!validatePage(i)){showPage(i);return}}const d=getValues(),id='DW-'+new Date().toISOString().slice(0,10).replaceAll('-','')+'-'+Math.random().toString(36).slice(2,7).toUpperCase(),item={id,submittedAt:new Date().toISOString(),data:d,scores:score(d),version:'life-stage-wish-v4'};const all=JSON.parse(storage.getItem(RESPONSE_KEY)||'[]');all.unshift(item);storage.setItem(RESPONSE_KEY,JSON.stringify(all));storage.removeItem(DRAFT_KEY);makeReport(d,id);renderAdmin();captureWishForJourney(item);window.dispatchEvent(new CustomEvent('dawon:wish-submitted',{detail:item}));toast('응답이 제출되고 보고서가 생성되었습니다.')}
 function openAdmin(){renderAdmin();$('#adminDrawer').classList.add('open');$('#adminDrawer').setAttribute('aria-hidden','false');document.body.style.overflow='hidden'}function closeAdmin(){$('#adminDrawer').classList.remove('open');$('#adminDrawer').setAttribute('aria-hidden','true');document.body.style.overflow=''}
 function renderAdmin(){const all=JSON.parse(storage.getItem(RESPONSE_KEY)||'[]');$('#adminList').innerHTML=all.length?all.map((x,i)=>`<article class="admin-item"><header><h4>${escapeHtml(x.id)}</h4><small>${new Date(x.submittedAt).toLocaleString('ko-KR')}</small></header><p><b>${escapeHtml((stageData[x.data.lifeStage]||{}).name||'생애단계 미선택')} · ${escapeHtml(textValue(x.data.wishAreas))}</b><br>${escapeHtml((x.data.wishText||'').slice(0,170))}</p><div><span class="pill" style="color:var(--ink);border-color:var(--line)">완성도 ${x.scores?.completeness??'-'}</span> <span class="pill" style="color:var(--ink);border-color:var(--line)">준비도 ${x.scores?.readiness??'-'}</span> <button class="btn btn-light btn-sm" data-view="${i}">보고서 보기</button> <button class="btn btn-danger btn-sm" data-del="${i}">삭제</button></div></article>`).join(''):'<div class="empty">저장된 제출 응답이 없습니다.</div>';$$('[data-view]').forEach(b=>b.onclick=()=>{const x=all[Number(b.dataset.view)];makeReport(x.data,x.id);closeAdmin()});$$('[data-del]').forEach(b=>b.onclick=()=>{if(!confirm('이 응답을 삭제할까요?'))return;all.splice(Number(b.dataset.del),1);storage.setItem(RESPONSE_KEY,JSON.stringify(all));renderAdmin()})}
 function exportJson(){const data=storage.getItem(RESPONSE_KEY)||'[]',blob=new Blob([data],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='dawon-wish-responses-'+new Date().toISOString().slice(0,10)+'.json';a.click();URL.revokeObjectURL(a.href)}
 function portalSearch(e){e.preventDefault();const q=$('#searchInput').value.trim();if(!q)return toast('찾고 싶은 주제를 입력해 주세요.');const stageRoutes=[['elementary',/초등|어린이|아동/],['middle',/중학|사춘기/],['high',/고등|입시|수능/],['college',/대학|전공|캠퍼스/],['youth',/청년|취업|사회초년/],['worker',/직장|회사|이직|업무/],['midlife',/중년|은퇴준비|두번째/],['senior',/노년|노후|시니어|고령/]];const sr=stageRoutes.find(x=>x[1].test(q));if(sr){renderStage(sr[0],true,true);toast(`“${q}” 생애단계를 안내합니다.`);return}const routes=[[/생애|단계|나이|학생|성인/,'#life-stage'],[/직원|업무|팀|인사|마감/,'#team'],[/아이디어|아이템|상품|제품|신사업/,'#idea-lab'],[/전략|기획|계획|로드맵|KPI/,'#strategy'],[/정보|브리핑|자동재생|안내|AI|인공지능/,'#ai-hub'],[/설문|바람|원하|상담|진로|창업|마음|관계/,'#survey'],[/과정|실천|생활설계/,'#process'],[/책|전자책|만화|노래|음악|오디오|콘텐츠|서재|라이브러리/,'#library'],[/전문가|보안|개인정보|기관|기업|가족/,'#trust'],[/응답|관리|결과/, 'admin']];const r=routes.find(x=>x[0].test(q));if(r?.[1]==='admin')openAdmin();else document.querySelector(r?.[1]||'#life-stage').scrollIntoView({behavior:'smooth'});toast(`“${q}” 관련 영역으로 이동했습니다.`)}
 $('#menuBtn').onclick=()=>{const n=$('#navLinks');n.classList.toggle('open');$('#menuBtn').setAttribute('aria-expanded',n.classList.contains('open'))};$$('#navLinks a').forEach(a=>a.onclick=()=>$('#navLinks').classList.remove('open'));
-$$('.stage-tab').forEach(b=>b.addEventListener('click',()=>renderStage(b.dataset.stage,false,true)));$('#stageToSurvey').onclick=()=>{form.elements.lifeStage.value=currentStage;saveDraft(true);$('#survey').scrollIntoView({behavior:'smooth',block:'start'});toast(`${stageData[currentStage].name} 맞춤 설문을 시작합니다.`)};form.elements.lifeStage.addEventListener('change',e=>{if(e.target.value)renderStage(e.target.value)});
+$$('.stage-tab').forEach(b=>b.addEventListener('click',()=>renderStage(b.dataset.stage,false,true)));$('#stageToSurvey').onclick=()=>{form.elements.lifeStage.value=currentStage;saveDraft(true);if(isJourneyActive()){patchJourney({lifeStage:currentStage,step:'quick-design'});advanceJourney('quick-design')}else{patchJourney({lifeStage:currentStage})}const hasLocalSurvey=Boolean(document.querySelector('#life-stage')&&document.querySelector('#survey #surveyForm')&&!document.querySelector('#survey #surveyForm')?.dataset?.dawonStub);if(hasLocalSurvey){$('#survey').scrollIntoView({behavior:'smooth',block:'start'});toast(`${stageData[currentStage].name} 맞춤 설문을 시작합니다.`);return}window.location.assign(`/quick-design${isJourneyActive()?'?journey=1':''}#survey`);toast(`${stageData[currentStage].name} 맞춤 설문을 시작합니다.`)};form.elements.lifeStage.addEventListener('change',e=>{if(e.target.value)renderStage(e.target.value)});
 $('#nextBtn').onclick=()=>{if(validatePage(page)){saveDraft(true);showPage(page+1)}};$('#prevBtn').onclick=()=>{saveDraft(true);showPage(page-1)};$('#saveDraft').onclick=()=>saveDraft();$('#resetDraft').onclick=resetDraft;$('#resumeHero')?.addEventListener('click',()=>{document.querySelector('#survey').scrollIntoView({behavior:'smooth'});setTimeout(()=>loadDraft(true),250)});form.addEventListener('input',()=>{updateCounters();scheduleSave()});form.addEventListener('change',scheduleSave);form.addEventListener('submit',submit);$('#portalSearch').addEventListener('submit',portalSearch);
-['adminOpen','adminQuick','adminMobile','adminResult'].forEach(id=>$('#'+id)?.addEventListener('click',openAdmin));$('#adminClose').onclick=closeAdmin;$('#drawerBg').onclick=closeAdmin;$('#exportJson').onclick=exportJson;$('#deleteAll').onclick=()=>{if(confirm('저장된 모든 제출 응답을 삭제할까요?')){storage.removeItem(RESPONSE_KEY);renderAdmin();toast('전체 응답을 삭제했습니다.')}};$('#copyReport').onclick=async()=>{try{await navigator.clipboard.writeText(reportText());toast('보고서가 복사되었습니다.')}catch{toast('복사 권한을 확인해 주세요.')}};$('#downloadReport').onclick=()=>{const blob=new Blob([reportText()],{type:'text/plain;charset=utf-8'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='DAWON_생애주기_바람설계_보고서_'+new Date().toISOString().slice(0,10)+'.txt';a.click();URL.revokeObjectURL(a.href);toast('TXT 보고서를 저장했습니다.')};$('#printBtn').onclick=()=>window.print();$('#newSurvey').onclick=()=>{form.reset();updateCounters();showPage(0);$('#result').classList.remove('show');$('#survey').scrollIntoView({behavior:'smooth'})};document.addEventListener('keydown',e=>{if(e.key==='Escape')closeAdmin()});
+['adminOpen','adminQuick','adminMobile','adminResult'].forEach(id=>$('#'+id)?.addEventListener('click',openAdmin));$('#adminClose').onclick=closeAdmin;$('#drawerBg').onclick=closeAdmin;$('#exportJson').onclick=exportJson;$('#deleteAll').onclick=()=>{if(confirm('저장된 모든 제출 응답을 삭제할까요?')){storage.removeItem(RESPONSE_KEY);renderAdmin();toast('전체 응답을 삭제했습니다.')}};$('#printBtn').onclick=()=>window.print();$('#newSurvey').onclick=()=>{form.reset();updateCounters();showPage(0);$('#result').classList.remove('show');$('#survey').scrollIntoView({behavior:'smooth'})};$('#journeyToRecords')?.addEventListener('click',()=>{const j=readJourney();const action=j.todayAction||$('#reportTitle')?.textContent||'';const done=j.successMetric||'';seedTrackerFromDay({action,done,tomorrow:j.trackerNext||''});startJourney('records');advanceJourney('records');window.location.assign('/records?journey=1');toast('7일 설계로 오늘의 행동을 넘겨 두었습니다.')});
+function goJourneyStrategy(e){e?.preventDefault?.();const next=$('#trackerNext')?.value?.trim()||'';patchJourney({trackerNext:next||undefined,step:'operations',active:true});advanceJourney('operations');window.location.assign('/operations?journey=1#strategy')}
+$('#journeyToStrategy')?.addEventListener('click',goJourneyStrategy);
+$('#journeyToStrategyFinal')?.addEventListener('click',goJourneyStrategy);
+$('#journeyFinish')?.addEventListener('click',()=>{clearJourney();window.location.assign('/')});document.addEventListener('keydown',e=>{if(e.key==='Escape')closeAdmin()});
+ensureJourneyFromUrl();
+;(function applyJourneyPrefill(){
+  const j=readJourney();
+  if(j.lifeStage&&form?.elements?.lifeStage&&!form.elements.lifeStage.dataset?.dawonStub){
+    try{form.elements.lifeStage.value=j.lifeStage;renderStage(j.lifeStage,false,true)}catch{}
+  }
+  if(j.wishText&&$('#strategyIdea')&&!$('#strategyIdea').dataset?.dawonStub&&!$('#strategyIdea').value){
+    $('#strategyIdea').value=j.wishText;
+  }
+  if(j.todayAction&&$('#strategyGoal')&&!$('#strategyGoal').value){
+    $('#strategyGoal').value=`7일 실천 이어가기: ${j.todayAction}`.slice(0,120);
+  }
+  if((j.successMetric||j.trackerNext)&&$('#strategyKpi')&&!$('#strategyKpi').value){
+    $('#strategyKpi').value=(j.successMetric||j.trackerNext||'').slice(0,120);
+  }
+  if(isJourneyActive()&&$('#journeyComplete')&&!$('#journeyComplete').dataset?.dawonStub){
+    $('#journeyComplete').hidden=false;
+  }
+})();
 const d=storage.getItem(DRAFT_KEY);if(d){try{const p=JSON.parse(d);$('#saveState').textContent='저장본 있음 · '+new Date(p.savedAt).toLocaleString('ko-KR');$('#inlineSaveState').textContent='저장된 설문을 이어갈 수 있습니다.'}catch{}}
 
 
@@ -109,7 +149,6 @@ function teamData(){return opsRead(TEAM_KEY,[])}
 function renderTeam(){const all=teamData(),q=($('#teamSearch')?.value||'').trim().toLowerCase(),items=all.filter(x=>[x.name,x.department,x.role,x.task,x.support].join(' ').toLowerCase().includes(q));$('#teamTotal').textContent=all.length;$('#teamWorking').textContent=all.filter(x=>x.status==='working').length;$('#teamCheck').textContent=all.filter(x=>x.status==='check').length;$('#teamDone').textContent=all.filter(x=>x.status==='done').length;$('#teamList').innerHTML=items.length?items.map(x=>`<article class="team-item"><div><strong>${escapeHtml(x.name)}</strong><small>${escapeHtml(x.department||'팀 미입력')}</small></div><div><strong>${escapeHtml(x.role)}</strong><small>${x.due?`마감 ${escapeHtml(x.due)}`:'마감 미정'}</small></div><div class="task-cell"><strong>${escapeHtml(x.task)}</strong><small>${x.support?`지원: ${escapeHtml(x.support)}`:'필요 지원 없음'}</small></div><div><span class="status-pill ${x.status}">${statusNames[x.status]}</span></div><div><select data-team-status="${x.id}" aria-label="상태 변경"><option value="working" ${x.status==='working'?'selected':''}>진행 중</option><option value="check" ${x.status==='check'?'selected':''}>확인 필요</option><option value="done" ${x.status==='done'?'selected':''}>완료</option><option value="hold" ${x.status==='hold'?'selected':''}>보류</option></select> <button class="btn btn-danger btn-sm" type="button" data-team-del="${x.id}">삭제</button></div></article>`).join(''):'<div class="empty-state">등록된 직원·업무가 없습니다. 사람을 평가하는 정보보다 역할과 오늘의 완료기준부터 적어보세요.</div>';$$('[data-team-status]').forEach(s=>s.onchange=()=>{const data=teamData(),item=data.find(x=>x.id===s.dataset.teamStatus);if(item)item.status=s.value;opsWrite(TEAM_KEY,data);renderTeam()});$$('[data-team-del]').forEach(b=>b.onclick=()=>{if(!confirm('이 직원·업무 항목을 삭제할까요?'))return;opsWrite(TEAM_KEY,teamData().filter(x=>x.id!==b.dataset.teamDel));renderTeam()})}
 $('#employeeForm').addEventListener('submit',e=>{e.preventDefault();const item={id:'TM-'+Date.now(),name:$('#empName').value.trim(),department:$('#empDepartment').value.trim(),role:$('#empRole').value.trim(),due:$('#empDue').value,task:$('#empTask').value.trim(),status:$('#empStatus').value,support:$('#empSupport').value.trim(),createdAt:new Date().toISOString()};if(!item.name||!item.role||!item.task)return toast('이름·역할·핵심업무를 입력해 주세요.');const data=teamData();data.unshift(item);opsWrite(TEAM_KEY,data);e.target.reset();renderTeam();toast('직원·업무를 저장했습니다.')});$('#teamSearch').addEventListener('input',renderTeam);
 $('#teamBrief').onclick=()=>{const all=teamData();if(!all.length)return toast('직원·업무를 먼저 등록해 주세요.');const check=all.filter(x=>x.status==='check'),hold=all.filter(x=>x.status==='hold'),due=all.filter(x=>x.due).sort((a,b)=>a.due.localeCompare(b.due)).slice(0,3);const text=[`전체 ${all.length}명·항목 중 진행 ${all.filter(x=>x.status==='working').length}, 확인 필요 ${check.length}, 완료 ${all.filter(x=>x.status==='done').length}, 보류 ${hold.length}.`,check.length?`먼저 결정할 업무: ${check.slice(0,3).map(x=>`${x.name}—${x.task}`).join(' / ')}`:'확인 필요 업무가 없습니다.',due.length?`가까운 마감: ${due.map(x=>`${x.due} ${x.name}`).join(' / ')}`:'마감일 입력 항목이 없습니다.',`오늘 관리자 행동: 확인 필요 업무 한 건의 목적·완료기준·지원결정을 10분 안에 정리합니다.`];$('#teamBriefResult').innerHTML=`<h4>AI 규칙형 업무요약</h4>${text.map(x=>`<p>${escapeHtml(x)}</p>`).join('')}<div class="tool-actions"><button class="btn btn-light btn-sm" type="button" id="teamBriefCopy">복사</button></div>`;$('#teamBriefResult').classList.add('show');$('#teamBriefCopy').onclick=()=>copyAny(text.join('\n'));};
-$('#teamCsv').onclick=()=>{const all=teamData();if(!all.length)return toast('내보낼 직원·업무가 없습니다.');const escCsv=v=>`"${String(v??'').replaceAll('"','""')}"`;const rows=[['이름','부서','역할','핵심업무','상태','마감','필요지원'],...all.map(x=>[x.name,x.department,x.role,x.task,statusNames[x.status],x.due,x.support])];downloadFile('DAWON_직원업무_'+new Date().toISOString().slice(0,10)+'.csv','\ufeff'+rows.map(r=>r.map(escCsv).join(',')).join('\n'),'text/csv;charset=utf-8');};
 $('#teamClear').onclick=()=>{if(confirm('저장된 직원·업무를 모두 삭제할까요?')){opsWrite(TEAM_KEY,[]);renderTeam();toast('직원·업무를 모두 삭제했습니다.')}};
 
 // idea lab
@@ -202,17 +241,49 @@ $('#quickDesignForm')?.addEventListener('submit',e=>{e.preventDefault();const st
 $('#quickCopy')?.addEventListener('click',()=>copyAny(upgradeQuickText));$('#quickDownload')?.addEventListener('click',()=>{if(!upgradeQuickText)return toast('실천카드를 먼저 만들어 주세요.');downloadFile('DAWON_3분자기설계_'+new Date().toISOString().slice(0,10)+'.txt',upgradeQuickText)});$('#quickReset')?.addEventListener('click',()=>{$('#quickDesignForm').reset();$('#quickResult').classList.remove('show');storage.removeItem(UPGRADE_QUICK_KEY);upgradeQuickText='';upgradeSyncStage('elementary');upgradeSelectedDomain='마음';upgradeRenderDomains($('#quickDomains'),upgradeSelectedDomain,d=>{upgradeSelectedDomain=d;upgradeRenderStageRecommendation()})});$('#quickToTracker')?.addEventListener('click',()=>{if(window.location.pathname!=='/records'){window.history.pushState({},'','/records');window.dispatchEvent(new PopStateEvent('popstate'))}else $('#action-log')?.scrollIntoView({behavior:'smooth'});toast('7일 기록에서 오늘 행동을 확인해보세요.')});
 try{const q=JSON.parse(storage.getItem(UPGRADE_QUICK_KEY)||'null');if(q){$('#quickStage').value=q.stage;upgradeFillSubtype($('#quickSubtype'),q.stage,q.subtype);upgradeSelectedDomain=q.domain||'마음';upgradeRenderDomains($('#quickDomains'),upgradeSelectedDomain,d=>{upgradeSelectedDomain=d;upgradeRenderStageRecommendation()});$('#quickWish').value=q.wish||'';$('#quickAction').value=q.action||'';$('#quickEmotion').value=q.emotion||'';$('#quickTime').value=q.time||'10분';upgradeApplyMode(q.stage)}}catch{}
 
-// Seven-day action tracker — one day at a time.
+// Seven-day action tracker — calendar weeks, one day at a time.
 const TRACKER_DONE = new Set(['완료', '어려움', '중단', '쉬어감'])
+const WEEKDAY_KO = ['일', '월', '화', '수', '목', '금', '토']
+let trackerWeeks = []
+let trackerWeekIndex = 0
 let trackerActiveDay = 0
-let trackerDaysData = Array.from({ length: 7 }, () => ({ status: '', emotion: '', note: '' }))
+let trackerDaysData = []
 
+function upgradeFormatMD(ymd) {
+  const d = parseYMD(ymd)
+  return `${d.getMonth() + 1}.${d.getDate()}`
+}
 function upgradeIsDayLogged(d) {
   return Boolean(d && TRACKER_DONE.has(d.status))
 }
 function upgradeFindActiveDay(days) {
   const idx = days.findIndex((d) => !upgradeIsDayLogged(d))
   return idx === -1 ? 7 : idx
+}
+function upgradeLoggedCount(days = trackerDaysData) {
+  return days.filter((d) => upgradeIsDayLogged(d)).length
+}
+function upgradeCurrentWeek() {
+  return trackerWeeks[trackerWeekIndex] || null
+}
+function upgradeSyncWeekFieldsFromUI() {
+  const week = upgradeCurrentWeek()
+  if (!week) return
+  week.before = Number($('#beforeScore').value)
+  week.after = Number($('#afterScore').value)
+  week.reaction = $('#trackerReaction').value.trim()
+  week.decision = $('#trackerDecision').value
+  week.next = $('#trackerNext').value.trim()
+  week.days = trackerDaysData.map((d) => ({ ...d }))
+}
+function upgradeLoadWeekFieldsToUI() {
+  const week = upgradeCurrentWeek()
+  if (!week) return
+  $('#beforeScore').value = week.before ?? 5
+  $('#afterScore').value = week.after ?? 5
+  $('#trackerReaction').value = week.reaction || ''
+  $('#trackerDecision').value = week.decision || '유지한다'
+  $('#trackerNext').value = week.next || ''
 }
 function upgradeSetChoiceGroup(root, attr, value) {
   if (!root) return
@@ -236,7 +307,7 @@ function upgradeBindChoiceGroup(rootId, attr, hiddenId) {
 function upgradeShowHandoffBanner() {
   const box = $('#trackerHandoff')
   const noteEl = $('#trackerHandoffNote')
-  if (!box || !noteEl) return
+  if (!box || !noteEl || box.dataset.dawonStub === '1') return
   const d = trackerDaysData[trackerActiveDay]
   if (d && d.note && !upgradeIsDayLogged(d)) {
     box.hidden = false
@@ -245,28 +316,70 @@ function upgradeShowHandoffBanner() {
     box.hidden = true
   }
 }
-function upgradeRenderProgress() {
-  const box = $('#trackerProgress')
+function upgradeUpdateContinueCTA() {
+  const box = $('#trackerContinue')
   if (!box || box.dataset.dawonStub === '1') return
+  box.hidden = upgradeLoggedCount() < 1
+  const startBtn = $('#trackerStartNextWeek')
+  const isLatest = trackerWeekIndex === trackerWeeks.length - 1
+  const complete = upgradeLoggedCount() >= 7
+  if (startBtn && startBtn.dataset.dawonStub !== '1') {
+    startBtn.hidden = !(isLatest && complete)
+  }
+}
+function upgradeRenderWeekbar() {
+  const week = upgradeCurrentWeek()
+  if (!week) return
+  const label = $('#trackerWeekLabel')
+  const range = $('#trackerWeekRange')
+  if (label && label.dataset.dawonStub !== '1') label.textContent = `${trackerWeekIndex + 1}주차`
+  if (range && range.dataset.dawonStub !== '1') {
+    range.textContent = `${upgradeFormatMD(week.startDate)} ~ ${upgradeFormatMD(addDaysYMD(week.startDate, 6))}`
+  }
+  const prev = $('#trackerPrevWeek')
+  const next = $('#trackerNextWeek')
+  if (prev && prev.dataset.dawonStub !== '1') prev.disabled = trackerWeekIndex <= 0
+  if (next && next.dataset.dawonStub !== '1') next.disabled = trackerWeekIndex >= trackerWeeks.length - 1
+}
+function upgradeRenderCalendar() {
+  const box = $('#trackerCalendar')
+  if (!box || box.dataset.dawonStub === '1') return
+  const week = upgradeCurrentWeek()
+  if (!week) return
   const frontier = upgradeFindActiveDay(trackerDaysData)
+  const todayYmd = toYMD(new Date())
   box.innerHTML = Array.from({ length: 7 }, (_, i) => {
     const d = trackerDaysData[i] || {}
+    const ymd = d.date || addDaysYMD(week.startDate, i)
     const logged = upgradeIsDayLogged(d)
-    const canOpen = logged || i === frontier
+    const canOpen = logged || i === frontier || i < frontier
     const active = i === trackerActiveDay
-    const cls = active ? 'is-active' : logged ? 'is-done' : i === frontier ? 'is-open' : 'is-locked'
-    const label = logged ? d.status || '기록됨' : i === frontier ? '오늘' : '잠금'
-    return `<button type="button" class="tracker-step ${cls}" data-step="${i}" ${canOpen ? '' : 'disabled'}><b>${i + 1}</b><span>${label}</span></button>`
+    const isToday = ymd === todayYmd
+    const cls = [
+      'tracker-cal-day',
+      active ? 'is-active' : '',
+      logged ? 'is-checked' : '',
+      i === frontier && !logged ? 'is-open' : '',
+      !canOpen ? 'is-locked' : '',
+      isToday ? 'is-today' : '',
+    ]
+      .filter(Boolean)
+      .join(' ')
+    const wd = WEEKDAY_KO[parseYMD(ymd).getDay()]
+    const check = logged ? '<i class="tracker-cal-check" aria-hidden="true">✓</i>' : ''
+    return `<button type="button" class="${cls}" data-step="${i}" ${canOpen ? '' : 'disabled'} aria-pressed="${active}" aria-label="${i + 1}일차 ${ymd}${logged ? ' 기록됨' : ''}"><span class="tracker-cal-wd">${wd}</span><b>${upgradeFormatMD(ymd)}</b><small>${i + 1}일</small>${check}</button>`
   }).join('')
-  $$('.tracker-step', box).forEach((btn) => {
+  $$('.tracker-cal-day', box).forEach((btn) => {
     btn.onclick = () => {
       const i = Number(btn.dataset.step)
       if (Number.isNaN(i)) return
       const openTo = upgradeFindActiveDay(trackerDaysData)
-      if (!upgradeIsDayLogged(trackerDaysData[i]) && i !== openTo) return
+      if (!upgradeIsDayLogged(trackerDaysData[i]) && i > openTo) return
       upgradeShowDay(i)
     }
   })
+  upgradeRenderWeekbar()
+  upgradeUpdateContinueCTA()
 }
 function upgradeRenderHistory() {
   const box = $('#trackerGrid')
@@ -279,10 +392,10 @@ function upgradeRenderHistory() {
     return
   }
   box.innerHTML = items
-    .map(
-      ({ d, i }) =>
-        `<article class="day-log history ${d.status === '완료' ? 'done' : ''}" data-day="${i}"><h3>${i + 1}일차 · ${escapeHtml(d.status)}</h3><p>${escapeHtml(d.emotion || '')}</p><p>${escapeHtml(d.note || '한 줄 기록 없음')}</p><button type="button" class="btn btn-light btn-sm" data-edit-day="${i}">수정</button></article>`,
-    )
+    .map(({ d, i }) => {
+      const dateLabel = d.date ? upgradeFormatMD(d.date) : `${i + 1}일`
+      return `<article class="day-log history ${d.status === '완료' ? 'done' : ''}" data-day="${i}"><h3>${dateLabel} · ${i + 1}일차 · ${escapeHtml(d.status)}</h3><p>${escapeHtml(d.emotion || '')}</p><p>${escapeHtml(d.note || '한 줄 기록 없음')}</p><button type="button" class="btn btn-light btn-sm" data-edit-day="${i}">수정</button></article>`
+    })
     .join('')
   $$('[data-edit-day]', box).forEach((b) => {
     b.onclick = () => upgradeShowDay(Number(b.dataset.editDay))
@@ -295,15 +408,17 @@ function upgradeShowDay(dayIndex) {
     trackerActiveDay = 7
     if (today) today.hidden = true
     if (finalBox) finalBox.hidden = false
-    upgradeRenderProgress()
+    upgradeRenderCalendar()
     upgradeRenderHistory()
-    $('#trackerMicro').textContent = '7일을 모두 남겼습니다. 아래에서 다음 한 가지만 정해 보세요.'
+    $('#trackerMicro').textContent = '7일을 모두 남겼습니다. 아래에서 마무리하거나 다음 주를 이어가세요.'
+    upgradeUpdateContinueCTA()
     return
   }
   trackerActiveDay = dayIndex
   if (today) today.hidden = false
   if (finalBox) finalBox.hidden = true
-  const d = trackerDaysData[dayIndex] || { status: '완료', emotion: '자신감', note: '' }
+  const week = upgradeCurrentWeek()
+  const d = trackerDaysData[dayIndex] || { status: '완료', emotion: '자신감', note: '', date: addDaysYMD(week.startDate, dayIndex) }
   const status = TRACKER_DONE.has(d.status) ? d.status : '완료'
   const emotion = d.emotion && d.emotion !== '감정 선택' ? d.emotion : '자신감'
   $('#todayStatus').value = status === '중단' ? '쉬어감' : status
@@ -311,25 +426,35 @@ function upgradeShowDay(dayIndex) {
   $('#todayNote').value = d.note || ''
   upgradeSetChoiceGroup($('#todayStatusChoices'), 'data-status', $('#todayStatus').value)
   upgradeSetChoiceGroup($('#todayEmotionChoices'), 'data-emotion', emotion)
-  $('#trackerTodayBadge').textContent = `${dayIndex + 1}일차 · ${dayIndex === upgradeFindActiveDay(trackerDaysData) ? '오늘' : '기록 수정'}`
+  const dateLabel = d.date ? upgradeFormatMD(d.date) : `${dayIndex + 1}일`
+  const frontier = upgradeFindActiveDay(trackerDaysData)
+  $('#trackerTodayBadge').textContent = `${dateLabel} · ${dayIndex + 1}일차${dayIndex === frontier ? ' · 오늘' : ' · 기록'}`
   $('#trackerTodayHint').textContent =
     dayIndex === 0
       ? '처음이에요. 잘한 날·어려운 날·쉬는 날 모두 괜찮습니다.'
       : '어제보다 조금만 나아도 충분합니다. 한 줄이면 됩니다.'
   const nextLabel = dayIndex >= 6 ? '마무리로 이동' : `${dayIndex + 2}일차가 열립니다`
   $('#trackerMicro').textContent = `저장하면 ${nextLabel}.`
-  upgradeRenderProgress()
+  upgradeRenderCalendar()
   upgradeRenderHistory()
   upgradeShowHandoffBanner()
+  upgradeUpdateContinueCTA()
 }
 function upgradeBuildTracker(data = {}) {
-  trackerDaysData = Array.from({ length: 7 }, (_, i) => {
-    const d = (data.days || [])[i] || {}
-    return { status: d.status || '', emotion: d.emotion || '', note: d.note || '' }
-  })
-  trackerActiveDay = upgradeFindActiveDay(trackerDaysData)
+  const normalized = normalizeTracker(data)
+  trackerWeeks = normalized.weeks
+  trackerWeekIndex = normalized.currentWeekIndex
+  const week = upgradeCurrentWeek()
+  trackerDaysData = week.days
+  trackerActiveDay = normalized.activeDay
+  if (trackerActiveDay < 7 && !upgradeIsDayLogged(trackerDaysData[trackerActiveDay])) {
+    /* keep */
+  } else {
+    trackerActiveDay = upgradeFindActiveDay(trackerDaysData)
+  }
   upgradeBindChoiceGroup('todayStatusChoices', 'data-status', 'todayStatus')
   upgradeBindChoiceGroup('todayEmotionChoices', 'data-emotion', 'todayEmotion')
+  upgradeLoadWeekFieldsToUI()
   upgradeShowDay(trackerActiveDay)
 }
 function upgradeReadTracker() {
@@ -340,33 +465,97 @@ function upgradeReadTracker() {
   }
 }
 function upgradeGatherTracker() {
+  upgradeSyncWeekFieldsFromUI()
+  const week = upgradeCurrentWeek()
   return {
-    before: Number($('#beforeScore').value),
-    after: Number($('#afterScore').value),
-    days: trackerDaysData.map((d) => ({ ...d })),
-    reaction: $('#trackerReaction').value.trim(),
-    decision: $('#trackerDecision').value,
-    next: $('#trackerNext').value.trim(),
+    weeks: trackerWeeks.map((w, i) =>
+      i === trackerWeekIndex
+        ? {
+            ...w,
+            days: trackerDaysData.map((d) => ({ ...d })),
+            before: week?.before ?? Number($('#beforeScore').value),
+            after: week?.after ?? Number($('#afterScore').value),
+            reaction: week?.reaction ?? $('#trackerReaction').value.trim(),
+            decision: week?.decision ?? $('#trackerDecision').value,
+            next: week?.next ?? $('#trackerNext').value.trim(),
+          }
+        : { ...w, days: (w.days || []).map((d) => ({ ...d })) },
+    ),
+    currentWeekIndex: trackerWeekIndex,
     activeDay: trackerActiveDay,
     savedAt: new Date().toISOString(),
+    // legacy mirrors
+    before: week?.before,
+    after: week?.after,
+    days: trackerDaysData.map((d) => ({ ...d })),
+    reaction: week?.reaction,
+    decision: week?.decision,
+    next: week?.next,
+    weekStart: week?.startDate,
   }
 }
 function upgradeSaveCurrentDay(statusOverride) {
   if (trackerActiveDay >= 7) {
     storage.setItem(UPGRADE_TRACKER_KEY, JSON.stringify(upgradeGatherTracker()))
+    window.dispatchEvent(new CustomEvent('dawon:tracker-saved'))
     toast('마무리 기록을 저장했습니다.')
+    upgradeUpdateContinueCTA()
     return
   }
+  const week = upgradeCurrentWeek()
   const status = statusOverride || $('#todayStatus').value || '완료'
   const emotion = $('#todayEmotion').value || '자신감'
   const note = $('#todayNote').value.trim()
-  trackerDaysData[trackerActiveDay] = { status, emotion, note }
+  const date = trackerDaysData[trackerActiveDay]?.date || addDaysYMD(week.startDate, trackerActiveDay)
+  trackerDaysData[trackerActiveDay] = { status, emotion, note, date }
   const next = upgradeFindActiveDay(trackerDaysData)
   storage.setItem(UPGRADE_TRACKER_KEY, JSON.stringify(upgradeGatherTracker()))
   window.dispatchEvent(new CustomEvent('dawon:tracker-saved'))
   if (statusOverride === '쉬어감') toast(`${trackerActiveDay + 1}일차는 쉬어가기로 남겼습니다.`)
   else toast(`${trackerActiveDay + 1}일차 기록을 저장했습니다.`)
   upgradeShowDay(next)
+}
+function upgradeStartNextWeek() {
+  upgradeSyncWeekFieldsFromUI()
+  if (upgradeLoggedCount() < 7) {
+    toast('이번 주 7일을 먼저 남겨 주세요. 하루만 있어도 운영전략으로는 갈 수 있어요.')
+    return
+  }
+  const cur = upgradeCurrentWeek()
+  const nextStart = addDaysYMD(cur.startDate, 7)
+  trackerWeeks.push({
+    startDate: nextStart,
+    days: Array.from({ length: 7 }, (_, i) => ({
+      status: '',
+      emotion: '',
+      note: '',
+      date: addDaysYMD(nextStart, i),
+    })),
+    before: 5,
+    after: 5,
+    reaction: '',
+    decision: '유지한다',
+    next: cur.next || '',
+  })
+  trackerWeekIndex = trackerWeeks.length - 1
+  trackerDaysData = trackerWeeks[trackerWeekIndex].days
+  trackerActiveDay = 0
+  upgradeLoadWeekFieldsToUI()
+  storage.setItem(UPGRADE_TRACKER_KEY, JSON.stringify(upgradeGatherTracker()))
+  window.dispatchEvent(new CustomEvent('dawon:tracker-saved'))
+  upgradeShowDay(0)
+  toast(`${trackerWeekIndex + 1}주차를 시작했습니다. 계속 기록해 보세요.`)
+}
+function upgradeSwitchWeek(delta) {
+  const next = trackerWeekIndex + delta
+  if (next < 0 || next >= trackerWeeks.length) return
+  upgradeSyncWeekFieldsFromUI()
+  trackerWeekIndex = next
+  trackerDaysData = trackerWeeks[trackerWeekIndex].days
+  trackerActiveDay = upgradeFindActiveDay(trackerDaysData)
+  upgradeLoadWeekFieldsToUI()
+  upgradeScore()
+  upgradeShowDay(trackerActiveDay)
 }
 function upgradeScore() {
   const a = Number($('#beforeScore').value)
@@ -383,49 +572,49 @@ function upgradeScore() {
         : '점수보다 오늘 한 일을 남기는 것이 중요합니다.'
 }
 const trackerSaved = upgradeReadTracker()
-$('#beforeScore').value = trackerSaved.before || 5
-$('#afterScore').value = trackerSaved.after || 5
-$('#trackerReaction').value = trackerSaved.reaction || ''
-$('#trackerDecision').value = trackerSaved.decision || '유지한다'
-$('#trackerNext').value = trackerSaved.next || ''
 upgradeBuildTracker(trackerSaved)
 upgradeScore()
 ;['beforeScore', 'afterScore'].forEach((id) => $('#' + id)?.addEventListener('input', upgradeScore))
 $('#saveTracker')?.addEventListener('click', () => upgradeSaveCurrentDay())
 $('#skipTrackerDay')?.addEventListener('click', () => upgradeSaveCurrentDay('쉬어감'))
+$('#trackerPrevWeek')?.addEventListener('click', () => upgradeSwitchWeek(-1))
+$('#trackerNextWeek')?.addEventListener('click', () => upgradeSwitchWeek(1))
+$('#trackerStartNextWeek')?.addEventListener('click', () => upgradeStartNextWeek())
+$('#trackerStartNextWeekFinal')?.addEventListener('click', () => upgradeStartNextWeek())
 upgradeShowHandoffBanner()
+upgradeUpdateContinueCTA()
 window.addEventListener('dawon:tracker-seeded', () => {
   const fresh = upgradeReadTracker()
-  $('#beforeScore').value = fresh.before || 5
-  $('#afterScore').value = fresh.after || 5
-  if (fresh.next) $('#trackerNext').value = fresh.next
   upgradeBuildTracker(fresh)
   upgradeScore()
   upgradeShowHandoffBanner()
+  upgradeUpdateContinueCTA()
   toast('오늘설계 한 줄을 7일 노트에 넣었습니다.')
 })
 $('#saveTrackerFinal')?.addEventListener('click', () => {
   storage.setItem(UPGRADE_TRACKER_KEY, JSON.stringify(upgradeGatherTracker()))
+  window.dispatchEvent(new CustomEvent('dawon:tracker-saved'))
   toast('7일 마무리를 저장했습니다.')
+  upgradeUpdateContinueCTA()
 })
 $('#exportTracker')?.addEventListener('click', () => {
   const d = upgradeGatherTracker()
   const text =
-    `DAWON 7일 설계 기록\n${new Date().toLocaleString('ko-KR')}\n\n시작 전 자신감: ${d.before}점\n현재 자신감: ${d.after}점\n\n` +
-    d.days
-      .map((x, i) => `${i + 1}일차 · ${x.status || '미기록'} · ${x.emotion || ''}\n${x.note || ''}`)
-      .join('\n\n') +
-    `\n\n[다른 사람 반응]\n${d.reaction}\n\n[다음 선택]\n${d.decision}\n${d.next}`
+    `DAWON 7일 설계 기록\n${new Date().toLocaleString('ko-KR')}\n\n` +
+    (d.weeks || [])
+      .map((w, wi) => {
+        const head = `[${wi + 1}주차 · ${w.startDate} ~ ${addDaysYMD(w.startDate, 6)}]\n시작 전 자신감: ${w.before}점 / 현재: ${w.after}점\n`
+        const body = (w.days || [])
+          .map((x, i) => `${x.date || i + 1} · ${i + 1}일차 · ${x.status || '미기록'} · ${x.emotion || ''}\n${x.note || ''}`)
+          .join('\n\n')
+        return `${head}\n${body}\n\n[다음 선택] ${w.decision}\n${w.next || ''}\n[반응] ${w.reaction || ''}`
+      })
+      .join('\n\n--------------------\n\n')
   downloadFile('DAWON_7일설계기록_' + new Date().toISOString().slice(0, 10) + '.txt', text)
 })
 $('#resetTracker')?.addEventListener('click', () => {
-  if (!confirm('7일 기록을 처음부터 다시 할까요?')) return
+  if (!confirm('모든 주 기록을 처음부터 다시 할까요?')) return
   storage.removeItem(UPGRADE_TRACKER_KEY)
-  $('#beforeScore').value = 5
-  $('#afterScore').value = 5
-  $('#trackerReaction').value = ''
-  $('#trackerNext').value = ''
-  $('#todayNote').value = ''
   upgradeBuildTracker({})
   upgradeScore()
   toast('7일 기록을 초기화했습니다.')

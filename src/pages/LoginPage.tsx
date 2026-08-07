@@ -9,7 +9,7 @@ export function LoginPage() {
   const { signIn, signUp, requestPasswordReset, configured, user } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
-  const from = (location.state as { from?: string } | null)?.from || '/quick-design'
+  const from = (location.state as { from?: string } | null)?.from || '/quick-design#survey'
   const [mode, setMode] = useState<Mode>('in')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')

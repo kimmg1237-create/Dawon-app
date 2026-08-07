@@ -8,10 +8,30 @@
       <p data-copy="lead">7일을 한꺼번에 채우지 않아도 됩니다. 오늘 칸만 열고, 저장하면 다음 날이 열립니다. 어려웠던 날도 괜찮습니다.</p>
     </div>
 
-    <div className="tracker-progress" id="trackerProgress" aria-label="7일 진행"></div>
+    <div class="tracker-weekbar" id="trackerWeekbar">
+      <div class="tracker-weekbar-meta">
+        <b id="trackerWeekLabel">1주차</b>
+        <span id="trackerWeekRange"></span>
+      </div>
+      <div class="tracker-weekbar-actions">
+        <button class="btn btn-light btn-sm" type="button" id="trackerPrevWeek">이전 주</button>
+        <button class="btn btn-light btn-sm" type="button" id="trackerNextWeek">다음 주 보기</button>
+        <button class="btn btn-mint btn-sm" type="button" id="trackerStartNextWeek" hidden>다음 주 시작</button>
+      </div>
+    </div>
+
+    <div class="tracker-calendar" id="trackerCalendar" aria-label="주간 캘린더"></div>
+
+    <div class="tracker-continue" id="trackerContinue" hidden>
+      <div>
+        <b>하루만 남겨도 다음으로 갈 수 있어요</b>
+        <span>기록을 쌓으면서 운영전략으로도 이어갈 수 있습니다.</span>
+      </div>
+      <a class="btn btn-primary" id="journeyToStrategy" href="/operations?journey=1#strategy">운영전략으로 이어가기</a>
+    </div>
 
     <div class="tracker-handoff" id="trackerHandoff" hidden>
-      <b>오늘설계에서 가져온 한 줄</b>
+      <b>연결된 한 줄 기록</b>
       <p id="trackerHandoffNote"></p>
       <small>아래에서 상태·감정을 고르고 저장하면 다음 날이 열립니다.</small>
     </div>
@@ -81,7 +101,7 @@
     <div class="tracker-final" id="trackerFinal" hidden>
       <div class="tracker-final-head">
         <b>7일 마무리</b>
-        <span>모든 날을 남겨 두셨다면, 다음 한 가지만 정하면 됩니다.</span>
+        <span>이번 주를 마쳤다면 다음 한 가지를 정하고, 원하면 다음 주도 이어갈 수 있습니다.</span>
       </div>
       <div class="compact-field">
         <label for="trackerReaction">다른 사람의 반응·도움</label>
@@ -102,6 +122,8 @@
       </div>
       <div class="tracker-actions">
         <button class="btn btn-mint" type="button" id="saveTrackerFinal">마무리 저장</button>
+        <button class="btn btn-primary" type="button" id="trackerStartNextWeekFinal">다음 주 계속하기</button>
+        <a class="btn btn-outline" id="journeyToStrategyFinal" href="/operations?journey=1#strategy">운영전략으로 이어가기</a>
       </div>
     </div>
   </div>

@@ -1,6 +1,5 @@
 import { SectionPage } from './SectionPage'
 import { AuthGate } from '../components/AuthGate'
-import { TodayDesign } from '../components/TodayDesign'
 import { useAuth } from '../context/AuthContext'
 import { useSiteCopy } from '../context/SiteCopyContext'
 import { supabase } from '../lib/supabase'
@@ -54,16 +53,13 @@ export function QuickDesignPage() {
 
   return (
     <>
-      <AuthGate action="오늘설계·설문 저장" />
-      <div className="section-page">
-        <div className="container page-banner">
-          <div className="eyebrow">DAWON EXECUTION</div>
-          <h1>{page.title}</h1>
-          <p>{page.description}</p>
-        </div>
-        <TodayDesign />
-        <SectionPage title="" description="" html={survey} hideBanner />
-      </div>
+      <AuthGate action="바람설계 설문 저장" />
+      <SectionPage
+        title={page.title}
+        description={page.description}
+        sectionCopy={page}
+        html={survey}
+      />
     </>
   )
 }

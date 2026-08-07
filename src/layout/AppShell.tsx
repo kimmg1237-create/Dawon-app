@@ -1,5 +1,6 @@
 import { Outlet, NavLink } from 'react-router-dom'
 import { AppNav } from './AppNav'
+import { JourneyBar } from '../components/JourneyBar'
 import { FEATURES } from '../data/features'
 import { useSiteCopy } from '../context/SiteCopyContext'
 import './AppShell.css'
@@ -12,6 +13,7 @@ export function AppShell() {
       <div className="topline">{copy.chrome.topline}</div>
       <div className="style-banner">{copy.chrome.styleBanner}</div>
       <AppNav />
+      <JourneyBar />
       <main className="app-shell-main" id="main">
         <Outlet />
       </main>
@@ -22,8 +24,6 @@ export function AppShell() {
             <NavLink to="/strategy">{copy.footer.strategy}</NavLink>
             {' · '}
             <NavLink to="/quick-design">{copy.nav.quickDesign}</NavLink>
-            {' · '}
-            <NavLink to="/report">{copy.nav.report}</NavLink>
             {' · '}
             <NavLink to="/library">{copy.footer.library}</NavLink>
             {' · '}

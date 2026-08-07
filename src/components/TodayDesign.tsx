@@ -130,7 +130,7 @@ export function TodayDesign() {
             </h2>
           </div>
           <p>
-            길게 쓰지 않아도 됩니다. 한 일과 감정, 하나의 실천, 내일 할 일만 남기면 성장리포트와 7일
+            길게 쓰지 않아도 됩니다. 한 일과 감정, 하나의 실천, 내일 할 일만 남기면 7일
             설계로 이어집니다.
           </p>
         </div>
@@ -330,8 +330,8 @@ export function TodayDesign() {
               <Link className="btn btn-outline" to="/records">
                 7일 설계로
               </Link>
-              <Link className="btn btn-outline" to="/report">
-                성장리포트
+              <Link className="btn btn-outline" to="/quick-design#survey">
+                바람설계
               </Link>
               {form.savedAt ? (
                 <button className="btn btn-danger" type="button" onClick={() => void onDelete()}>

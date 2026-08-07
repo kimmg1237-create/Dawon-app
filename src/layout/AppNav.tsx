@@ -3,6 +3,7 @@ import { NavLink, Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useSiteCopy } from '../context/SiteCopyContext'
 import { FEATURES } from '../data/features'
+import { startJourney } from '../services/journeyService'
 
 export function AppNav() {
   const { user, isAdmin, signOut, configured } = useAuth()
@@ -14,7 +15,6 @@ export function AppNav() {
     { to: '/life-stage', label: copy.nav.lifeStage },
     { to: '/quick-design', label: copy.nav.quickDesign },
     { to: '/records', label: copy.nav.records },
-    { to: '/report', label: copy.nav.report },
     { to: '/library', label: copy.nav.library },
     { to: '/operations', label: copy.nav.operations },
     ...(FEATURES.paymentsEnabled ? [{ to: '/subscribe', label: copy.nav.subscribe }] : []),
@@ -105,7 +105,17 @@ export function AppNav() {
             )
           ) : null}
 
-          <NavLink to="/quick-design" className="app-nav-cta primary" onClick={closeMenu}>
+          <NavLink
+            to="/life-stage?journey=1"
+            className="app-nav-cta primary"
+            onClick={() => {
+              startJourney('life-stage')
+              closeMenu()
+            }}
+          >
+            원스톱 시작
+          </NavLink>
+          <NavLink to="/quick-design" className="app-nav-cta" onClick={closeMenu}>
             {copy.nav.startCta}
           </NavLink>
 
