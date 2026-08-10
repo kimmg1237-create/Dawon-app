@@ -16,6 +16,68 @@ body.dawon-os-active.dark .dawon-os-root {
   color: var(--ink);
 }
 
+/* index.css forces a light .hero gradient — that makes light dark-mode text invisible */
+body.dawon-os-active.dark .hero,
+body.dawon-os-active.dark .dawon-os-root .hero {
+  background:
+    radial-gradient(circle at 8% 10%, rgba(227, 77, 89, 0.12), transparent 25%),
+    radial-gradient(circle at 88% 5%, rgba(55, 198, 172, 0.12), transparent 28%),
+    radial-gradient(circle at 50% 80%, rgba(212, 164, 78, 0.08), transparent 35%),
+    linear-gradient(180deg, #071321 0%, #0a1a2e 62%, #071321 100%) !important;
+  color: var(--ink);
+}
+
+body.dawon-os-active.dark .hero::after {
+  background: conic-gradient(
+    from 30deg,
+    rgba(227, 77, 89, 0.08),
+    rgba(55, 198, 172, 0.1),
+    rgba(212, 164, 78, 0.08),
+    rgba(227, 77, 89, 0.08)
+  ) !important;
+  opacity: 0.55;
+}
+
+body.dawon-os-active.dark .hero-logo {
+  filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.45));
+}
+
+body.dawon-os-active.dark .hero .eyebrow,
+body.dawon-os-active.dark .hero .hero-subline,
+body.dawon-os-active.dark .hero .hero-tech,
+body.dawon-os-active.dark .hero .trust-row,
+body.dawon-os-active.dark .hero .trust-row span {
+  color: var(--muted) !important;
+}
+
+body.dawon-os-active.dark .hero .eyebrow {
+  color: #f3dfb7 !important;
+  background: rgba(16, 36, 62, 0.75) !important;
+  border-color: rgba(212, 164, 78, 0.35) !important;
+}
+
+body.dawon-os-active.dark .hero h1 {
+  color: #eef5ff !important;
+}
+
+body.dawon-os-active.dark .hero h1 span {
+  color: #7be3cf !important;
+}
+
+body.dawon-os-active.dark .hero h1 span::after {
+  background: rgba(212, 164, 78, 0.28) !important;
+}
+
+body.dawon-os-active.dark .hero .trust-row span:before {
+  color: #5ee0c8 !important;
+}
+
+body.dawon-os-active.dark .hero .btn-soft {
+  color: #eef5ff !important;
+  background: rgba(255, 255, 255, 0.06) !important;
+  border: 1px solid var(--line) !important;
+}
+
 /* Global heading/body overrides (index.css uses color:var(--navy) which stays dark) */
 body.dawon-os-active.dark h1,
 body.dawon-os-active.dark h2,
@@ -428,10 +490,10 @@ body.dawon-os-active.dark .hero h1 span {
   color: var(--mint) !important;
 }
 
-/* Keep filled primary buttons white-on-teal */
+/* Mint/teal primary fill reads better with dark ink (nav CTA already does this) */
 body.dawon-os-active.dark .btn-primary,
 body.dawon-os-active.dark .btn-primary * {
-  color: #fff !important;
+  color: #06241f !important;
 }
 
 /* Inline style leftovers (color:black / navy hex) on OS widgets */
