@@ -36,14 +36,15 @@ export function AppNav() {
   const [theme, setTheme] = useState<'light' | 'dark'>(() =>
     typeof document !== 'undefined' ? readTheme() : 'dark',
   )
-  const isHome = location.pathname === '/'
 
   useEffect(() => {
     applyTheme(theme)
   }, [theme])
 
-  // On home, OS HTML already renders its own topbar — hide React duplicate.
-  if (isHome) return null
+  // Close mobile menu on route change.
+  useEffect(() => {
+    setOpen(false)
+  }, [location.pathname, location.hash])
 
   const links = [
     { to: '/#one', label: '오늘설계' },
@@ -65,36 +66,7 @@ export function AppNav() {
       <div className="container app-nav">
         <Link className="brand" to="/" aria-label="다원 하루설계 홈" onClick={closeMenu}>
           <span className="brandmark brandmark-logo" aria-hidden="true">
-            <svg viewBox="0 0 76 54" role="img">
-              <defs>
-                <linearGradient id="dawonRedNav" x1="0" x2="1">
-                  <stop stopColor="#e94c5b" />
-                  <stop offset="1" stopColor="#c84134" />
-                </linearGradient>
-                <linearGradient id="dawonBlueNav" x1="0" x2="1">
-                  <stop stopColor="#2f65bb" />
-                  <stop offset="1" stopColor="#1496b8" />
-                </linearGradient>
-              </defs>
-              <circle cx="24" cy="27" r="17" fill="url(#dawonRedNav)" />
-              <path d="M24 10a17 17 0 0 1 0 34c8-4 8-13 0-17s-8-13 0-17Z" fill="url(#dawonBlueNav)" />
-              <circle cx="24" cy="18.5" r="4" fill="#fff" opacity=".96" />
-              <circle cx="24" cy="35.5" r="4" fill="#fff" opacity=".96" />
-              <path
-                d="M38 18c13 1 22 7 34 17-14-3-23-1-34 4"
-                fill="none"
-                stroke="url(#dawonRedNav)"
-                strokeWidth="6"
-                strokeLinecap="round"
-              />
-              <path
-                d="M38 29c13 1 22 6 33 14-14-2-23 0-34 5"
-                fill="none"
-                stroke="url(#dawonBlueNav)"
-                strokeWidth="6"
-                strokeLinecap="round"
-              />
-            </svg>
+            <img src="/brand/dawon-logo.png" alt="" width={46} height={46} decoding="async" />
           </span>
           <span className="brandtext">
             다원 하루설계

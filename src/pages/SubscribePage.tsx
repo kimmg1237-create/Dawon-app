@@ -191,7 +191,7 @@ export function SubscribePage() {
     setSelected(plan.id)
     if (plan.id === 'free') {
       if (!user) navigate('/login', { state: { from: '/subscribe?plan=free' } })
-      else navigate('/#one')
+      else navigate('/')
       return
     }
     void startPayment(plan)

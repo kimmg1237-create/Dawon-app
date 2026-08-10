@@ -34,10 +34,21 @@ export function HomePage() {
   }, [user, configured])
 
   useEffect(() => {
-    if (!location.hash) return
-    const id = location.hash.replace(/^#/, '')
-    if (!id) return
-    const t = window.setTimeout(() => scrollToDawonSection(id, 'smooth'), 50)
+    const hash = location.hash.replace(/^#/, '')
+    if (!hash) {
+      // Beat any delayed OS first-run scroll; keep hero + React nav in view.
+      const pinTop = () => window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
+      pinTop()
+      const t1 = window.setTimeout(pinTop, 40)
+      const t2 = window.setTimeout(pinTop, 120)
+      const t3 = window.setTimeout(pinTop, 280)
+      return () => {
+        window.clearTimeout(t1)
+        window.clearTimeout(t2)
+        window.clearTimeout(t3)
+      }
+    }
+    const t = window.setTimeout(() => scrollToDawonSection(hash, 'smooth'), 50)
     return () => window.clearTimeout(t)
   }, [location.hash, location.key])
 

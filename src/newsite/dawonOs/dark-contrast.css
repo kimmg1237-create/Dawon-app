@@ -817,3 +817,253 @@ body.dawon-os-active.dark .metric-card span,
 body.dawon-os-active.dark .metric-card small {
   color: #b7cbe2 !important;
 }
+
+/* ------------------------------------------------------------
+   Subscribe manage (구독·해지·환불) + orders table
+   Light ink was forced onto white panels; navy text sat on dark cards.
+   ------------------------------------------------------------ */
+body.dawon-os-active.dark .subscribe-manage {
+  background: rgba(16, 36, 62, 0.92) !important;
+  border-color: var(--line) !important;
+  box-shadow: 0 22px 65px rgba(0, 0, 0, 0.3) !important;
+  color: var(--ink) !important;
+}
+
+body.dawon-os-active.dark .subscribe-manage-head h3,
+body.dawon-os-active.dark .subscribe-page .subscribe-manage-head h3,
+body.dawon-os-active.dark .subscribe-manage-card h4,
+body.dawon-os-active.dark .subscribe-page .subscribe-manage-card h4,
+body.dawon-os-active.dark .subscribe-manage-strong,
+body.dawon-os-active.dark .subscribe-page p.subscribe-manage-strong,
+body.dawon-os-active.dark .subscribe-orders h4,
+body.dawon-os-active.dark .subscribe-page .subscribe-orders h4 {
+  color: var(--ink) !important;
+}
+
+body.dawon-os-active.dark .subscribe-manage-head p,
+body.dawon-os-active.dark .subscribe-page .subscribe-manage-head p,
+body.dawon-os-active.dark .subscribe-manage-meta,
+body.dawon-os-active.dark .subscribe-manage-meta li,
+body.dawon-os-active.dark .subscribe-manage-hint,
+body.dawon-os-active.dark .subscribe-page p.subscribe-manage-hint {
+  color: var(--muted) !important;
+}
+
+body.dawon-os-active.dark .subscribe-manage-head a,
+body.dawon-os-active.dark .subscribe-manage-hint a {
+  color: #7be3cf !important;
+}
+
+body.dawon-os-active.dark .subscribe-manage-card {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-color: var(--line) !important;
+}
+
+body.dawon-os-active.dark .subscribe-orders-table-wrap {
+  border-color: var(--line) !important;
+  background: rgba(0, 0, 0, 0.18) !important;
+}
+
+body.dawon-os-active.dark .subscribe-orders-table th,
+body.dawon-os-active.dark .subscribe-orders-table td {
+  border-bottom-color: var(--line) !important;
+  color: var(--ink) !important;
+}
+
+body.dawon-os-active.dark .subscribe-orders-table th {
+  background: rgba(255, 255, 255, 0.06) !important;
+  color: #d5e4f6 !important;
+}
+
+body.dawon-os-active.dark .subscribe-orders-table code {
+  color: #a8f0df !important;
+  background: rgba(55, 198, 172, 0.12) !important;
+}
+
+/* ------------------------------------------------------------
+   Library: ebook / comic / audiobook surfaces
+   ------------------------------------------------------------ */
+body.dawon-os-active.dark .library-audio-shell,
+body.dawon-os-active.dark .library-audio-shell .card,
+body.dawon-os-active.dark .audiobook-panel.card {
+  background: rgba(16, 36, 62, 0.92) !important;
+  border-color: var(--line) !important;
+  color: var(--ink) !important;
+  box-shadow: 0 22px 65px rgba(0, 0, 0, 0.3) !important;
+}
+
+body.dawon-os-active.dark .library-audio-shell .section-head h2,
+body.dawon-os-active.dark .library-audio-shell h2,
+body.dawon-os-active.dark #audiobook h2 {
+  color: var(--ink) !important;
+}
+
+body.dawon-os-active.dark .library-audio-shell .section-head p,
+body.dawon-os-active.dark #audiobook .section-head p {
+  color: var(--muted) !important;
+}
+
+body.dawon-os-active.dark .audiobook-library {
+  border-bottom-color: var(--line) !important;
+}
+
+body.dawon-os-active.dark .audiobook-label,
+body.dawon-os-active.dark .audiobook-file {
+  color: var(--ink) !important;
+}
+
+body.dawon-os-active.dark .audiobook-file.muted,
+body.dawon-os-active.dark .audiobook-meta,
+body.dawon-os-active.dark .audiobook-controls label {
+  color: var(--muted) !important;
+}
+
+body.dawon-os-active.dark .audiobook-library-item {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border-color: var(--line) !important;
+  color: var(--ink) !important;
+}
+
+body.dawon-os-active.dark .audiobook-library-item:hover,
+body.dawon-os-active.dark .audiobook-library-item:focus-visible {
+  border-color: rgba(55, 198, 172, 0.55) !important;
+}
+
+body.dawon-os-active.dark .audiobook-library-item.active {
+  background: rgba(55, 198, 172, 0.18) !important;
+  border-color: var(--mint) !important;
+  color: #a8f0df !important;
+}
+
+body.dawon-os-active.dark .audiobook-text,
+body.dawon-os-active.dark .audiobook-controls select {
+  background: rgba(7, 19, 33, 0.72) !important;
+  border-color: rgba(180, 210, 240, 0.35) !important;
+  color: var(--ink) !important;
+  caret-color: var(--ink);
+}
+
+body.dawon-os-active.dark .audiobook-text::placeholder {
+  color: #8fa4bf !important;
+}
+
+body.dawon-os-active.dark .audiobook-error {
+  color: #ffb4bc !important;
+}
+
+body.dawon-os-active.dark .library-audio-shell .btn-soft,
+body.dawon-os-active.dark .audiobook-actions .btn-soft {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-color: var(--line) !important;
+  color: var(--ink) !important;
+}
+
+body.dawon-os-active.dark .library-note {
+  background: #352b19 !important;
+  border-color: rgba(244, 217, 158, 0.35) !important;
+  color: #f4d99e !important;
+}
+
+/* Section.soft cream wash breaks dark library / subscribe readability */
+body.dawon-os-active.dark .section.soft,
+body.dawon-os-active.dark .library-section.section.soft,
+body.dawon-os-active.dark .section-soft {
+  background: transparent !important;
+  background-image: none !important;
+}
+
+body.dawon-os-active.dark .library-section,
+body.dawon-os-active.dark .dawon-library.library-section {
+  background: transparent !important;
+  color: var(--ink) !important;
+}
+
+body.dawon-os-active.dark .library-section .section-head h2,
+body.dawon-os-active.dark .library-section h2 {
+  color: var(--ink) !important;
+}
+
+body.dawon-os-active.dark .library-section .section-head p {
+  color: var(--muted) !important;
+}
+
+body.dawon-os-active.dark .book-slider-btn {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border-color: var(--line) !important;
+  color: var(--ink) !important;
+}
+
+body.dawon-os-active.dark .book-slider-dot {
+  background: #4a6280 !important;
+}
+
+body.dawon-os-active.dark .book-slider-dot.active {
+  background: var(--mint) !important;
+  box-shadow: 0 0 0 4px rgba(55, 198, 172, 0.2) !important;
+}
+
+/* Ebook / comic reader modal */
+body.dawon-os-active.dark .ebook-modal {
+  background: rgba(3, 10, 20, 0.72) !important;
+}
+
+body.dawon-os-active.dark .ebook-modal-panel,
+body.dawon-os-active.dark .ebook-reader-panel {
+  background: rgba(16, 36, 62, 0.98) !important;
+  border-color: var(--line) !important;
+  color: var(--ink) !important;
+}
+
+body.dawon-os-active.dark .ebook-modal-bar,
+body.dawon-os-active.dark .ebook-footer {
+  background: rgba(7, 19, 33, 0.92) !important;
+  border-color: var(--line) !important;
+}
+
+body.dawon-os-active.dark .ebook-modal-bar strong,
+body.dawon-os-active.dark .ebook-page-label {
+  color: var(--ink) !important;
+}
+
+body.dawon-os-active.dark .ebook-modal-bar span,
+body.dawon-os-active.dark .ebook-status,
+body.dawon-os-active.dark .ebook-zoom-label,
+body.dawon-os-active.dark .ebook-jump-label,
+body.dawon-os-active.dark .ebook-page-total,
+body.dawon-os-active.dark .ebook-page-spread,
+body.dawon-os-active.dark .ebook-view-btn:not(.active) {
+  color: var(--muted) !important;
+}
+
+body.dawon-os-active.dark .ebook-view-toggle,
+body.dawon-os-active.dark .ebook-zoom,
+body.dawon-os-active.dark .ebook-jump-input,
+body.dawon-os-active.dark .ebook-nav {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-color: var(--line) !important;
+  color: var(--ink) !important;
+}
+
+body.dawon-os-active.dark .ebook-view-btn.active {
+  background: linear-gradient(135deg, var(--emerald), var(--mint)) !important;
+  color: #06241f !important;
+}
+
+body.dawon-os-active.dark .ebook-tool-btn {
+  background: rgba(55, 198, 172, 0.18) !important;
+  color: #a8f0df !important;
+}
+
+body.dawon-os-active.dark .ebook-stage {
+  background: linear-gradient(180deg, #0a1829 0%, #071321 100%) !important;
+}
+
+body.dawon-os-active.dark .ebook-status.ebook-error {
+  color: #ffb4bc !important;
+}
+
+body.dawon-os-active.dark .ebook-modal .btn-soft {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-color: var(--line) !important;
+  color: var(--ink) !important;
+}

@@ -1,22 +1,13 @@
 import { useEffect, useState, type FormEvent } from 'react'
-import { Link, useNavigate, useLocation } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { PASSWORD_HINT, validatePassword } from '../lib/password'
 
 type Mode = 'in' | 'up' | 'forgot'
 
-/** Prefer home over removed 바람설계 destinations; keep safe internal paths. */
-function resolvePostLoginPath(raw: unknown): string {
-  if (typeof raw !== 'string' || !raw.startsWith('/') || raw.startsWith('//')) return '/'
-  if (raw.startsWith('/quick-design') || raw.startsWith('/survey')) return '/'
-  return raw
-}
-
 export function LoginPage() {
   const { signIn, signUp, requestPasswordReset, configured, user } = useAuth()
   const navigate = useNavigate()
-  const location = useLocation()
-  const from = resolvePostLoginPath((location.state as { from?: string } | null)?.from)
   const [mode, setMode] = useState<Mode>('in')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -25,9 +16,28 @@ export function LoginPage() {
   const [info, setInfo] = useState('')
   const [busy, setBusy] = useState(false)
 
+  function goHomeTop() {
+    // Always home hero top + nav — never /#one (오늘설계).
+    navigate('/', { replace: true })
+    try {
+      if (window.location.hash) {
+        window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}`)
+      }
+    } catch {
+      /* ignore */
+    }
+    const pinTop = () => window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
+    pinTop()
+    requestAnimationFrame(pinTop)
+    window.setTimeout(pinTop, 80)
+    window.setTimeout(pinTop, 250)
+  }
+
   useEffect(() => {
-    if (user && mode !== 'forgot') navigate(from, { replace: true })
-  }, [user, from, navigate, mode])
+    if (user && mode !== 'forgot') goHomeTop()
+    // Intentionally only react to auth/mode; goHomeTop uses stable navigate.
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- post-login home redirect
+  }, [user, mode, navigate])
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault()
@@ -88,7 +98,7 @@ export function LoginPage() {
       )
       return
     }
-    navigate(from, { replace: true })
+    goHomeTop()
   }
 
   function setAuthMode(next: Mode) {

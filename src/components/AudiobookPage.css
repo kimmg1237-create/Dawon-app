@@ -33,7 +33,7 @@
   align-items: center;
   gap: 8px;
   border: 1px solid var(--line);
-  background: #fff;
+  background: var(--paper, #fff);
   color: var(--ink);
   border-radius: 999px;
   padding: 8px 14px;
@@ -58,9 +58,9 @@
 }
 
 .audiobook-library-item.active {
-  background: rgba(23, 184, 144, 0.16);
-  border-color: var(--green-dark);
-  color: var(--green-deep);
+  background: rgba(12, 136, 119, 0.18);
+  border-color: var(--emerald, #0c8877);
+  color: var(--emerald, #0c8877);
 }
 
 .audiobook-upload {
@@ -92,7 +92,7 @@
   border: 1px solid var(--line);
   border-radius: 16px;
   padding: 16px 18px;
-  background: #fff;
+  background: var(--paper, #fff);
   color: var(--ink);
   line-height: 1.7;
 }
@@ -133,7 +133,7 @@
   border: 1px solid var(--line);
   border-radius: 12px;
   padding: 10px 12px;
-  background: #fff;
+  background: var(--paper, #fff);
   color: var(--ink);
 }
 

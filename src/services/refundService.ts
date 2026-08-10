@@ -28,6 +28,27 @@ export async function fetchPaymentOrders(userId: string): Promise<PaymentOrderRo
   return (data as PaymentOrderRow[]) || []
 }
 
+/** Admin-only. RLS `Admins delete payment orders` enforces is_wish_admin(). */
+export async function deletePaymentOrder(orderId: string): Promise<void> {
+  if (!supabase) throw new Error('Supabase가 설정되지 않았습니다.')
+  const id = orderId.trim()
+  if (!id) throw new Error('주문번호가 없습니다.')
+
+  const { data: isAdmin, error: adminError } = await supabase.rpc('is_wish_admin')
+  if (adminError) throw new Error(adminError.message)
+  if (!isAdmin) throw new Error('관리자만 결제 내역을 삭제할 수 있습니다.')
+
+  const { error, count } = await supabase
+    .from('payment_orders')
+    .delete({ count: 'exact' })
+    .eq('order_id', id)
+
+  if (error) throw new Error(error.message)
+  if (count === 0) {
+    throw new Error('삭제할 주문을 찾지 못했거나 권한이 없습니다.')
+  }
+}
+
 export function getRefundDecision(
   order: PaymentOrderRow | null,
   contentFirstUsedAt: string | null | undefined,

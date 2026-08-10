@@ -219,20 +219,36 @@ export function mountDawonOs(
   host.innerHTML = bodyHtml
   patchInternalLinks(host, navigate)
   bridgeChrome(host, navigate, auth)
+
+  // Integration mode: unlock first-run before scripts so they do not auto-scroll to #one.
+  // (scripts.raw.js setStep(1) scrolls to 오늘설계 when first-run-focus is active.)
+  try {
+    localStorage.setItem('dawon_v17_first_core_complete', '1')
+  } catch {
+    /* ignore quota / private mode */
+  }
+
   runOsScripts()
   ensureNavigateHelper()
   ensureDarkDefault()
   if (auth) syncDawonOsAccount(host, auth.account)
 
-  // Integration mode: keep full OS navigable (first-run focus hides major sections/nav).
+  // Keep full OS navigable (first-run focus hides major sections/nav).
   document.body.classList.remove('first-run-focus', 'first-step-1', 'first-step-2')
   document.getElementById('firstCompleteOverlay')?.classList.remove('show')
 
-  const hash = window.location.hash
+  const hash = window.location.hash.replace(/^#/, '')
   if (hash) {
     requestAnimationFrame(() => {
       scrollToDawonSection(hash, 'smooth')
     })
+  } else {
+    // Land on hero top under the fixed React nav (never #one by default).
+    const pinHeroTop = () => window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
+    pinHeroTop()
+    requestAnimationFrame(pinHeroTop)
+    window.setTimeout(pinHeroTop, 50)
+    window.setTimeout(pinHeroTop, 160)
   }
 
   return () => {

@@ -274,6 +274,11 @@ create policy "Users read own payment orders"
   on public.payment_orders for select
   using (auth.uid() = user_id);
 
+drop policy if exists "Admins delete payment orders" on public.payment_orders;
+create policy "Admins delete payment orders"
+  on public.payment_orders for delete
+  using (public.is_wish_admin());
+
 -- ============================================================
 -- 환불·해지·이용개시
 -- ============================================================

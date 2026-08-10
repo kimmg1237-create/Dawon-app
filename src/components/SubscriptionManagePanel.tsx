@@ -5,6 +5,7 @@ import { useSubscription } from '../context/SubscriptionContext'
 import { formatDateKo, formatKrw, PRODUCT_SPEC } from '../data/productSpec'
 import type { PaymentOrderRow } from '../data/refundPolicy'
 import {
+  deletePaymentOrder,
   fetchLatestPaidOrder,
   fetchPaymentOrders,
   getRefundDecision,
@@ -12,14 +13,25 @@ import {
 } from '../services/refundService'
 
 export function SubscriptionManagePanel() {
-  const { user } = useAuth()
+  const { user, isAdmin } = useAuth()
   const { subscription, statusLabel, refresh, scheduleCancel, undoCancel, premiumReason } =
     useSubscription()
   const [orders, setOrders] = useState<PaymentOrderRow[]>([])
   const [latestPaid, setLatestPaid] = useState<PaymentOrderRow | null>(null)
   const [busy, setBusy] = useState<'cancel' | 'resume' | 'refund' | null>(null)
+  const [deletingOrderId, setDeletingOrderId] = useState<string | null>(null)
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
+
+  async function reloadOrders() {
+    if (!user) return
+    const [list, paid] = await Promise.all([
+      fetchPaymentOrders(user.id),
+      fetchLatestPaidOrder(user.id),
+    ])
+    setOrders(list)
+    setLatestPaid(paid)
+  }
 
   useEffect(() => {
     if (!user) return
@@ -100,17 +112,38 @@ export function SubscriptionManagePanel() {
         '고객 청약철회(디지털 콘텐츠 미이용·철회기간 내)',
       )
       await refresh()
-      if (user) {
-        const paid = await fetchLatestPaidOrder(user.id)
-        const list = await fetchPaymentOrders(user.id)
-        setLatestPaid(paid)
-        setOrders(list)
-      }
+      await reloadOrders()
       setMessage(result.message || '환불이 완료되었습니다.')
     } catch (err) {
       setError(err instanceof Error ? err.message : '환불 신청 실패')
     } finally {
       setBusy(null)
+    }
+  }
+
+  async function onDeleteOrder(order: PaymentOrderRow) {
+    if (!isAdmin) {
+      setError('관리자만 결제 내역을 삭제할 수 있습니다.')
+      return
+    }
+    if (
+      !window.confirm(
+        `주문 ${order.order_id} (${order.status}, ${formatKrw(order.amount)}) 내역을 삭제할까요?\n이 작업은 되돌릴 수 없으며, 구독 상태·토스 결제 자체는 자동으로 변경되지 않습니다.`,
+      )
+    ) {
+      return
+    }
+    setDeletingOrderId(order.order_id)
+    setError('')
+    setMessage('')
+    try {
+      await deletePaymentOrder(order.order_id)
+      await reloadOrders()
+      setMessage(`주문 ${order.order_id} 내역을 삭제했습니다.`)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : '결제 내역 삭제 실패')
+    } finally {
+      setDeletingOrderId(null)
     }
   }
 
@@ -205,6 +238,9 @@ export function SubscriptionManagePanel() {
       {orders.length > 0 ? (
         <div className="subscribe-orders">
           <h4>결제·환불 내역</h4>
+          {isAdmin ? (
+            <p className="subscribe-manage-hint">관리자: 행의 삭제로 테스트·실패 주문을 정리할 수 있습니다.</p>
+          ) : null}
           <div className="subscribe-orders-table-wrap">
             <table className="subscribe-orders-table">
               <thead>
@@ -214,6 +250,7 @@ export function SubscriptionManagePanel() {
                   <th>금액</th>
                   <th>상태</th>
                   <th>결제일</th>
+                  {isAdmin ? <th>관리</th> : null}
                 </tr>
               </thead>
               <tbody>
@@ -226,6 +263,18 @@ export function SubscriptionManagePanel() {
                     <td>{formatKrw(o.amount)}</td>
                     <td>{o.status}</td>
                     <td>{formatDateKo(o.paid_at || o.created_at)}</td>
+                    {isAdmin ? (
+                      <td>
+                        <button
+                          type="button"
+                          className="btn btn-soft btn-small subscribe-order-delete"
+                          disabled={deletingOrderId !== null || busy !== null}
+                          onClick={() => void onDeleteOrder(o)}
+                        >
+                          {deletingOrderId === o.order_id ? '삭제 중…' : '삭제'}
+                        </button>
+                      </td>
+                    ) : null}
                   </tr>
                 ))}
               </tbody>
