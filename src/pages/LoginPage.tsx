@@ -5,11 +5,18 @@ import { PASSWORD_HINT, validatePassword } from '../lib/password'
 
 type Mode = 'in' | 'up' | 'forgot'
 
+/** Prefer home over removed 바람설계 destinations; keep safe internal paths. */
+function resolvePostLoginPath(raw: unknown): string {
+  if (typeof raw !== 'string' || !raw.startsWith('/') || raw.startsWith('//')) return '/'
+  if (raw.startsWith('/quick-design') || raw.startsWith('/survey')) return '/'
+  return raw
+}
+
 export function LoginPage() {
   const { signIn, signUp, requestPasswordReset, configured, user } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
-  const from = (location.state as { from?: string } | null)?.from || '/quick-design#survey'
+  const from = resolvePostLoginPath((location.state as { from?: string } | null)?.from)
   const [mode, setMode] = useState<Mode>('in')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -27,13 +34,15 @@ export function LoginPage() {
     setError('')
     setInfo('')
 
+    const emailValue = email.trim()
+    if (!emailValue) {
+      setError('이메일을 입력해 주세요.')
+      return
+    }
+
     if (mode === 'forgot') {
-      if (!email.trim()) {
-        setError('가입한 이메일을 입력해 주세요.')
-        return
-      }
       setBusy(true)
-      const result = await requestPasswordReset(email)
+      const result = await requestPasswordReset(emailValue)
       setBusy(false)
       if (result.error) {
         setError(result.error)
@@ -42,6 +51,11 @@ export function LoginPage() {
       setInfo(
         '비밀번호 재설정 메일을 보냈습니다. 메일함(스팸함 포함)을 확인한 뒤 링크를 눌러 새 비밀번호를 설정해 주세요.',
       )
+      return
+    }
+
+    if (!password) {
+      setError('비밀번호를 입력해 주세요.')
       return
     }
 
@@ -58,7 +72,8 @@ export function LoginPage() {
     }
 
     setBusy(true)
-    const result = mode === 'in' ? await signIn(email, password) : await signUp(email, password)
+    const result =
+      mode === 'in' ? await signIn(emailValue, password) : await signUp(emailValue, password)
     setBusy(false)
     if (result.error) {
       setError(result.error)
@@ -68,7 +83,9 @@ export function LoginPage() {
       setMode('in')
       setPassword('')
       setPasswordConfirm('')
-      setInfo('가입이 접수되었습니다. 이메일 확인 설정에 따라 바로 로그인하거나 메일 인증 후 로그인해 주세요.')
+      setInfo(
+        '가입이 접수되었습니다. 이메일 확인 설정에 따라 바로 로그인하거나 메일 인증 후 로그인해 주세요.',
+      )
       return
     }
     navigate(from, { replace: true })
@@ -88,7 +105,7 @@ export function LoginPage() {
 
   return (
     <div className="container">
-      <form className="login-card" onSubmit={onSubmit} noValidate={mode !== 'in'}>
+      <form className="login-card" onSubmit={onSubmit} noValidate>
         <h1>{title}</h1>
         <p>
           {!configured
@@ -103,11 +120,15 @@ export function LoginPage() {
           이메일
           <input
             type="email"
+            name="email"
             required
             autoComplete="email"
+            inputMode="email"
+            placeholder="예: name@email.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             disabled={!configured}
+            autoFocus
           />
         </label>
         {mode !== 'forgot' ? (
@@ -115,6 +136,7 @@ export function LoginPage() {
             비밀번호
             <input
               type="password"
+              name="password"
               required
               minLength={mode === 'up' ? 8 : 6}
               maxLength={20}
@@ -124,7 +146,7 @@ export function LoginPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               disabled={!configured}
-              placeholder={mode === 'up' ? '예: dawon1234' : undefined}
+              placeholder={mode === 'up' ? '예: dawon1234' : '비밀번호 입력'}
             />
           </label>
         ) : null}
@@ -133,6 +155,7 @@ export function LoginPage() {
             비밀번호 확인
             <input
               type="password"
+              name="passwordConfirm"
               required
               minLength={8}
               maxLength={20}

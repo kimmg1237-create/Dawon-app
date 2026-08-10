@@ -94,15 +94,57 @@ function patchInternalLinks(root: HTMLElement, navigate: (to: string) => void) {
   })
 }
 
-function bridgeChrome(root: HTMLElement, navigate: (to: string) => void) {
+export type DawonOsAccountState = {
+  email: string | null
+  configured: boolean
+}
+
+/** Keep OS topbar account chip in sync with React AuthContext. */
+export function syncDawonOsAccount(root: HTMLElement | null, state: DawonOsAccountState) {
+  if (!root) return
+  const btn = root.querySelector('#accountBtn') as HTMLButtonElement | null
+  const name = root.querySelector('#accountName')
+  const chip = root.querySelector('#accountChip')
+  const dot = root.querySelector('#cloudDot')
+  if (!btn) return
+
+  if (!state.configured) {
+    btn.hidden = true
+    return
+  }
+  btn.hidden = false
+
+  if (state.email) {
+    const label = state.email.split('@')[0] || '회원'
+    btn.textContent = '로그아웃'
+    if (name) name.textContent = label
+    chip?.classList.add('show')
+    dot?.classList.add('online')
+  } else {
+    btn.textContent = '로그인'
+    if (name) name.textContent = '게스트'
+    chip?.classList.remove('show')
+    dot?.classList.remove('online')
+  }
+}
+
+function bridgeChrome(
+  root: HTMLElement,
+  navigate: (to: string) => void,
+  auth?: { isLoggedIn: () => boolean; onSignOut: () => void },
+) {
   const accountBtn = root.querySelector('#accountBtn') as HTMLButtonElement | null
   if (accountBtn) {
-    // Capture phase so React login wins over removed HTML auth modal handlers.
+    // Capture phase so React auth wins over removed HTML auth modal handlers.
     accountBtn.addEventListener(
       'click',
       (e) => {
         e.preventDefault()
         e.stopImmediatePropagation()
+        if (auth?.isLoggedIn()) {
+          auth.onSignOut()
+          return
+        }
         navigate('/login')
       },
       true,
@@ -159,17 +201,28 @@ function runOsScripts() {
   }
 }
 
+type MountAuth = {
+  isLoggedIn: () => boolean
+  onSignOut: () => void
+  account: DawonOsAccountState
+}
+
 /** Mount DAWON OS HTML + non-payment scripts. Payments stay on React /subscribe. */
-export function mountDawonOs(host: HTMLElement, navigate: (to: string) => void): () => void {
+export function mountDawonOs(
+  host: HTMLElement,
+  navigate: (to: string) => void,
+  auth?: MountAuth,
+): () => void {
   ensureDarkDefault()
   ensureNavigateHelper()
   host.classList.add('dawon-os-root')
   host.innerHTML = bodyHtml
   patchInternalLinks(host, navigate)
-  bridgeChrome(host, navigate)
+  bridgeChrome(host, navigate, auth)
   runOsScripts()
   ensureNavigateHelper()
   ensureDarkDefault()
+  if (auth) syncDawonOsAccount(host, auth.account)
 
   // Integration mode: keep full OS navigable (first-run focus hides major sections/nav).
   document.body.classList.remove('first-run-focus', 'first-step-1', 'first-step-2')

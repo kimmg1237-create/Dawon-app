@@ -47,7 +47,11 @@ body.dawon-os-active.dark .hero .hero-subline,
 body.dawon-os-active.dark .hero .hero-tech,
 body.dawon-os-active.dark .hero .trust-row,
 body.dawon-os-active.dark .hero .trust-row span {
-  color: var(--muted) !important;
+  color: #d7e5f7 !important;
+}
+
+body.dawon-os-active.dark .hero .hero-tech {
+  color: #b7cbe2 !important;
 }
 
 body.dawon-os-active.dark .hero .eyebrow {
@@ -420,10 +424,29 @@ body.dawon-os-active.dark .login-card {
   color: var(--ink) !important;
 }
 
+body.dawon-os-active.dark .login-card input:not([type='checkbox']):not([type='radio']) {
+  color: var(--ink) !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid rgba(180, 210, 240, 0.45) !important;
+  caret-color: var(--ink);
+}
+
+body.dawon-os-active.dark .login-card input::placeholder {
+  color: #9bb0c9 !important;
+  opacity: 1;
+}
+
+body.dawon-os-active.dark .login-card input:focus {
+  outline: 2px solid rgba(55, 198, 172, 0.55);
+  outline-offset: 1px;
+  border-color: rgba(55, 198, 172, 0.7) !important;
+}
+
 body.dawon-os-active.dark .library-tabs button:not(.active),
 body.dawon-os-active.dark .library-tab:not(.active) {
-  color: #172036 !important;
-  background: #fff !important;
+  color: var(--ink) !important;
+  background: rgba(255, 255, 255, 0.06) !important;
+  border-color: var(--line) !important;
 }
 
 body.dawon-os-active.dark .empty-state {
@@ -431,18 +454,18 @@ body.dawon-os-active.dark .empty-state {
   background: transparent !important;
 }
 
-/* Light surfaces that must keep dark type */
+/* Library search uses dark surface + light type in dark mode */
 body.dawon-os-active.dark .library-search,
 body.dawon-os-active.dark .library-search input {
-  color: #172036 !important;
+  color: var(--ink) !important;
 }
 
 body.dawon-os-active.dark .library-search span {
-  color: #617284 !important;
+  color: var(--muted) !important;
 }
 
 body.dawon-os-active.dark .library-search input::placeholder {
-  color: #8a9aab !important;
+  color: #8fa4bf !important;
 }
 
 body.dawon-os-active.dark .subscribe-check a,
@@ -512,4 +535,285 @@ body.dawon-os-active.dark [style*='color: #123a62'],
 body.dawon-os-active.dark [style*='color:#182238'],
 body.dawon-os-active.dark [style*='color: #182238'] {
   color: var(--ink) !important;
+}
+
+/* ------------------------------------------------------------
+   App-wide React pages (login / admin / legal / payment / gates)
+   Hardcoded light surfaces from AppShell.css + index.css
+   ------------------------------------------------------------ */
+html:has(body.dawon-os-active.dark),
+body.dawon-os-active.dark {
+  background: var(--ivory, #071321) !important;
+  color: var(--ink, #eef5ff);
+}
+
+body.dawon-os-active.dark .app-shell.dawon-os-shell {
+  background: var(--ivory, #071321);
+  color: var(--ink, #eef5ff);
+  min-height: 100vh;
+}
+
+body.dawon-os-active.dark .login-card label,
+body.dawon-os-active.dark .login-card a {
+  color: var(--muted) !important;
+}
+
+body.dawon-os-active.dark .login-link-btn {
+  color: #7be3cf !important;
+}
+
+body.dawon-os-active.dark .btn-light,
+body.dawon-os-active.dark .btn.btn-light {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border: 1px solid var(--line) !important;
+  color: var(--ink) !important;
+}
+
+body.dawon-os-active.dark .login-success {
+  background: rgba(55, 198, 172, 0.12) !important;
+  border-color: rgba(55, 198, 172, 0.35) !important;
+  color: #a8f0df !important;
+}
+
+body.dawon-os-active.dark .login-error {
+  color: #ffb4bc !important;
+}
+
+/* Legal / policy pages */
+body.dawon-os-active.dark .legal-body h2 {
+  color: var(--ink) !important;
+}
+
+body.dawon-os-active.dark .legal-body p,
+body.dawon-os-active.dark .legal-body li,
+body.dawon-os-active.dark .legal-effective {
+  color: var(--muted) !important;
+}
+
+body.dawon-os-active.dark .legal-body a {
+  color: #7be3cf !important;
+}
+
+body.dawon-os-active.dark .legal-note {
+  background: #352b19 !important;
+  border-color: rgba(244, 217, 158, 0.35) !important;
+  color: #f4d99e !important;
+}
+
+body.dawon-os-active.dark .legal-table th,
+body.dawon-os-active.dark .legal-table td {
+  border-color: var(--line) !important;
+  color: var(--ink) !important;
+}
+
+body.dawon-os-active.dark .legal-table th {
+  background: rgba(255, 255, 255, 0.06) !important;
+}
+
+/* Payment / premium / auth gates */
+body.dawon-os-active.dark .payment-result-card,
+body.dawon-os-active.dark .premium-gate {
+  background: rgba(16, 36, 62, 0.92) !important;
+  border-color: var(--line) !important;
+  color: var(--ink) !important;
+}
+
+body.dawon-os-active.dark .payment-result-card.done {
+  background: rgba(55, 198, 172, 0.1) !important;
+  border-color: rgba(55, 198, 172, 0.35) !important;
+}
+
+body.dawon-os-active.dark .payment-result-card.error {
+  background: rgba(199, 72, 85, 0.12) !important;
+  border-color: rgba(255, 180, 188, 0.35) !important;
+}
+
+body.dawon-os-active.dark .premium-gate h3 {
+  color: var(--ink) !important;
+}
+
+body.dawon-os-active.dark .premium-gate p,
+body.dawon-os-active.dark .premium-gate-loading {
+  color: var(--muted) !important;
+}
+
+body.dawon-os-active.dark .auth-gate,
+body.dawon-os-active.dark .library-premium-banner {
+  background: #352b19 !important;
+  border-color: rgba(244, 217, 158, 0.35) !important;
+  color: #f4d99e !important;
+}
+
+body.dawon-os-active.dark .auth-gate a {
+  color: #7be3cf !important;
+}
+
+body.dawon-os-active.dark .auth-gate-block a {
+  background: linear-gradient(135deg, var(--emerald), var(--mint)) !important;
+  color: #06241f !important;
+}
+
+/* Nav chrome that stays white in AppShell.css */
+body.dawon-os-active.dark .app-nav-cta:not(.primary),
+body.dawon-os-active.dark .app-nav-header .nav-auth-btn,
+body.dawon-os-active.dark .app-nav-menu {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border-color: var(--line) !important;
+  color: var(--ink) !important;
+}
+
+body.dawon-os-active.dark .app-nav-links {
+  background: rgba(7, 19, 33, 0.98);
+  border-color: var(--line);
+}
+
+body.dawon-os-active.dark .app-nav-links a {
+  color: #d5e4f6 !important;
+}
+
+/* Library / subscribe residual light panels */
+body.dawon-os-active.dark .library-tabs button:not(.active),
+body.dawon-os-active.dark .library-tab:not(.active) {
+  color: var(--ink) !important;
+  background: rgba(255, 255, 255, 0.06) !important;
+  border-color: var(--line) !important;
+}
+
+body.dawon-os-active.dark .library-search,
+body.dawon-os-active.dark .library-search input {
+  color: var(--ink) !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-color: var(--line) !important;
+}
+
+body.dawon-os-active.dark .library-search span {
+  color: var(--muted) !important;
+}
+
+body.dawon-os-active.dark .library-search input::placeholder {
+  color: #8fa4bf !important;
+}
+
+/* Subscribe plan cards + alerts (index.css hardcodes light alert colors) */
+body.dawon-os-active.dark .plan-card {
+  background: rgba(16, 36, 62, 0.92) !important;
+  border-color: var(--line) !important;
+  color: var(--ink) !important;
+}
+
+body.dawon-os-active.dark .plan-card h3,
+body.dawon-os-active.dark .plan-card .renewal-badge,
+body.dawon-os-active.dark .plan-card .growth-stage {
+  color: var(--ink) !important;
+}
+
+body.dawon-os-active.dark .plan-card .plan-price {
+  color: #f1d299 !important;
+}
+
+body.dawon-os-active.dark .plan-card ul,
+body.dawon-os-active.dark .plan-card li,
+body.dawon-os-active.dark .plan-card .plan-contract,
+body.dawon-os-active.dark .plan-card .plan-contract * {
+  color: var(--muted) !important;
+}
+
+body.dawon-os-active.dark .plan-card .btn:disabled,
+body.dawon-os-active.dark .plan-card button:disabled {
+  color: #9eb4ce !important;
+  background: rgba(255, 255, 255, 0.06) !important;
+  border-color: var(--line) !important;
+  opacity: 1;
+}
+
+body.dawon-os-active.dark .subscribe-consent-hint,
+body.dawon-os-active.dark .subscribe-consent-hint strong {
+  color: #f4d99e !important;
+}
+
+body.dawon-os-active.dark .subscribe-alert {
+  background: rgba(199, 72, 85, 0.16) !important;
+  border-color: rgba(255, 180, 188, 0.35) !important;
+  color: #ffb4bc !important;
+}
+
+body.dawon-os-active.dark .subscribe-alert.warn {
+  background: #352b19 !important;
+  border-color: rgba(244, 217, 158, 0.35) !important;
+  color: #f4d99e !important;
+}
+
+body.dawon-os-active.dark .subscribe-alert.done {
+  background: rgba(55, 198, 172, 0.12) !important;
+  border-color: rgba(55, 198, 172, 0.35) !important;
+  color: #a8f0df !important;
+}
+
+body.dawon-os-active.dark .subscription-policy-banner {
+  background: rgba(55, 198, 172, 0.1) !important;
+  border-color: rgba(55, 198, 172, 0.28) !important;
+  color: var(--muted) !important;
+}
+
+body.dawon-os-active.dark .subscription-policy-banner b {
+  color: #7be3cf !important;
+}
+
+body.dawon-os-active.dark .subscribe-consent,
+body.dawon-os-active.dark .subscribe-consent.panel {
+  background: rgba(16, 36, 62, 0.92) !important;
+  border-color: var(--line) !important;
+  color: var(--ink) !important;
+}
+
+body.dawon-os-active.dark .subscribe-consent h3 {
+  color: var(--ink) !important;
+}
+
+body.dawon-os-active.dark .subscribe-ad-alt {
+  background: #352b19 !important;
+  border-color: rgba(244, 217, 158, 0.35) !important;
+}
+
+body.dawon-os-active.dark .subscribe-ad-alt h3,
+body.dawon-os-active.dark .subscribe-ad-alt p {
+  color: #f4d99e !important;
+}
+
+body.dawon-os-active.dark .subscribe-footer-links a {
+  color: #7be3cf !important;
+}
+
+body.dawon-os-active.dark .subscribe-steps div {
+  background: rgba(16, 36, 62, 0.92) !important;
+  border-color: var(--line) !important;
+}
+
+body.dawon-os-active.dark .subscribe-steps span {
+  color: var(--ink) !important;
+}
+
+/* OS dashboard metric chips on home */
+body.dawon-os-active.dark .os-metric {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-color: var(--line) !important;
+  color: var(--ink) !important;
+}
+
+body.dawon-os-active.dark .os-metric b {
+  color: #fff !important;
+}
+
+body.dawon-os-active.dark .os-metric span {
+  color: #b7cbe2 !important;
+}
+
+body.dawon-os-active.dark .metric-card {
+  background: rgba(16, 36, 62, 0.92) !important;
+  border-color: var(--line) !important;
+}
+
+body.dawon-os-active.dark .metric-card span,
+body.dawon-os-active.dark .metric-card small {
+  color: #b7cbe2 !important;
 }

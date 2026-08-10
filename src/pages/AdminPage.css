@@ -297,3 +297,92 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Dark mode: admin stays on light cards unless surfaces are remapped */
+body.dawon-os-active.dark .admin-page {
+  color: var(--ink);
+}
+
+body.dawon-os-active.dark .admin-tabs button {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--muted);
+  border-color: var(--line);
+}
+
+body.dawon-os-active.dark .admin-tabs button.active {
+  background: linear-gradient(135deg, var(--emerald, #0c8877), var(--mint, #37c6ac));
+  color: #06241f;
+  border-color: transparent;
+}
+
+body.dawon-os-active.dark .admin-panel-head h2,
+body.dawon-os-active.dark .admin-card h3,
+body.dawon-os-active.dark .admin-upload-block h4,
+body.dawon-os-active.dark .admin-id-list button b,
+body.dawon-os-active.dark .admin-asset-source strong,
+body.dawon-os-active.dark .admin-item h4 {
+  color: var(--ink) !important;
+}
+
+body.dawon-os-active.dark .admin-hint,
+body.dawon-os-active.dark .admin-card label,
+body.dawon-os-active.dark .admin-asset-source,
+body.dawon-os-active.dark .admin-upload-grid small,
+body.dawon-os-active.dark .admin-id-list button span,
+body.dawon-os-active.dark .admin-id-list button i.muted {
+  color: var(--muted) !important;
+}
+
+body.dawon-os-active.dark .admin-card,
+body.dawon-os-active.dark .admin-item,
+body.dawon-os-active.dark .admin-upload-block,
+body.dawon-os-active.dark .admin-upload-grid > div,
+body.dawon-os-active.dark .admin-actions.sticky {
+  background: rgba(16, 36, 62, 0.92);
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+body.dawon-os-active.dark .admin-status {
+  background: rgba(55, 198, 172, 0.12);
+  color: #a8f0df;
+}
+
+body.dawon-os-active.dark .admin-card input,
+body.dawon-os-active.dark .admin-card textarea,
+body.dawon-os-active.dark .admin-card select {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--ink);
+  border-color: var(--line);
+}
+
+body.dawon-os-active.dark .admin-id-list button {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+body.dawon-os-active.dark .admin-id-list button.active {
+  border-color: var(--mint, #37c6ac);
+  background: rgba(55, 198, 172, 0.12);
+}
+
+body.dawon-os-active.dark .admin-id-list button i {
+  color: #7be3cf;
+}
+
+body.dawon-os-active.dark .admin-new-upload-btn {
+  background: rgba(55, 198, 172, 0.1);
+  border-color: rgba(55, 198, 172, 0.45);
+  color: #d7fff6;
+}
+
+body.dawon-os-active.dark .admin-new-upload-btn.active,
+body.dawon-os-active.dark .admin-new-upload-btn:hover {
+  background: linear-gradient(135deg, var(--emerald, #0c8877), var(--mint, #37c6ac));
+  color: #06241f;
+}
+
+body.dawon-os-active.dark .admin-asset-link {
+  color: #7be3cf;
+}
