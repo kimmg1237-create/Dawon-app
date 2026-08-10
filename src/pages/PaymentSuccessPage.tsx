@@ -55,7 +55,7 @@ export function PaymentSuccessPage() {
   }, [paymentKey, orderId, amount, refresh, authLoading, user])
 
   return (
-    <div className="container payment-result">
+    <div className="container payment-result payment-result-page">
       <div className="page-banner">
         <div className="eyebrow">PAYMENT{isTestPay ? ' · TEST' : ''}</div>
         <h1>{state === 'loading' ? '결제 확인 중…' : state === 'done' ? '결제 완료' : '결제 오류'}</h1>
@@ -89,7 +89,7 @@ export function PaymentSuccessPage() {
                     라이브러리 열기
                   </Link>
                   <Link to="/subscribe" className="btn btn-light">
-                    구독 관리
+                    구독
                   </Link>
                 </div>
               </>

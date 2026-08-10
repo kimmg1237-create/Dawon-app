@@ -33,7 +33,7 @@ export function PremiumGate({ children, feature = '프리미엄 콘텐츠' }: Pr
         </p>
         <div className="premium-gate-actions">
           <Link to="/subscribe" className="btn btn-primary">
-            구독·결제하기
+            이용권 결제하기
           </Link>
           <Link to="/login" className="btn btn-light">
             로그인

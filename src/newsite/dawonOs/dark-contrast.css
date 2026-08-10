@@ -1,0 +1,453 @@
+/* Dark mode readability — override hardcoded navy/black text from index.css + OS theme */
+
+body.dawon-os-active.dark {
+  --ink: #eef5ff;
+  --muted: #c5d4e8;
+  --paper: #122846;
+  --soft: #163d3b;
+  --line: #355575;
+  --ivory: #071321;
+  --emerald: #5ee0c8;
+  --mint: #7be3cf;
+}
+
+body.dawon-os-active.dark,
+body.dawon-os-active.dark .dawon-os-root {
+  color: var(--ink);
+}
+
+/* Global heading/body overrides (index.css uses color:var(--navy) which stays dark) */
+body.dawon-os-active.dark h1,
+body.dawon-os-active.dark h2,
+body.dawon-os-active.dark h3,
+body.dawon-os-active.dark h4,
+body.dawon-os-active.dark .section h2,
+body.dawon-os-active.dark .section-head h2,
+body.dawon-os-active.dark .hero h1,
+body.dawon-os-active.dark .hero-subline,
+body.dawon-os-active.dark .brandtext,
+body.dawon-os-active.dark .panel-head h3,
+body.dawon-os-active.dark .plan-card h3,
+body.dawon-os-active.dark .layer-card h3,
+body.dawon-os-active.dark .life-card h3,
+body.dawon-os-active.dark .school-card strong,
+body.dawon-os-active.dark .guide-card h3,
+body.dawon-os-active.dark .work-card h3,
+body.dawon-os-active.dark .status-panel h3,
+body.dawon-os-active.dark .metric-card strong,
+body.dawon-os-active.dark .works-stat strong,
+body.dawon-os-active.dark .plan-price,
+body.dawon-os-active.dark .checkout-summary strong,
+body.dawon-os-active.dark .compact-field label,
+body.dawon-os-active.dark .field label {
+  color: var(--ink) !important;
+}
+
+body.dawon-os-active.dark .hero h1 span,
+body.dawon-os-active.dark h1 span {
+  color: var(--mint) !important;
+}
+
+body.dawon-os-active.dark p,
+body.dawon-os-active.dark li,
+body.dawon-os-active.dark small,
+body.dawon-os-active.dark .lead,
+body.dawon-os-active.dark .hero .lead,
+body.dawon-os-active.dark .hero-tech,
+body.dawon-os-active.dark .section-head p,
+body.dawon-os-active.dark .trust-row,
+body.dawon-os-active.dark .layer-card p,
+body.dawon-os-active.dark .life-card p,
+body.dawon-os-active.dark .school-card p,
+body.dawon-os-active.dark .guide-card p,
+body.dawon-os-active.dark .type-card small,
+body.dawon-os-active.dark .flower-card small,
+body.dawon-os-active.dark .history-item p,
+body.dawon-os-active.dark .panel-head small,
+body.dawon-os-active.dark .empty,
+body.dawon-os-active.dark .mood,
+body.dawon-os-active.dark .growth-stage,
+body.dawon-os-active.dark .subscription-state-item span,
+body.dawon-os-active.dark .subscribe-check,
+body.dawon-os-active.dark .subscribe-consent-hint,
+body.dawon-os-active.dark .launch-note,
+body.dawon-os-active.dark .business-disclosure,
+body.dawon-os-active.dark .business-grid,
+body.dawon-os-active.dark .lead {
+  color: var(--muted) !important;
+}
+
+body.dawon-os-active.dark .kicker {
+  color: var(--mint) !important;
+}
+
+body.dawon-os-active.dark .brandtext small,
+body.dawon-os-active.dark .app-nav .brandtext small {
+  color: #9eb4ce !important;
+}
+
+body.dawon-os-active.dark .nav-links a,
+body.dawon-os-active.dark .app-nav-links a,
+body.dawon-os-active.dark .footer-links a {
+  color: #d5e4f6 !important;
+}
+
+body.dawon-os-active.dark .nav-links a:hover,
+body.dawon-os-active.dark .nav-links a.active,
+body.dawon-os-active.dark .app-nav-links a:hover,
+body.dawon-os-active.dark .app-nav-links a.nav-active {
+  color: var(--mint) !important;
+}
+
+/* Cards / chips that inherited black or navy */
+body.dawon-os-active.dark .flower-card,
+body.dawon-os-active.dark .flower-card b,
+body.dawon-os-active.dark .flower-card span,
+body.dawon-os-active.dark .type-card,
+body.dawon-os-active.dark .type-card b,
+body.dawon-os-active.dark .formula span,
+body.dawon-os-active.dark .day-check b,
+body.dawon-os-active.dark .history-item b,
+body.dawon-os-active.dark .studio-tab,
+body.dawon-os-active.dark .works-tab,
+body.dawon-os-active.dark .quick-tools button,
+body.dawon-os-active.dark .mode-card,
+body.dawon-os-active.dark .mode-card strong,
+body.dawon-os-active.dark .mode-card b,
+body.dawon-os-active.dark .role-box,
+body.dawon-os-active.dark .role-box strong,
+body.dawon-os-active.dark .role-box b,
+body.dawon-os-active.dark .readiness-item,
+body.dawon-os-active.dark .readiness-item strong,
+body.dawon-os-active.dark .subscription-trust-item,
+body.dawon-os-active.dark .subscription-trust-item strong,
+body.dawon-os-active.dark .subscription-state-item b,
+body.dawon-os-active.dark .os-metric b,
+body.dawon-os-active.dark .practice-metric b,
+body.dawon-os-active.dark .today-state b,
+body.dawon-os-active.dark .plan-contract,
+body.dawon-os-active.dark .plan-contract b,
+body.dawon-os-active.dark .renewal-badge,
+body.dawon-os-active.dark .plan-tag,
+body.dawon-os-active.dark .layer-flow,
+body.dawon-os-active.dark .one-history div,
+body.dawon-os-active.dark .lesson-grid button,
+body.dawon-os-active.dark .mic-btn,
+body.dawon-os-active.dark .chip,
+body.dawon-os-active.dark .time-node,
+body.dawon-os-active.dark .time-node b,
+body.dawon-os-active.dark .core-card,
+body.dawon-os-active.dark .core-card b,
+body.dawon-os-active.dark .check-item,
+body.dawon-os-active.dark .check-item b,
+body.dawon-os-active.dark .faq-item,
+body.dawon-os-active.dark .faq-item summary,
+body.dawon-os-active.dark strong,
+body.dawon-os-active.dark b {
+  color: var(--ink) !important;
+}
+
+body.dawon-os-active.dark .mode-card small,
+body.dawon-os-active.dark .role-box p,
+body.dawon-os-active.dark .subscription-trust-item span,
+body.dawon-os-active.dark .readiness-item span,
+body.dawon-os-active.dark .time-node small,
+body.dawon-os-active.dark .core-card p,
+body.dawon-os-active.dark .faq-item p {
+  color: var(--muted) !important;
+}
+
+/* Soft buttons readable on dark paper */
+body.dawon-os-active.dark .btn-soft,
+body.dawon-os-active.dark .nav-auth-btn,
+body.dawon-os-active.dark .app-nav-cta:not(.primary) {
+  color: var(--ink) !important;
+  background: rgba(255, 255, 255, 0.06);
+  border-color: var(--line);
+}
+
+body.dawon-os-active.dark .btn-gold,
+body.dawon-os-active.dark button.gold {
+  color: #1f180c !important; /* keep dark on gold fill */
+}
+
+/* Inputs */
+body.dawon-os-active.dark .field input,
+body.dawon-os-active.dark .field textarea,
+body.dawon-os-active.dark .field select,
+body.dawon-os-active.dark .output-box,
+body.dawon-os-active.dark .works-search input,
+body.dawon-os-active.dark input:not([type='checkbox']):not([type='radio']),
+body.dawon-os-active.dark textarea,
+body.dawon-os-active.dark select {
+  color: var(--ink) !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-color: var(--line) !important;
+}
+
+body.dawon-os-active.dark ::placeholder {
+  color: #8fa4bf !important;
+  opacity: 1;
+}
+
+/* Keep print/preview papers as light documents (must beat p/h !important above) */
+body.dawon-os-active.dark .book-paper,
+body.dawon-os-active.dark .book-paper *,
+body.dawon-os-active.dark .proposal-paper,
+body.dawon-os-active.dark .proposal-paper * {
+  color: #182238 !important;
+}
+
+body.dawon-os-active.dark .book-cover,
+body.dawon-os-active.dark .book-cover *,
+body.dawon-os-active.dark .proposal-cover,
+body.dawon-os-active.dark .proposal-cover * {
+  color: #fff !important;
+}
+
+body.dawon-os-active.dark .book-cover small,
+body.dawon-os-active.dark .proposal-cover small {
+  color: #efcf96 !important;
+}
+
+/* Navy panels that are meant to be white text */
+body.dawon-os-active.dark .layer-card.primary,
+body.dawon-os-active.dark .layer-card.primary *,
+body.dawon-os-active.dark .one-main,
+body.dawon-os-active.dark .one-main *,
+body.dawon-os-active.dark .guide-core,
+body.dawon-os-active.dark .guide-core *,
+body.dawon-os-active.dark .works-intro,
+body.dawon-os-active.dark .works-intro *,
+body.dawon-os-active.dark .day-card,
+body.dawon-os-active.dark .day-card *,
+body.dawon-os-active.dark .os-message,
+body.dawon-os-active.dark .os-message * {
+  color: #eef5ff !important;
+}
+
+body.dawon-os-active.dark .layer-card.primary p,
+body.dawon-os-active.dark .one-main p,
+body.dawon-os-active.dark .guide-core p,
+body.dawon-os-active.dark .works-intro p {
+  color: #d3deec !important;
+}
+
+body.dawon-os-active.dark .layer-card.primary .layer-no,
+body.dawon-os-active.dark .one-main small,
+body.dawon-os-active.dark .guide-core small,
+body.dawon-os-active.dark .works-intro small,
+body.dawon-os-active.dark .os-message small {
+  color: #f1d299 !important;
+}
+
+/* Subscribe / library React pages */
+body.dawon-os-active.dark .subscribe-page,
+body.dawon-os-active.dark .dawon-library,
+body.dawon-os-active.dark .payment-result-page,
+body.dawon-os-active.dark .subscribe-page h2,
+body.dawon-os-active.dark .subscribe-page h3,
+body.dawon-os-active.dark .dawon-library h1,
+body.dawon-os-active.dark .dawon-library h2,
+body.dawon-os-active.dark .library-section h2 {
+  color: var(--ink) !important;
+}
+
+body.dawon-os-active.dark .subscribe-page p,
+body.dawon-os-active.dark .dawon-library > p,
+body.dawon-os-active.dark .library-section .section-head p,
+body.dawon-os-active.dark .library-count,
+body.dawon-os-active.dark .subscribe-status-label,
+body.dawon-os-active.dark .subscribe-user {
+  color: var(--muted) !important;
+}
+
+/* Library book cards stay light — restore dark readable type */
+body.dawon-os-active.dark .book-card {
+  background: #fff !important;
+  color: #172036 !important;
+}
+
+body.dawon-os-active.dark .book-card h3,
+body.dawon-os-active.dark .book-card .book-body,
+body.dawon-os-active.dark .book-card .book-body *,
+body.dawon-os-active.dark .book-card b,
+body.dawon-os-active.dark .book-card strong,
+body.dawon-os-active.dark .book-card p,
+body.dawon-os-active.dark .book-card span {
+  color: #172036 !important;
+}
+
+body.dawon-os-active.dark .book-card .book-no {
+  color: #155f9b !important;
+}
+
+body.dawon-os-active.dark .book-card .book-open {
+  color: #b82f42 !important;
+}
+
+body.dawon-os-active.dark .book-card .book-cover-fallback,
+body.dawon-os-active.dark .book-card .book-cover-fallback * {
+  color: #fff !important;
+}
+
+body.dawon-os-active.dark .book-card .book-cover-fallback span {
+  color: #b9cde0 !important;
+}
+
+body.dawon-os-active.dark .book-cover-fallback {
+  color: #fff !important;
+}
+
+body.dawon-os-active.dark .mic-btn {
+  color: #0b3159 !important;
+  background: #e9f2ff !important;
+}
+
+body.dawon-os-active.dark .book-slider-btn {
+  color: var(--ink) !important;
+  background: var(--paper) !important;
+  border-color: var(--line) !important;
+}
+
+body.dawon-os-active.dark .growth-stage {
+  color: #f1d299 !important;
+}
+
+body.dawon-os-active.dark .btn:disabled,
+body.dawon-os-active.dark button:disabled {
+  color: #9eb4ce !important;
+  opacity: 0.75;
+}
+
+/* Mobile dock + page chrome */
+body.dawon-os-active.dark .mobile-dock-react {
+  background: rgba(7, 19, 33, 0.97);
+  border-top-color: var(--line);
+}
+
+body.dawon-os-active.dark .mobile-dock-react a {
+  color: #d5e4f6 !important;
+}
+
+body.dawon-os-active.dark .mobile-dock-react a.active {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--mint) !important;
+}
+
+body.dawon-os-active.dark .app-shell-footer,
+body.dawon-os-active.dark .app-shell-footer a,
+body.dawon-os-active.dark .app-shell-footer p {
+  color: #d5e4f6 !important;
+}
+
+body.dawon-os-active.dark .page-banner h1,
+body.dawon-os-active.dark .login-card h1 {
+  color: var(--ink) !important;
+}
+
+body.dawon-os-active.dark .page-banner p,
+body.dawon-os-active.dark .login-card p,
+body.dawon-os-active.dark .login-hint {
+  color: var(--muted) !important;
+}
+
+body.dawon-os-active.dark .login-card {
+  background: var(--paper) !important;
+  border-color: var(--line) !important;
+  color: var(--ink) !important;
+}
+
+body.dawon-os-active.dark .library-tabs button:not(.active),
+body.dawon-os-active.dark .library-tab:not(.active) {
+  color: #172036 !important;
+  background: #fff !important;
+}
+
+body.dawon-os-active.dark .empty-state {
+  color: var(--muted) !important;
+  background: transparent !important;
+}
+
+/* Light surfaces that must keep dark type */
+body.dawon-os-active.dark .library-search,
+body.dawon-os-active.dark .library-search input {
+  color: #172036 !important;
+}
+
+body.dawon-os-active.dark .library-search span {
+  color: #617284 !important;
+}
+
+body.dawon-os-active.dark .library-search input::placeholder {
+  color: #8a9aab !important;
+}
+
+body.dawon-os-active.dark .subscribe-check a,
+body.dawon-os-active.dark .launch-note a,
+body.dawon-os-active.dark .business-disclosure a {
+  color: #7be3cf !important;
+}
+
+/* Local banner / alerts */
+body.dawon-os-active.dark .local-mode-banner {
+  background: #352b19 !important;
+  color: #f4d99e !important;
+}
+
+body.dawon-os-active.dark .payment-status.blocked {
+  background: #3a1c24 !important;
+  color: #ffb4bc !important;
+}
+
+body.dawon-os-active.dark .payment-status.ready {
+  background: var(--soft) !important;
+  color: var(--mint) !important;
+}
+
+/* Eyebrow / chips */
+body.dawon-os-active.dark .eyebrow {
+  color: #f3dfb7 !important;
+}
+
+body.dawon-os-active.dark .date-chip {
+  color: #fff !important;
+}
+
+/* Emerald accents used as body text on dark panels */
+body.dawon-os-active.dark .ready-chip,
+body.dawon-os-active.dark .status,
+body.dawon-os-active.dark .practice,
+body.dawon-os-active.dark .quick-core-label,
+body.dawon-os-active.dark .audit-chip,
+body.dawon-os-active.dark .work-status.st-ok,
+body.dawon-os-active.dark .kicker,
+body.dawon-os-active.dark .layer-no,
+body.dawon-os-active.dark a.soft-link,
+body.dawon-os-active.dark .hero h1 span {
+  color: var(--mint) !important;
+}
+
+/* Keep filled primary buttons white-on-teal */
+body.dawon-os-active.dark .btn-primary,
+body.dawon-os-active.dark .btn-primary * {
+  color: #fff !important;
+}
+
+/* Inline style leftovers (color:black / navy hex) on OS widgets */
+body.dawon-os-active.dark [style*='color:black'],
+body.dawon-os-active.dark [style*='color: black'],
+body.dawon-os-active.dark [style*='color:#000'],
+body.dawon-os-active.dark [style*='color: #000'],
+body.dawon-os-active.dark [style*='color:#081b36'],
+body.dawon-os-active.dark [style*='color: #081b36'],
+body.dawon-os-active.dark [style*='color:#0b3159'],
+body.dawon-os-active.dark [style*='color: #0b3159'],
+body.dawon-os-active.dark [style*='color:#0c4169'],
+body.dawon-os-active.dark [style*='color: #0c4169'],
+body.dawon-os-active.dark [style*='color:#123a62'],
+body.dawon-os-active.dark [style*='color: #123a62'],
+body.dawon-os-active.dark [style*='color:#182238'],
+body.dawon-os-active.dark [style*='color: #182238'] {
+  color: var(--ink) !important;
+}

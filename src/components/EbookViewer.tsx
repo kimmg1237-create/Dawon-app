@@ -78,8 +78,42 @@ export function EbookViewer({ url, title, subtitle, onClose }: EbookViewerProps)
   useEffect(() => {
     const onResize = () => setLayoutTick((n) => n + 1)
     window.addEventListener('resize', onResize)
-    return () => window.removeEventListener('resize', onResize)
+    const stage = stageRef.current
+    let lastW = 0
+    let lastH = 0
+    const ro =
+      typeof ResizeObserver !== 'undefined' && stage
+        ? new ResizeObserver((entries) => {
+            const entry = entries[0]
+            const w = Math.round(entry?.contentRect.width ?? stage.clientWidth)
+            const h = Math.round(entry?.contentRect.height ?? stage.clientHeight)
+            if (Math.abs(w - lastW) < 8 && Math.abs(h - lastH) < 8) return
+            lastW = w
+            lastH = h
+            setLayoutTick((n) => n + 1)
+          })
+        : null
+    if (stage && ro) {
+      lastW = stage.clientWidth
+      lastH = stage.clientHeight
+      ro.observe(stage)
+    }
+    return () => {
+      window.removeEventListener('resize', onResize)
+      ro?.disconnect()
+    }
   }, [])
+
+  function resetStageScroll() {
+    const stage = stageRef.current
+    if (!stage) return
+    stage.scrollTop = 0
+    stage.scrollLeft = 0
+  }
+
+  useEffect(() => {
+    resetStageScroll()
+  }, [url, page, zoom, viewMode])
 
   useEffect(() => {
     let cancelled = false
@@ -165,8 +199,11 @@ export function EbookViewer({ url, title, subtitle, onClose }: EbookViewerProps)
       const stage = stageRef.current
       const base = pdfPage.getViewport({ scale: 1 })
       const gap = dualLayout ? 10 : 0
-      const availableW = Math.max(240, (stage?.clientWidth ?? 800) - 24 - gap)
-      const availableH = Math.max(240, (stage?.clientHeight ?? 600) - 24)
+      // Wait until stage has real layout so pages aren't sized too tall and clipped mid-page.
+      const stageW = stage?.clientWidth ?? 0
+      const stageH = stage?.clientHeight ?? 0
+      const availableW = Math.max(240, (stageW || 800) - 24 - gap)
+      const availableH = Math.max(240, (stageH || 600) - 24)
       const slotW = dualLayout ? availableW / 2 : availableW
       const fit = Math.min(slotW / base.width, availableH / base.height)
       const dpr = Math.min(2, Math.max(1, window.devicePixelRatio || 1))
@@ -187,6 +224,12 @@ export function EbookViewer({ url, title, subtitle, onClose }: EbookViewerProps)
       cancelTasks()
       const left = canvasLeftRef.current
       if (!left) return
+      const stage = stageRef.current
+      if (stage && (stage.clientWidth < 40 || stage.clientHeight < 40)) {
+        // Modal just opened — wait one frame for flex layout.
+        requestAnimationFrame(() => setLayoutTick((n) => n + 1))
+        return
+      }
 
       try {
         await renderOne(page, left, dual)
@@ -196,7 +239,11 @@ export function EbookViewer({ url, title, subtitle, onClose }: EbookViewerProps)
         if (dual && rightPage != null && right) {
           await renderOne(rightPage, right, true)
         }
-        if (!cancelled) setError('')
+        if (!cancelled) {
+          setError('')
+          resetStageScroll()
+          requestAnimationFrame(resetStageScroll)
+        }
       } catch (err) {
         if (err && (err as { name?: string }).name === 'RenderingCancelledException') return
         console.error('EbookViewer render 실패:', err)

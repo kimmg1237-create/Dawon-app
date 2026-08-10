@@ -1,0 +1,192 @@
+/* Bridge: React shell + 이용권/서재 pages aligned with DAWON OS (esp. dark) */
+
+.app-shell.dawon-os-shell.is-home .app-shell-main {
+  padding: 0;
+  max-width: none;
+}
+
+.app-shell.dawon-os-shell.is-home {
+  background: transparent;
+}
+
+body.dawon-os-active.dark .app-shell.dawon-os-shell:not(.is-home) {
+  background: var(--ivory, #071321);
+  color: var(--ink, #edf5ff);
+}
+
+.app-shell.dawon-os-shell .topline,
+.app-shell.dawon-os-shell .style-banner {
+  display: none;
+}
+
+.app-shell.dawon-os-shell .app-nav-header.dawon-os-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  height: 76px;
+  background: rgba(247, 245, 238, 0.9);
+  backdrop-filter: blur(18px);
+  border-bottom: 1px solid rgba(101, 116, 138, 0.16);
+}
+
+body.dawon-os-active.dark .app-shell.dawon-os-shell .app-nav-header.dawon-os-topbar {
+  background: rgba(7, 19, 33, 0.9);
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+.app-shell.dawon-os-shell .app-nav-links a {
+  padding: 9px 11px;
+  border-radius: 999px;
+  color: var(--muted, #65748a);
+  font-size: 13px;
+  font-weight: 850;
+  text-decoration: none;
+}
+
+.app-shell.dawon-os-shell .app-nav-links a:hover,
+.app-shell.dawon-os-shell .app-nav-links a.nav-active {
+  background: var(--soft, #edf6f4);
+  color: var(--emerald, #0c8877);
+  text-decoration: none;
+}
+
+.app-shell.dawon-os-shell .app-nav-cta.primary {
+  background: linear-gradient(135deg, var(--emerald, #0c8877), var(--mint, #37c6ac));
+  color: #fff;
+  border: 0;
+  border-radius: 999px;
+  padding: 10px 16px;
+}
+
+.app-shell.dawon-os-shell .nav-icon-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--line, #dce4e6);
+  background: var(--paper, #fff);
+  color: var(--ink, #122039);
+  cursor: pointer;
+}
+
+body.dawon-os-active.dark .app-shell.dawon-os-shell .nav-icon-btn {
+  background: var(--paper, #10243e);
+  color: var(--ink, #edf5ff);
+}
+
+.app-shell.dawon-os-shell .app-shell-footer {
+  background: linear-gradient(180deg, #0b1f3a, #071321);
+  color: #dce8f7;
+}
+
+.app-shell.dawon-os-shell .mobile-dock-react {
+  background: rgba(247, 245, 238, 0.96);
+  border-top: 1px solid var(--line, #dce4e6);
+}
+
+body.dawon-os-active.dark .app-shell.dawon-os-shell .mobile-dock-react {
+  background: rgba(7, 19, 33, 0.96);
+  border-top-color: rgba(255, 255, 255, 0.08);
+}
+
+.dawon-os-checkout .plan-card.is-selected {
+  outline: 2px solid rgba(12, 136, 119, 0.55);
+}
+
+.dawon-os-checkout .subscribe-consent {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  color: var(--ink);
+}
+
+.dawon-os-checkout .subscribe-consent h3 {
+  color: var(--ink);
+}
+
+.dawon-os-checkout .subscribe-check {
+  color: var(--muted);
+}
+
+body.dawon-os-active.dark .dawon-os-checkout .subscribe-alert {
+  background: #352b19;
+  color: #f4d99e;
+}
+
+/* 이용권 / 결제 / 서재 skin */
+.subscribe-page,
+.payment-result-page,
+.dawon-library {
+  color: inherit;
+}
+
+body.dawon-os-active.dark .subscribe-page .subscribe-status-panel,
+body.dawon-os-active.dark .subscribe-page .subscribe-consent,
+body.dawon-os-active.dark .subscribe-page .subscribe-steps,
+body.dawon-os-active.dark .subscribe-page .subscribe-card,
+body.dawon-os-active.dark .subscribe-page .subscribe-manage-card,
+body.dawon-os-active.dark .payment-result-page .payment-result-card {
+  background: rgba(16, 36, 62, 0.92);
+  border-color: var(--line, #29435e);
+  box-shadow: 0 22px 65px rgba(0, 0, 0, 0.3);
+  border-radius: 24px;
+}
+
+.subscribe-page .btn-primary,
+.payment-result-page .btn-primary {
+  background: linear-gradient(135deg, var(--emerald, #0c8877), var(--mint, #37c6ac));
+  border: 0;
+}
+
+.dawon-library .library-tabs button.active,
+#dawonLibraryRoot .library-tabs button.active {
+  background: linear-gradient(135deg, var(--emerald, #0c8877), var(--mint, #37c6ac));
+  color: #fff;
+}
+
+.dawon-os-home {
+  min-height: 100vh;
+  overflow: visible;
+}
+
+.app-shell.dawon-os-shell.is-home .app-shell-main {
+  overflow: visible;
+}
+
+/* Sticky follow panels (topbar / studio form / guide / precision) */
+.dawon-os-root .topbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.dawon-os-root .sticky-form,
+.dawon-os-root .guide-core,
+.dawon-os-root .precision-summary {
+  position: sticky;
+  top: 96px;
+  align-self: start;
+  z-index: 5;
+}
+
+.dawon-os-root .studio-shell {
+  overflow: visible;
+}
+
+.dawon-os-root section[id],
+.dawon-os-root .one-section,
+.dawon-os-root .section-soft {
+  scroll-margin-top: 96px;
+  scroll-margin-bottom: 88px;
+}
+
+body.dawon-os-active {
+  scroll-padding-top: 96px;
+  scroll-padding-bottom: 88px;
+}
+
+@media (max-width: 1050px) {
+  .dawon-os-root .sticky-form,
+  .dawon-os-root .guide-core {
+    position: static;
+  }
+}

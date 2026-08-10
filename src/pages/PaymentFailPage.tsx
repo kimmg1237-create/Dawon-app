@@ -6,7 +6,7 @@ export function PaymentFailPage() {
   const message = params.get('message') ?? '결제가 완료되지 않았습니다.'
 
   return (
-    <div className="container payment-result">
+    <div className="container payment-result payment-result-page">
       <div className="page-banner">
         <div className="eyebrow">PAYMENT</div>
         <h1>결제 실패</h1>

@@ -119,7 +119,7 @@ export function SubscriptionManagePanel() {
       <div className="subscribe-manage-head">
         <div>
           <div className="kicker">MY SUBSCRIPTION</div>
-          <h3 id="subscribe-manage-title">구독 관리 · 해지 · 환불</h3>
+          <h3 id="subscribe-manage-title">구독 · 해지 · 환불</h3>
         </div>
         <p>
           해지는 남은 기간 이용 후 종료입니다. 환불은{' '}
