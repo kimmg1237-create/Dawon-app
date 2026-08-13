@@ -59,7 +59,8 @@ export async function fetchLibraryItems(includeUnpublished = false): Promise<Lib
   if (!includeUnpublished) query = query.eq('published', true)
   const { data, error } = await query
   if (error) {
-    console.warn('[library] fetch failed', error.message)
+    const missing = /PGRST205|schema cache|does not exist/i.test(error.message)
+    if (!missing) console.warn('[library] fetch failed', error.message)
     return []
   }
   return (data || []).map(normalizeLibraryRow)

@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
+import { HomeNoticePopup } from '../components/HomeNoticePopup'
 import { useAuth } from '../context/AuthContext'
 import { mountDawonOs, scrollToDawonSection, syncDawonOsAccount } from '../newsite/dawonOs/initDawonOs'
 
@@ -52,5 +53,10 @@ export function HomePage() {
     return () => window.clearTimeout(t)
   }, [location.hash, location.key])
 
-  return <div ref={host} className="dawon-os-home" />
+  return (
+    <>
+      <div ref={host} className="dawon-os-home" />
+      <HomeNoticePopup />
+    </>
+  )
 }

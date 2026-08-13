@@ -1,0 +1,139 @@
+.home-notice {
+  position: fixed;
+  inset: 0;
+  z-index: 12000;
+  display: grid;
+  place-items: center;
+  padding: 20px 16px;
+  background: rgba(5, 14, 28, 0.62);
+  backdrop-filter: blur(10px);
+}
+
+.home-notice-card {
+  position: relative;
+  width: min(420px, 100%);
+  padding: 28px 24px 22px;
+  border-radius: 24px;
+  background: #fffdf8;
+  border: 1px solid rgba(90, 55, 40, 0.12);
+  box-shadow: 0 28px 80px rgba(7, 26, 51, 0.28);
+  text-align: center;
+  color: #132a45;
+}
+
+.home-notice-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 50%;
+  background: #f2f6fa;
+  color: #334d66;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.home-notice-logo {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  margin: 4px auto 10px;
+  display: block;
+  filter: drop-shadow(0 8px 14px rgba(8, 27, 54, 0.16));
+}
+
+.home-notice-kicker {
+  margin: 0 0 8px;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  font-weight: 800;
+  color: #8a6a2a;
+}
+
+.home-notice-card h2 {
+  margin: 0 0 10px;
+  font-size: 21px;
+  line-height: 1.35;
+  color: #0f2742;
+}
+
+.home-notice-copy {
+  margin: 0 0 18px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #4a5d70;
+}
+
+.home-notice-copy strong {
+  color: #174d7d;
+}
+
+.home-notice-actions {
+  display: grid;
+  gap: 8px;
+}
+
+.home-notice-cta {
+  width: 100%;
+}
+
+.home-notice-actions .btn-soft {
+  width: 100%;
+}
+
+.home-notice-hide {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px 16px;
+  margin: 14px 0 0;
+}
+
+.home-notice-hide label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  color: #5a6b7d;
+  cursor: pointer;
+  user-select: none;
+}
+
+body.dawon-os-active.dark .home-notice {
+  background: rgba(2, 8, 18, 0.78);
+}
+
+body.dawon-os-active.dark .home-notice-card {
+  background: #122846;
+  border-color: #355575;
+  color: #eef5ff;
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.45);
+}
+
+body.dawon-os-active.dark .home-notice-close {
+  background: #163d3b;
+  color: #d7e5f7;
+}
+
+body.dawon-os-active.dark .home-notice-kicker {
+  color: #f3dfb7;
+}
+
+body.dawon-os-active.dark .home-notice-card h2 {
+  color: #eef5ff;
+}
+
+body.dawon-os-active.dark .home-notice-copy {
+  color: #c5d4e8;
+}
+
+body.dawon-os-active.dark .home-notice-copy strong {
+  color: #f3dfb7;
+}
+
+body.dawon-os-active.dark .home-notice-hide label {
+  color: #b7cbe2;
+}
