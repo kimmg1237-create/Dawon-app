@@ -585,7 +585,7 @@
       const mp3=`<a class="btn btn-sm btn-gold" href="${esc(hrefFor(item.audioUrl))}" target="_blank" rel="noopener">만화 MP3 ▶</a>`;
       const movie=`<button class="btn btn-sm btn-primary media-video-btn" type="button" data-video-url="${esc(hrefFor(item.videoUrl))}" data-video-title="${esc(item.title)}" data-no="${no}">🎬 만화영화 MP4</button>`;
       const live=`<button class="btn btn-sm live-motion-btn" type="button" data-motion-format="comic" data-no="${no}">PDF 4컷 라이브</button>`;
-      const studio=`<a class="btn btn-sm btn-soft" href="movie-studio.html?book=${no}" target="_blank" rel="noopener">원스톱 재제작 ⚙</a>`;
+      const studio=`<a class="btn btn-sm btn-soft" href="/movie-studio?book=${pad(no)}" target="_blank" rel="noopener">원스톱 재제작 ⚙</a>`;
       return `<div class="work-actions-inline"><a class="btn btn-sm btn-soft" href="${esc(pdfHref)}" target="_blank" rel="noopener">만화 PDF ↗</a>${mp3}${movie}${live}${studio}</div>`;
     }
     return `<div class="work-actions-inline"><a class="btn btn-sm btn-soft" href="${esc(pdfHref)}" target="_blank" rel="noopener">전자책 PDF ↗</a></div>`;

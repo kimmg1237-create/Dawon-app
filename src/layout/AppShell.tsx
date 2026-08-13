@@ -15,6 +15,7 @@ export function AppShell() {
   const { copy } = useSiteCopy()
   const location = useLocation()
   const isHome = location.pathname === '/'
+  const isStudio = location.pathname.startsWith('/movie-studio')
 
   useEffect(() => {
     document.body.classList.add('dawon-os-active')
@@ -36,7 +37,7 @@ export function AppShell() {
   return (
     <div className={`app-shell dawon-os-shell${isHome ? ' is-home' : ''}`}>
       <AppNav />
-      {!isHome ? <JourneyBar /> : null}
+      {!isHome && !isStudio ? <JourneyBar /> : null}
       <main className="app-shell-main" id="main">
         <Outlet />
       </main>

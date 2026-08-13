@@ -79,8 +79,19 @@ function patchInternalLinks(root: HTMLElement, navigate: (to: string) => void) {
       return
     }
     if (href.startsWith('/')) {
+      if (a.target === '_blank') return
       e.preventDefault()
       navigate(href)
+      return
+    }
+    if (href.startsWith('movie-studio')) {
+      e.preventDefault()
+      const url = href.startsWith('/') ? href : `/${href.replace(/\.html/, '')}`
+      if (a.target === '_blank') {
+        window.open(url.replace('movie-studio.html', 'movie-studio'), '_blank', 'noopener')
+        return
+      }
+      navigate(url.replace('movie-studio.html', 'movie-studio'))
       return
     }
     if (href.startsWith('#')) {

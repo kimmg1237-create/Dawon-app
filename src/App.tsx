@@ -1,4 +1,4 @@
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Navigate, Route, Routes, useSearchParams } from 'react-router-dom'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import { SubscriptionProvider } from './context/SubscriptionContext'
 import { AppShell } from './layout/AppShell'
@@ -20,6 +20,7 @@ import { PaymentFailPage } from './pages/PaymentFailPage'
 import { TermsPage } from './pages/TermsPage'
 import { RefundPolicyPage } from './pages/RefundPolicyPage'
 import { PrivacyPage } from './pages/PrivacyPage'
+import { MovieStudioPage } from './pages/MovieStudioPage'
 import { FEATURES } from './data/features'
 import { useEffect } from 'react'
 import { migrateLocalDrafts } from './services/userDataService'
@@ -30,6 +31,12 @@ function AuthMigration() {
     if (user) void migrateLocalDrafts(user.id)
   }, [user])
   return null
+}
+
+function MovieStudioLegacyRedirect() {
+  const [params] = useSearchParams()
+  const qs = params.toString()
+  return <Navigate to={qs ? `/movie-studio?${qs}` : '/movie-studio'} replace />
 }
 
 function AppRoutes() {
@@ -65,6 +72,8 @@ function AppRoutes() {
           <Route path="terms" element={<TermsPage />} />
           <Route path="refund-policy" element={<RefundPolicyPage />} />
           <Route path="privacy" element={<PrivacyPage />} />
+          <Route path="movie-studio" element={<MovieStudioPage />} />
+          <Route path="movie-studio.html" element={<MovieStudioLegacyRedirect />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
       </Routes>
