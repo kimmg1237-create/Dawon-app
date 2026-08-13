@@ -1,7 +1,7 @@
 import { useEffect, useId, useState } from 'react'
 import './HomeNoticePopup.css'
 
-const DAWON84_URL = 'https://dawon84.com/'
+const DAWON84_URL = 'https://dawon53.com/'
 const STORAGE_KEY = 'dawon_home_notice_hide_until'
 
 type HideMode = 'none' | 'today' | 'hours6'
@@ -88,7 +88,7 @@ export function HomeNoticePopup() {
         <p className="home-notice-kicker">DAWON OFFICIAL SITE</p>
         <h2 id={titleId}>다원 공식 홈페이지로 이동할 수 있습니다</h2>
         <p className="home-notice-copy">
-          다원작가 소개, 출판·작품 안내는 <strong>dawon84.com</strong>에서 확인할 수 있습니다.
+          다원작가 소개, 출판·작품 안내는 <strong>dawon53.com</strong>에서 확인할 수 있습니다.
           이 앱에서는 오늘설계·작품관·이용권을 이용하세요.
         </p>
         <div className="home-notice-actions">
@@ -99,7 +99,7 @@ export function HomeNoticePopup() {
             rel="noopener noreferrer"
             onClick={() => persistHide()}
           >
-            dawon84.com 바로가기
+            dawon53.com 바로가기
           </a>
           <button type="button" className="btn btn-soft" onClick={close}>
             이 화면 계속 보기
