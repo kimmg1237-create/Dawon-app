@@ -2,8 +2,7 @@
  * Single source of truth for brand, business, and public URLs.
  * Do not invent business numbers — values match live footer / productSpec.
  *
- * Business registration: codebase consistently uses 454-95-01878 (XXX-XX-XXXXX).
- * Proposed alternate 45-95-01876 is NOT applied (invalid digit count / unverified).
+ * Business registration: 454-95-01876 (XXX-XX-XXXXX) — single source in siteConfig.
  */
 export const SITE_ORIGIN = 'https://www.dawon84.com' as const
 
@@ -29,7 +28,7 @@ export const siteConfig = {
     companyName: '다원',
     representative: '안현인',
     /** Official format XXX-XX-XXXXX — do not change without verified source */
-    businessNumber: '454-95-01878',
+    businessNumber: '454-95-01876',
     mailOrderNumber: '제2024-고양덕양구-2619호',
     mailOrderAuthority: '덕양구 구청장',
     publishingCertificate: '395-251002011000040',
