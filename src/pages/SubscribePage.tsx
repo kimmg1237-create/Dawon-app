@@ -12,7 +12,7 @@ import {
   productLabel,
   type PayProduct,
 } from '../data/productSpec'
-import { pageTitle, siteConfig } from '../data/siteConfig'
+import { siteConfig } from '../data/siteConfig'
 import { tossClientKey, tossConfigured } from '../lib/toss'
 import { createTossOrder, generateOrderId } from '../services/paymentService'
 import '../newsite/dawonOs/theme.css'
@@ -204,9 +204,9 @@ export function SubscribePage() {
   return (
     <section id="subscription" className="section-soft subscribe-page dawon-os-checkout">
       <Seo
-        title={pageTitle('이용권')}
-        description="자동갱신 없는 기간형 이용권. 가격과 이용기간을 먼저 확인하고 토스페이먼츠로 안전하게 결제하세요."
-        path={siteConfig.paths.subscribe}
+        title={siteConfig.pages.subscribe.title}
+        description={siteConfig.pages.subscribe.description}
+        path={siteConfig.pages.subscribe.path}
       />
       <div className="container">
         <div className="section-head">
@@ -477,22 +477,25 @@ export function SubscribePage() {
 
         <div className="business-disclosure">
           <h4>판매자 정보</h4>
-          <p>다원은 전자책·오디오북·자기확인 노트·온라인 콘텐츠·구독 서비스를 제공합니다.</p>
+          <p>
+            {siteConfig.business.companyName}은 전자책·오디오북·자기확인 노트·온라인 콘텐츠·구독
+            서비스를 제공합니다.
+          </p>
           <div className="business-grid">
             <div>
-              <b>상호</b> <span>다원</span>
+              <b>상호</b> <span>{siteConfig.business.companyName}</span>
             </div>
             <div>
-              <b>대표자</b> <span>안현인</span>
+              <b>대표자</b> <span>{siteConfig.business.representative}</span>
             </div>
             <div>
-              <b>사업자등록번호</b> <span>454-95-01878</span>
+              <b>사업자등록번호</b> <span>{siteConfig.business.businessNumber}</span>
             </div>
             <div>
-              <b>통신판매업 신고</b> <span>제2024-고양덕양구-2619호</span>
+              <b>통신판매업 신고</b> <span>{siteConfig.business.mailOrderNumber}</span>
             </div>
             <div>
-              <b>고객센터</b> <span>02-6407-7778</span>
+              <b>고객센터</b> <span>{siteConfig.business.phone}</span>
             </div>
             <div>
               <b>개인정보·환불 문의</b>{' '}

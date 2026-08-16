@@ -1,6 +1,9 @@
 /**
  * Single source of truth for brand, business, and public URLs.
  * Do not invent business numbers — values match live footer / productSpec.
+ *
+ * Business registration: codebase consistently uses 454-95-01878 (XXX-XX-XXXXX).
+ * Proposed alternate 45-95-01876 is NOT applied (invalid digit count / unverified).
  */
 export const SITE_ORIGIN = 'https://www.dawon84.com' as const
 
@@ -25,6 +28,7 @@ export const siteConfig = {
   business: {
     companyName: '다원',
     representative: '안현인',
+    /** Official format XXX-XX-XXXXX — do not change without verified source */
     businessNumber: '454-95-01878',
     mailOrderNumber: '제2024-고양덕양구-2619호',
     mailOrderAuthority: '덕양구 구청장',
@@ -39,11 +43,15 @@ export const siteConfig = {
     origin: SITE_ORIGIN,
     home: `${SITE_ORIGIN}/`,
     library: `${SITE_ORIGIN}/library`,
+    ebooks: `${SITE_ORIGIN}/ebooks`,
+    audiobooks: `${SITE_ORIGIN}/audiobooks`,
     subscribe: `${SITE_ORIGIN}/subscribe`,
     login: `${SITE_ORIGIN}/login`,
     terms: `${SITE_ORIGIN}/terms`,
     privacy: `${SITE_ORIGIN}/privacy`,
     refund: `${SITE_ORIGIN}/refund`,
+    author: `${SITE_ORIGIN}/#author`,
+    guide: `${SITE_ORIGIN}/#first-taste`,
     youtube: 'https://www.youtube.com/@다원작가-y6i',
     /** Publisher / author site — not this product homepage */
     publisherSite: 'https://www.dawon53.com',
@@ -58,6 +66,8 @@ export const siteConfig = {
   paths: {
     home: '/',
     library: '/library',
+    ebooks: '/ebooks',
+    audiobooks: '/audiobooks',
     subscribe: '/subscribe',
     login: '/login',
     terms: '/terms',
@@ -65,12 +75,79 @@ export const siteConfig = {
     refund: '/refund',
     /** Legacy — keep links working via redirect */
     refundLegacy: '/refund-policy',
+    storeLegacy: '/store',
+    profileLegacy: '/profile',
   },
   seoDefaults: {
     title: '다원 하루설계 | 오늘 바꿀 딱 한 가지',
     description:
-      '오늘 바꿀 딱 한 가지만 정하세요. 3분 기록, 7일 실천, 성장 확인까지 — 다원 하루설계.',
+      '하루 약 3분, 오늘을 확인하고 하나를 실천하며 결과에서 배워 내일을 설계하는 다원 하루설계입니다.',
     ogImage: `${SITE_ORIGIN}/brand/og-dawon84.png?v=20260816`,
+  },
+  /** Per-route title + description (unique titles for SEO) */
+  pages: {
+    home: {
+      title: '다원 하루설계 | 오늘 바꿀 딱 한 가지',
+      description:
+        '하루 약 3분, 오늘을 확인하고 하나를 실천하며 결과에서 배워 내일을 설계하는 다원 하루설계입니다.',
+      path: '/',
+    },
+    library: {
+      title: '작품관 | 다원 하루설계',
+      description: '다원작가의 전자책, 오디오북, 만화책을 한곳에서 만나보세요.',
+      path: '/library',
+    },
+    ebooks: {
+      title: '전자책 | 다원 하루설계',
+      description: '다원작가의 전자책을 만나고 생활설계와 자기성장에 필요한 내용을 읽어보세요.',
+      path: '/ebooks',
+    },
+    audiobooks: {
+      title: '오디오북 | 다원 하루설계',
+      description:
+        '다원작가의 오디오북을 듣고 걷기와 휴식 시간에도 생활설계와 자기성장 콘텐츠를 이용해 보세요.',
+      path: '/audiobooks',
+    },
+    author: {
+      title: '다원작가 소개 | 다원 하루설계',
+      description: '다원작가의 작품과 자신과의 소통, 생활설계 활동을 소개합니다.',
+      path: '/#author',
+    },
+    subscribe: {
+      title: '스토어 | 다원 하루설계',
+      description: '다원 하루설계 이용권과 결제·이용 안내를 확인하세요.',
+      path: '/subscribe',
+    },
+    login: {
+      title: '로그인 | 다원 하루설계',
+      description: '다원 하루설계에 로그인하고 기록을 이어가세요.',
+      path: '/login',
+    },
+    signup: {
+      title: '회원가입 | 다원 하루설계',
+      description: '다원 하루설계에 가입하고 오늘 설계를 시작하세요.',
+      path: '/login',
+    },
+    terms: {
+      title: '이용약관 | 다원 하루설계',
+      description: '다원 하루설계 디지털 콘텐츠·기간제 이용권 서비스의 이용 조건입니다.',
+      path: '/terms',
+    },
+    privacy: {
+      title: '개인정보처리방침 | 다원 하루설계',
+      description: '다원 하루설계 서비스의 개인정보 수집·이용·보관 기준을 안내합니다.',
+      path: '/privacy',
+    },
+    refund: {
+      title: '환불·청약철회 안내 | 다원 하루설계',
+      description: '다원 하루설계 유료 이용권의 환불·청약철회·기간 종료형 해지 기준을 안내합니다.',
+      path: '/refund',
+    },
+    notFound: {
+      title: '페이지를 찾을 수 없습니다 | 다원 하루설계',
+      description: '요청하신 페이지를 찾을 수 없습니다. 홈에서 다시 시작해 주세요.',
+      path: '/',
+    },
   },
 } as const
 

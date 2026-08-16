@@ -51,7 +51,12 @@ function AppRoutes() {
           <Route path="life-stage" element={<LifeStagePage />} />
           <Route path="quick-design" element={<QuickDesignPage />} />
           <Route path="records" element={<RecordsPage />} />
-          <Route path="library" element={<LibraryPage />} />
+          <Route path="library" element={<LibraryPage initialTab="ebook" seoPage="library" />} />
+          <Route path="ebooks" element={<LibraryPage initialTab="ebook" seoPage="ebooks" />} />
+          <Route path="audiobooks" element={<LibraryPage initialTab="audio" seoPage="audiobooks" />} />
+          <Route path="store" element={<Navigate to="/subscribe" replace />} />
+          <Route path="profile" element={<Navigate to="/login" replace />} />
+          <Route path="board" element={<Navigate to="/" replace />} />
           <Route path="operations" element={<OperationsPage />} />
           <Route path="survey" element={<Navigate to="/quick-design#survey" replace />} />
           <Route path="admin" element={<AdminPage />} />

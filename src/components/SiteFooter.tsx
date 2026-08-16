@@ -33,9 +33,11 @@ export function SiteFooter() {
 
         <nav className="site-footer-links" aria-label="푸터 링크">
           <Link to={paths.home}>홈</Link>
-          <Link to="/#one">오늘설계</Link>
+          <Link to="/#one">하루설계</Link>
           <Link to={paths.library}>작품관</Link>
-          {FEATURES.paymentsEnabled ? <Link to={paths.subscribe}>이용권</Link> : null}
+          <Link to="/#first-taste">사용방법</Link>
+          <Link to="/#author">다원작가</Link>
+          {FEATURES.paymentsEnabled ? <Link to={paths.subscribe}>스토어</Link> : null}
           <Link to={paths.terms}>이용약관</Link>
           <Link to={paths.privacy}>개인정보처리방침</Link>
           <Link to={paths.refund}>환불·청약철회</Link>

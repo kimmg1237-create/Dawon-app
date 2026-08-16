@@ -1,5 +1,6 @@
 import bodyHtml from './body.html?raw'
 import scriptsRaw from './scripts.raw.js?raw'
+import { siteConfig } from '../../data/siteConfig'
 import './theme.css'
 import './bridge.css'
 import './dark-contrast.css'
@@ -218,6 +219,36 @@ type MountAuth = {
   account: DawonOsAccountState
 }
 
+function syncBusinessDisclosure(root: HTMLElement) {
+  const { business, urls } = siteConfig
+  const setText = (id: string, value: string) => {
+    const el = root.querySelector(`#${id}`)
+    if (el) el.textContent = value
+  }
+  setText('bizName', business.companyName)
+  setText('bizRepresentative', business.representative)
+  setText('bizRegistration', business.businessNumber)
+  setText('bizEcommerce', business.mailOrderNumber)
+  setText('bizAuthority', business.mailOrderAuthority)
+  setText('bizPublishing', business.publishingCertificate)
+  setText('bizPublishingAuthority', business.publishingAuthority)
+  setText('bizAddress', business.address)
+  setText('bizPhone', business.phone)
+  setText('bizEmail', business.email)
+
+  const lead = root.querySelector('.business-disclosure-lead')
+  if (lead) {
+    lead.innerHTML = `<b>${business.companyName}</b> · 사업자 ${business.businessNumber} · 고객센터 ${business.phone}`
+  }
+  root.querySelectorAll('.business-grid > div').forEach((row) => {
+    const label = row.querySelector('b')?.textContent?.trim()
+    if (label === '홈페이지') {
+      const span = row.querySelector('span')
+      if (span) span.innerHTML = `<a href="${urls.home}">www.dawon84.com</a>`
+    }
+  })
+}
+
 /** Mount DAWON OS HTML + non-payment scripts. Payments stay on React /subscribe. */
 export function mountDawonOs(
   host: HTMLElement,
@@ -228,6 +259,7 @@ export function mountDawonOs(
   ensureNavigateHelper()
   host.classList.add('dawon-os-root')
   host.innerHTML = bodyHtml
+  syncBusinessDisclosure(host)
   patchInternalLinks(host, navigate)
   bridgeChrome(host, navigate, auth)
 

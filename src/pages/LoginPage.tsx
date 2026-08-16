@@ -115,12 +115,23 @@ export function LoginPage() {
   const submitLabel =
     mode === 'in' ? '로그인' : mode === 'up' ? '회원가입' : '재설정 메일 보내기'
 
+  const seo =
+    mode === 'up'
+      ? siteConfig.pages.signup
+      : mode === 'forgot'
+        ? {
+            title: pageTitle('비밀번호 찾기'),
+            description: '가입 이메일로 비밀번호 재설정 링크를 받습니다.',
+            path: siteConfig.paths.login,
+          }
+        : siteConfig.pages.login
+
   return (
     <div className="container">
       <Seo
-        title={pageTitle(title)}
-        description={`${siteConfig.brand.nameKo} ${title}. 무료로 시작하고 기록을 이어가세요.`}
-        path={siteConfig.paths.login}
+        title={seo.title}
+        description={seo.description}
+        path={seo.path}
         noIndex
       />
       <form className="login-card" onSubmit={onSubmit} noValidate>

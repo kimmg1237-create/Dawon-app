@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { initStrategySite } from '../newsite/initStrategy'
-import { DawonLibrary } from '../newsite/DawonLibrary'
+import { DawonLibrary, type LibraryTab } from '../newsite/DawonLibrary'
 import sharedChrome from '../newsite/sections/sharedChrome.html?raw'
 import { h2ToHtml, type PageCopy } from '../data/siteCopyDefaults'
 import {
@@ -16,6 +16,8 @@ type Props = {
   title: string
   description?: string
   mountLibrary?: boolean
+  libraryTab?: LibraryTab
+  onLibraryTabChange?: (tab: LibraryTab) => void
   prefixHtml?: string
   sectionCopy?: PageCopy
   hideBanner?: boolean
@@ -44,6 +46,8 @@ export function SectionPage({
   title,
   description,
   mountLibrary,
+  libraryTab,
+  onLibraryTabChange,
   prefixHtml = '',
   sectionCopy,
   hideBanner = false,
@@ -166,7 +170,12 @@ export function SectionPage({
         </div>
       )}
       <div ref={hostRef} />
-      {libraryHost ? createPortal(<DawonLibrary />, libraryHost) : null}
+      {libraryHost ? (
+        createPortal(
+          <DawonLibrary initialTab={libraryTab} onTabChange={onLibraryTabChange} />,
+          libraryHost,
+        )
+      ) : null}
     </div>
   )
 }

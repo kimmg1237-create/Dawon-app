@@ -1,15 +1,15 @@
 import { Link } from 'react-router-dom'
 import { Seo } from '../components/Seo'
 import { BUSINESS_INFO, PRODUCT_SPEC } from '../data/productSpec'
-import { pageTitle, siteConfig } from '../data/siteConfig'
+import { siteConfig } from '../data/siteConfig'
 
 export function PrivacyPage() {
   return (
     <article className="container legal-page">
       <Seo
-        title={pageTitle('개인정보처리방침')}
-        description={`${siteConfig.brand.nameKo} 서비스의 개인정보 수집·이용·보관 기준을 안내합니다.`}
-        path={siteConfig.paths.privacy}
+        title={siteConfig.pages.privacy.title}
+        description={siteConfig.pages.privacy.description}
+        path={siteConfig.pages.privacy.path}
       />
       <div className="page-banner">
         <div className="eyebrow">개인정보</div>

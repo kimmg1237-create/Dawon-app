@@ -34,6 +34,10 @@ interface EbookViewerProps {
   title: string
   subtitle?: string
   onClose: () => void
+  /** Guest preview: clamp navigation to first N pages */
+  previewMaxPages?: number
+  /** Shown when preview ends / user wants full book */
+  onRequestFullAccess?: () => void
 }
 
 function readSavedViewMode(): ViewMode {
@@ -44,7 +48,14 @@ function readSavedViewMode(): ViewMode {
   }
 }
 
-export function EbookViewer({ url, title, subtitle, onClose }: EbookViewerProps) {
+export function EbookViewer({
+  url,
+  title,
+  subtitle,
+  onClose,
+  previewMaxPages,
+  onRequestFullAccess,
+}: EbookViewerProps) {
   const canvasLeftRef = useRef<HTMLCanvasElement>(null)
   const canvasRightRef = useRef<HTMLCanvasElement>(null)
   const stageRef = useRef<HTMLDivElement>(null)
@@ -140,7 +151,10 @@ export function EbookViewer({ url, title, subtitle, onClose }: EbookViewerProps)
         }
         void pdfRef.current?.cleanup()
         pdfRef.current = pdf
-        setPageCount(pdf.numPages)
+        const total = pdf.numPages
+        const capped =
+          previewMaxPages && previewMaxPages > 0 ? Math.min(total, previewMaxPages) : total
+        setPageCount(capped)
       } catch (err) {
         console.error('EbookViewer load 실패:', err)
         if (!cancelled) setError('전자책을 불러오지 못했습니다.')
@@ -155,7 +169,7 @@ export function EbookViewer({ url, title, subtitle, onClose }: EbookViewerProps)
       void pdfRef.current?.cleanup()
       pdfRef.current = null
     }
-  }, [url])
+  }, [url, previewMaxPages])
 
   useEffect(() => {
     setJumpInput(String(page))
@@ -388,6 +402,19 @@ export function EbookViewer({ url, title, subtitle, onClose }: EbookViewerProps)
             </button>
           </div>
         </div>
+
+        {previewMaxPages ? (
+          <div className="ebook-preview-banner" role="status">
+            <span>
+              미리보기 {previewMaxPages}쪽까지 볼 수 있습니다. 전체 본문은 로그인 후 이용하세요.
+            </span>
+            {onRequestFullAccess ? (
+              <button type="button" className="btn btn-primary btn-small" onClick={onRequestFullAccess}>
+                계속 읽으려면 로그인해 주세요
+              </button>
+            ) : null}
+          </div>
+        ) : null}
 
         <div
           className="ebook-stage"

@@ -12,6 +12,36 @@
       "source": "/refund-policy/",
       "destination": "/refund",
       "permanent": true
+    },
+    {
+      "source": "/store",
+      "destination": "/subscribe",
+      "permanent": true
+    },
+    {
+      "source": "/store/",
+      "destination": "/subscribe",
+      "permanent": true
+    },
+    {
+      "source": "/profile",
+      "destination": "/login",
+      "permanent": true
+    },
+    {
+      "source": "/profile/",
+      "destination": "/login",
+      "permanent": true
+    },
+    {
+      "source": "/board",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/board/",
+      "destination": "/",
+      "permanent": true
     }
   ],
   "rewrites": [

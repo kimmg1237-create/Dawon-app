@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { NavLink, Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { FEATURES } from '../data/features'
+import { siteConfig } from '../data/siteConfig'
 
 const THEME_KEY = 'dawon_os95_theme'
 
@@ -28,7 +29,7 @@ function applyTheme(mode: 'light' | 'dark') {
   }
 }
 
-/** Shell nav matching DAWON OS: 오늘설계 · 365 생활습관학교 · 이용권 */
+/** Shared site header: 하루설계 · 작품관 · 사용방법 · 다원작가 · 로그인 */
 export function AppNav() {
   const { user, isAdmin, signOut, configured } = useAuth()
   const location = useLocation()
@@ -41,16 +42,16 @@ export function AppNav() {
     applyTheme(theme)
   }, [theme])
 
-  // Close mobile menu on route change.
   useEffect(() => {
     setOpen(false)
   }, [location.pathname, location.hash])
 
   const links = [
-    { to: '/#one', label: '오늘설계' },
-    { to: '/#school', label: '365 생활습관학교' },
-    { to: '/library', label: '전자책·오디오북·만화' },
-    ...(FEATURES.paymentsEnabled ? [{ to: '/subscribe', label: '이용권' }] : []),
+    { to: '/#one', label: '하루설계' },
+    { to: '/library', label: '작품관' },
+    { to: '/#first-taste', label: '사용방법' },
+    { to: '/#author', label: '다원작가' },
+    ...(FEATURES.paymentsEnabled ? [{ to: '/subscribe', label: '스토어' }] : []),
   ]
 
   function closeMenu() {
@@ -64,13 +65,19 @@ export function AppNav() {
   return (
     <header className="header app-nav-header dawon-os-topbar">
       <div className="container app-nav">
-        <Link className="brand" to="/" aria-label="DAWON | 다원 하루설계 홈" onClick={closeMenu}>
+        <Link className="brand" to="/" aria-label={`${siteConfig.brand.full} 홈`} onClick={closeMenu}>
           <span className="brandmark brandmark-logo" aria-hidden="true">
-            <img src="/brand/dawon-logo.png" alt="" width={46} height={46} decoding="async" />
+            <img
+              src="/brand/dawon-logo.png"
+              alt=""
+              width={46}
+              height={46}
+              decoding="async"
+            />
           </span>
           <span className="brandtext">
-            DAWON | 다원 하루설계
-            <small>오늘 바꿀 딱 한 가지</small>
+            {siteConfig.brand.full}
+            <small>{siteConfig.brand.headline}</small>
           </span>
         </Link>
 
@@ -84,7 +91,11 @@ export function AppNav() {
               key={link.to}
               to={link.to}
               className={({ isActive }) =>
-                isActive && (link.to.startsWith('/subscribe') || link.to.startsWith('/library'))
+                isActive &&
+                (link.to.startsWith('/subscribe') ||
+                  link.to.startsWith('/library') ||
+                  link.to.startsWith('/ebooks') ||
+                  link.to.startsWith('/audiobooks'))
                   ? 'nav-active'
                   : undefined
               }

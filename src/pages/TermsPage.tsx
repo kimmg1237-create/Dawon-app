@@ -1,15 +1,15 @@
 import { Link } from 'react-router-dom'
 import { Seo } from '../components/Seo'
 import { BUSINESS_INFO, PRODUCT_SPEC, formatKrw } from '../data/productSpec'
-import { pageTitle, siteConfig } from '../data/siteConfig'
+import { siteConfig } from '../data/siteConfig'
 
 export function TermsPage() {
   return (
     <article className="container legal-page">
       <Seo
-        title={pageTitle('이용약관')}
-        description={`${siteConfig.brand.nameKo} 디지털 콘텐츠·기간제 이용권 서비스의 이용 조건입니다.`}
-        path={siteConfig.paths.terms}
+        title={siteConfig.pages.terms.title}
+        description={siteConfig.pages.terms.description}
+        path={siteConfig.pages.terms.path}
       />
       <div className="page-banner">
         <div className="eyebrow">이용약관</div>

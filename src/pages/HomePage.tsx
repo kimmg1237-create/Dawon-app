@@ -58,16 +58,16 @@ export function HomePage() {
   return (
     <>
       <Seo
-        title={siteConfig.seoDefaults.title}
-        description={siteConfig.seoDefaults.description}
-        path="/"
+        title={siteConfig.pages.home.title}
+        description={siteConfig.pages.home.description}
+        path={siteConfig.pages.home.path}
         jsonLd={[
           {
             '@context': 'https://schema.org',
             '@type': 'WebSite',
             name: siteConfig.brand.nameKo,
             url: siteConfig.urls.home,
-            description: siteConfig.seoDefaults.description,
+            description: siteConfig.pages.home.description,
             inLanguage: 'ko-KR',
             publisher: { '@type': 'Organization', name: siteConfig.brand.nameKo },
           },

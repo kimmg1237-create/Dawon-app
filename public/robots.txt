@@ -1,6 +1,8 @@
 User-agent: *
 Allow: /
 Allow: /library
+Allow: /ebooks
+Allow: /audiobooks
 Allow: /terms
 Allow: /privacy
 Allow: /refund

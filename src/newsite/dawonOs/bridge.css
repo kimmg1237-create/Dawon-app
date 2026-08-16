@@ -254,6 +254,30 @@ body.dawon-os-active.dark .payment-result-page .payment-result-card {
   min-height: 48px;
 }
 
+.library-preview-toc,
+.library-preview-related {
+  margin: 12px 0;
+  text-align: left;
+  font-size: 14px;
+}
+
+.library-preview-toc ol,
+.library-preview-related ul {
+  margin: 6px 0 0;
+  padding-left: 1.2em;
+}
+
+.library-related-link {
+  appearance: none;
+  border: 0;
+  background: none;
+  color: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0;
+  font: inherit;
+}
+
 .dawon-os-home {
   min-height: 100vh;
   overflow: visible;

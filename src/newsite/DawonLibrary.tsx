@@ -9,21 +9,41 @@ import { fetchLibraryItems } from '../services/libraryService'
 import { loadAudiobookIndex } from '../data/libraryStaticAssets'
 import { coverUrlForCard, mergeLibraryCards, type LibraryCard } from '../services/libraryCatalog'
 
-type LibraryTab = 'ebook' | 'comic' | 'audio'
+export type LibraryTab = 'ebook' | 'comic' | 'audio'
 
 interface OpenBook {
   card: LibraryCard
   kind: 'ebook' | 'comic'
   url: string
+  previewMaxPages?: number
 }
 
 const PAGE_SIZE = 5
+const GUEST_PREVIEW_PAGES = 5
 
 function normalizeTitle(value: string): string {
   return value.replace(/[《》\s,.·'"!?~\-_]/g, '').toLowerCase()
 }
 
-function BookCover({ card, tab }: { card: LibraryCard; tab: 'ebook' | 'comic' }) {
+function tocLines(card: LibraryCard): string[] {
+  const base = [
+    '표지 · 작품 소개',
+    card.tag ? `주제: ${card.tag}` : '생활설계와 자기확인',
+    '본문 미리보기 (일부)',
+    '전체 본문 (로그인 후)',
+  ]
+  return base
+}
+
+function BookCover({
+  card,
+  tab,
+  eager,
+}: {
+  card: LibraryCard
+  tab: 'ebook' | 'comic' | 'audio'
+  eager?: boolean
+}) {
   const [failed, setFailed] = useState(false)
   const cover = coverUrlForCard(card, tab)
 
@@ -40,22 +60,39 @@ function BookCover({ card, tab }: { card: LibraryCard; tab: 'ebook' | 'comic' })
       className="book-cover"
       src={cover}
       alt={`${card.title} 표지`}
-      loading="lazy"
+      width={160}
+      height={226}
+      loading={eager ? 'eager' : 'lazy'}
+      decoding="async"
       onError={() => setFailed(true)}
     />
   )
 }
 
-export function DawonLibrary() {
+type DawonLibraryProps = {
+  initialTab?: LibraryTab
+  onTabChange?: (tab: LibraryTab) => void
+}
+
+export function DawonLibrary({ initialTab = 'ebook', onTabChange }: DawonLibraryProps = {}) {
   const { isPremium, statusLabel, markContentUsed, paymentsEnabled } = useSubscription()
   const { user } = useAuth()
   const navigate = useNavigate()
-  const [tab, setTab] = useState<LibraryTab>('ebook')
+  const [tab, setTab] = useState<LibraryTab>(initialTab)
   const [query, setQuery] = useState('')
   const [slide, setSlide] = useState(0)
   const [open, setOpen] = useState<OpenBook | null>(null)
   const [preview, setPreview] = useState<LibraryCard | null>(null)
   const [cards, setCards] = useState<LibraryCard[]>(() => mergeLibraryCards([]))
+
+  useEffect(() => {
+    setTab(initialTab)
+  }, [initialTab])
+
+  function changeTab(next: LibraryTab) {
+    setTab(next)
+    onTabChange?.(next)
+  }
 
   useEffect(() => {
     let cancelled = false
@@ -75,6 +112,11 @@ export function DawonLibrary() {
       `${card.id} ${card.title} ${card.searchTitle} ${card.tag}`.toLowerCase().includes(q),
     )
   }, [query, cards])
+
+  const related = useMemo(() => {
+    if (!preview) return []
+    return cards.filter((c) => c.id !== preview.id).slice(0, 3)
+  }, [cards, preview])
 
   const audioExtras = useMemo(
     () =>
@@ -115,6 +157,16 @@ export function DawonLibrary() {
     }
   }
 
+  function openGuestPreview(card: LibraryCard, kind: 'ebook' | 'comic') {
+    const url = kind === 'ebook' ? card.ebookUrl : card.comicUrl
+    if (!url) {
+      setPreview(card)
+      return
+    }
+    setPreview(null)
+    setOpen({ card, kind, url, previewMaxPages: GUEST_PREVIEW_PAGES })
+  }
+
   useEffect(() => {
     function onOpenBook(e: Event) {
       const title = (e as CustomEvent<{ title?: string }>).detail?.title
@@ -122,7 +174,7 @@ export function DawonLibrary() {
       const target = normalizeTitle(title)
       const card = cards.find((c) => normalizeTitle(c.title) === target)
       if (!card) return
-      setTab('ebook')
+      changeTab('ebook')
       openBook(card, 'ebook')
       document.getElementById('library')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
     }
@@ -139,6 +191,7 @@ export function DawonLibrary() {
   }
 
   const kindLabel = tab === 'ebook' ? '전자책' : '만화'
+  const previewKind: 'ebook' | 'comic' = tab === 'comic' ? 'comic' : 'ebook'
 
   return (
     <div className="dawon-library">
@@ -158,7 +211,7 @@ export function DawonLibrary() {
           role="tab"
           className={`library-tab ${tab === 'ebook' ? 'active' : ''}`}
           aria-selected={tab === 'ebook'}
-          onClick={() => setTab('ebook')}
+          onClick={() => changeTab('ebook')}
         >
           ▤ 전자책 {cards.length}권
         </button>
@@ -167,7 +220,7 @@ export function DawonLibrary() {
           role="tab"
           className={`library-tab ${tab === 'audio' ? 'active' : ''}`}
           aria-selected={tab === 'audio'}
-          onClick={() => setTab('audio')}
+          onClick={() => changeTab('audio')}
         >
           ♪ 오디오북
         </button>
@@ -176,7 +229,7 @@ export function DawonLibrary() {
           role="tab"
           className={`library-tab ${tab === 'comic' ? 'active' : ''}`}
           aria-selected={tab === 'comic'}
-          onClick={() => setTab('comic')}
+          onClick={() => changeTab('comic')}
         >
           ◔ 만화책 {cards.length}권
         </button>
@@ -195,7 +248,7 @@ export function DawonLibrary() {
               />
             </label>
             <span className="library-count">
-              {filtered.length}권 · 표지·소개를 먼저 보고, 전체는 로그인 후 이용합니다
+              {filtered.length}권 · 표지·소개·목차 일부를 먼저 보고, 전체는 로그인 후 이용합니다
             </span>
           </div>
 
@@ -213,20 +266,28 @@ export function DawonLibrary() {
 
               <div className="book-slider-viewport" key={`${tab}-${safeSlide}`}>
                 <div className="book-grid book-grid-slide">
-                  {visible.map((card) => (
+                  {visible.map((card, i) => (
                     <button
                       key={card.id}
                       type="button"
                       className="book-card"
                       onClick={() => openBook(card, tab === 'ebook' ? 'ebook' : 'comic')}
                     >
-                      <BookCover card={card} tab={tab === 'ebook' ? 'ebook' : 'comic'} />
+                      <BookCover
+                        card={card}
+                        tab={tab === 'ebook' ? 'ebook' : 'comic'}
+                        eager={i < 2}
+                      />
                       <span className="book-body">
                         <span className="book-no">{card.pathNo}</span>
                         <h3>{card.title}</h3>
                         <p>{card.description}</p>
                         <span className="book-open">
-                          {user ? (tab === 'ebook' ? '전자책 읽기 →' : '만화로 보기 →') : '무료로 미리보기 →'}
+                          {user
+                            ? tab === 'ebook'
+                              ? '전자책 읽기 →'
+                              : '만화로 보기 →'
+                            : '무료로 미리보기 →'}
                         </span>
                       </span>
                     </button>
@@ -270,7 +331,8 @@ export function DawonLibrary() {
           )}
 
           <div className="library-note">
-            로그인 전: 표지·제목·소개 미리보기 · 로그인 후: 전체 {kindLabel} 이용
+            로그인 전: 표지·제목·소개·목차 일부·최대 {GUEST_PREVIEW_PAGES}쪽 미리보기 · 로그인 후: 전체{' '}
+            {kindLabel} 이용
           </div>
         </>
       )}
@@ -284,14 +346,17 @@ export function DawonLibrary() {
             if (!t.closest('button, a, input, select, [role="button"]')) return
             e.preventDefault()
             e.stopPropagation()
-            navigate('/login', { state: { from: '/library' } })
+            navigate('/login', { state: { from: '/audiobooks' } })
           }}
         >
           {!user ? (
             <div className="library-preview-banner">
-              <p>오디오북은 표지·제목을 먼저 확인할 수 있습니다. 전체 듣기는 로그인 후 이용하세요.</p>
-              <Link className="btn btn-primary btn-small" to="/login" state={{ from: '/library' }}>
-                계속 이용하려면 로그인
+              <p>
+                오디오북은 표지·제목·설명을 먼저 확인할 수 있습니다. 짧은 샘플 파일이 준비된 작품만
+                미리듣기가 제공되며, 전체 재생은 로그인 후 이용하세요.
+              </p>
+              <Link className="btn btn-primary btn-small" to="/login" state={{ from: '/audiobooks' }}>
+                계속 들으려면 로그인해 주세요
               </Link>
             </div>
           ) : null}
@@ -302,7 +367,7 @@ export function DawonLibrary() {
       )}
 
       {preview ? (
-        <div className="library-preview-modal" role="dialog" aria-modal="true" aria-label="작품 미리보기">
+        <div className="library-preview-modal" role="dialog" aria-modal="true" aria-labelledby="library-preview-title">
           <div className="library-preview-card">
             <button
               type="button"
@@ -313,17 +378,53 @@ export function DawonLibrary() {
               ×
             </button>
             <div className="library-preview-cover">
-              <BookCover card={preview} tab={tab === 'comic' ? 'comic' : 'ebook'} />
+              <BookCover card={preview} tab={previewKind} eager />
             </div>
-            <p className="library-preview-kind">{tab === 'comic' ? '만화책' : '전자책'} · {preview.pathNo}</p>
-            <h3>{preview.title}</h3>
-            <p>{preview.description}</p>
-            <p className="library-preview-toc">
-              미리보기: 표지와 짧은 소개까지 공개됩니다. 본문·전체 페이지는 로그인 후 이용할 수 있습니다.
+            <p className="library-preview-kind">
+              {tab === 'comic' ? '만화책' : '전자책'} · {preview.pathNo}
             </p>
+            <h3 id="library-preview-title">{preview.title}</h3>
+            <p>{preview.description}</p>
+            <div className="library-preview-toc">
+              <strong>목차 일부</strong>
+              <ol>
+                {tocLines(preview).map((line) => (
+                  <li key={line}>{line}</li>
+                ))}
+              </ol>
+            </div>
+            {related.length > 0 ? (
+              <div className="library-preview-related">
+                <strong>관련 작품</strong>
+                <ul>
+                  {related.map((r) => (
+                    <li key={r.id}>
+                      <button
+                        type="button"
+                        className="library-related-link"
+                        onClick={() => setPreview(r)}
+                      >
+                        {r.title}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
             <div className="library-preview-actions">
-              <Link className="btn btn-primary" to="/login" state={{ from: '/library' }}>
-                계속 이용하려면 로그인
+              <button
+                type="button"
+                className="btn btn-primary"
+                onClick={() => openGuestPreview(preview, previewKind)}
+              >
+                무료로 미리보기
+              </button>
+              <Link
+                className="btn btn-soft"
+                to="/login"
+                state={{ from: tab === 'comic' ? '/library' : '/ebooks' }}
+              >
+                계속 읽으려면 로그인해 주세요
               </Link>
               <button type="button" className="btn btn-soft" onClick={() => setPreview(null)}>
                 닫기
@@ -337,8 +438,23 @@ export function DawonLibrary() {
         <EbookViewer
           url={open.url}
           title={open.card.title}
-          subtitle={`${open.card.pathNo} · ${open.kind === 'ebook' ? '전자책' : '만화'}`}
+          subtitle={
+            open.previewMaxPages
+              ? `${open.card.pathNo} · 미리보기 ${open.previewMaxPages}쪽`
+              : `${open.card.pathNo} · ${open.kind === 'ebook' ? '전자책' : '만화'}`
+          }
+          previewMaxPages={open.previewMaxPages}
           onClose={() => setOpen(null)}
+          onRequestFullAccess={
+            open.previewMaxPages
+              ? () => {
+                  setOpen(null)
+                  navigate('/login', {
+                    state: { from: open.kind === 'comic' ? '/library' : '/ebooks' },
+                  })
+                }
+              : undefined
+          }
         />
       )}
     </div>

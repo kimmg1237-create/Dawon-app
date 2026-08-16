@@ -3,7 +3,6 @@ import { useEffect } from 'react'
 import { AppNav } from './AppNav'
 import { JourneyBar } from '../components/JourneyBar'
 import { SiteFooter } from '../components/SiteFooter'
-import { FEATURES } from '../data/features'
 import './AppShell.css'
 import '../newsite/dawonOs/theme.css'
 import '../newsite/dawonOs/bridge.css'
@@ -46,9 +45,9 @@ export function AppShell() {
           <NavLink to="/" end>
             홈
           </NavLink>
-          <NavLink to="/#one">오늘설계</NavLink>
+          <NavLink to="/#one">하루설계</NavLink>
           <NavLink to="/library">작품관</NavLink>
-          {FEATURES.paymentsEnabled ? <NavLink to="/subscribe">이용권</NavLink> : null}
+          <NavLink to="/#first-taste">사용방법</NavLink>
           <NavLink to="/login">로그인</NavLink>
         </nav>
       ) : null}

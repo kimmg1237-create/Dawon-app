@@ -1,15 +1,15 @@
 import { Link } from 'react-router-dom'
 import { Seo } from '../components/Seo'
 import { BUSINESS_INFO, PRODUCT_SPEC, formatKrw } from '../data/productSpec'
-import { pageTitle, siteConfig } from '../data/siteConfig'
+import { siteConfig } from '../data/siteConfig'
 
 export function RefundPolicyPage() {
   return (
     <article className="container legal-page">
       <Seo
-        title={pageTitle('환불·청약철회 정책')}
-        description={`${siteConfig.brand.nameKo} 유료 이용권의 환불·청약철회·기간 종료형 해지 기준을 안내합니다.`}
-        path={siteConfig.paths.refund}
+        title={siteConfig.pages.refund.title}
+        description={siteConfig.pages.refund.description}
+        path={siteConfig.pages.refund.path}
       />
       <div className="page-banner">
         <div className="eyebrow">환불·청약철회</div>
