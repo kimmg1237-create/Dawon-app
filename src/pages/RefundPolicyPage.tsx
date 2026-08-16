@@ -14,8 +14,8 @@ export function RefundPolicyPage() {
 
       <div className="legal-body">
         <p className="legal-note">
-          본 정책은 표준 운영 초안입니다. 법률 자문이 아니며, 사업자 정보·실제 운영에 맞게 확정 후
-          사용하세요.
+          본 정책은 {BUSINESS_INFO.companyName}의 {PRODUCT_SPEC.productName} 유료 이용권에 적용되는
+          환불·청약철회 기준입니다. 문의: {BUSINESS_INFO.phone} · {PRODUCT_SPEC.supportEmail}
         </p>
 
         <h2>1. 적용 대상</h2>

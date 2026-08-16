@@ -12,8 +12,8 @@ export function PrivacyPage() {
 
       <div className="legal-body">
         <p className="legal-note">
-          본 문서는 표준 초안입니다. 실제 수집 항목·위탁사에 맞게 수정하고 필요 시 법률 검토를
-          받으세요.
+          본 방침은 {BUSINESS_INFO.companyName}이 운영하는 {PRODUCT_SPEC.productName} 서비스의
+          개인정보 처리 기준입니다. 문의: {BUSINESS_INFO.phone} · {PRODUCT_SPEC.supportEmail}
         </p>
 
         <h2>1. 수집 항목</h2>

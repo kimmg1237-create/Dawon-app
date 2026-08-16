@@ -12,8 +12,8 @@ export function TermsPage() {
 
       <div className="legal-body">
         <p className="legal-note">
-          본 문서는 표준 초안이며 법률 자문이 아닙니다. 정식 공개 전 사업자 정보 확인 및 변호사 검토를
-          권장합니다.
+          본 약관은 {BUSINESS_INFO.companyName}이 운영하는 {PRODUCT_SPEC.productName} 서비스에
+          적용되는 이용 조건입니다. 문의: {BUSINESS_INFO.phone} · {PRODUCT_SPEC.supportEmail}
         </p>
 
         <h2>제1조 (목적)</h2>

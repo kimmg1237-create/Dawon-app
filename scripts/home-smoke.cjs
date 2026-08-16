@@ -204,6 +204,76 @@ async function main() {
   await page.goto(BASE, { waitUntil: 'domcontentloaded' });
   await page.waitForTimeout(500);
 
+  // Trust / SEO / conversion (8.6 → 9.3 levers)
+  await page.evaluate(() => window.dawonNavigateSection?.('subscription'));
+  await page.waitForTimeout(300);
+  const trustStrip = await page.locator('.home-trust-strip').isVisible();
+  const trustLinks = await page.evaluate(() => {
+    const root = document.querySelector('.home-trust-strip');
+    if (!root) return [];
+    return [...root.querySelectorAll('a')].map((a) => a.getAttribute('href'));
+  });
+  pass('신뢰 스트립', trustStrip);
+  pass(
+    '정책 링크',
+    ['/privacy', '/terms', '/refund-policy'].every((h) => trustLinks.includes(h)),
+    trustLinks.join(', '),
+  );
+  const payReady = await page.evaluate(() => {
+    const el = document.getElementById('paymentReadiness');
+    return el && el.classList.contains('ready') && !el.classList.contains('blocked');
+  });
+  pass('결제 배지 ready', payReady);
+  const guestCopy = await page.locator('#subscriptionSummary').textContent();
+  pass('게스트 이용권 카피', /로그인하면/.test(guestCopy || '') && !/확인할 수 없습니다/.test(guestCopy || ''), guestCopy?.slice(0, 40));
+  const stageKo = await page.evaluate(() =>
+    [...document.querySelectorAll('.growth-stage')].every((el) => !/STAGE/i.test(el.textContent || '')),
+  );
+  pass('이용권 단계 한국어', stageKo);
+  const recruitPrice = await page.locator('#recruit p').textContent();
+  pass('모집 가격 표기', /12,?900/.test(recruitPrice || ''), recruitPrice);
+  const worksAiGone = await page.evaluate(() => !document.body.innerHTML.includes('다원 하루설계 AI'));
+  pass('작품관 자기참조 AI 링크 제거', worksAiGone);
+
+  // SEO meta from document (Vite injects index.html)
+  const seo = await page.evaluate(() => {
+    const g = (sel) => document.querySelector(sel)?.getAttribute('content') || '';
+    const ld = document.querySelector('script[type="application/ld+json"]')?.textContent || '';
+    return {
+      title: document.title,
+      keywords: g('meta[name="keywords"]'),
+      canonical: document.querySelector('link[rel="canonical"]')?.getAttribute('href') || '',
+      ogImage: g('meta[property="og:image"]'),
+      colorScheme: g('meta[name="color-scheme"]'),
+      edition: document.body.getAttribute('data-site-edition') || '',
+      hasJsonLd: /Organization/.test(ld) && /WebSite/.test(ld),
+    };
+  });
+  pass('SEO 브랜드 keywords', /다원 하루설계/.test(seo.keywords) && !/다원 인생설계/.test(seo.keywords), seo.keywords.slice(0, 50));
+  pass('canonical www', seo.canonical === 'https://www.dawon84.com/');
+  pass('OG 전용 이미지', /og-dawon84\.png/.test(seo.ogImage), seo.ogImage);
+  pass('color-scheme light dark', seo.colorScheme === 'light dark');
+  pass('site-edition day-design', seo.edition === 'day-design-2026');
+  pass('JSON-LD Organization/WebSite', seo.hasJsonLd);
+
+  // Legal pages no longer say draft
+  await page.goto(BASE.replace(/\/$/, '') + '/terms', { waitUntil: 'domcontentloaded' });
+  await page.waitForTimeout(400);
+  const termsText = await page.locator('.legal-body').innerText();
+  pass('이용약관 초안 문구 없음', !/표준 초안|법률 자문이 아닙니다/.test(termsText));
+  await page.goto(BASE.replace(/\/$/, '') + '/privacy', { waitUntil: 'domcontentloaded' });
+  await page.waitForTimeout(400);
+  const privacyText = await page.locator('.legal-body').innerText();
+  pass('개인정보 초안 문구 없음', !/표준 초안/.test(privacyText));
+  await page.goto(BASE.replace(/\/$/, '') + '/refund-policy', { waitUntil: 'domcontentloaded' });
+  await page.waitForTimeout(400);
+  const refundText = await page.locator('.legal-body').innerText();
+  pass('환불정책 초안 문구 없음', !/표준 운영 초안|법률 자문이 아니며/.test(refundText));
+  pass('사업자 실정보', /다원/.test(refundText) && !/【상호명】/.test(refundText));
+
+  await page.goto(BASE, { waitUntil: 'domcontentloaded' });
+  await page.waitForTimeout(500);
+
   // Soft-check console: ignore known benign
   const hardConsole = consoleErrors.filter((t) =>
     !/favicon|Download the React DevTools|React Router Future Flag/i.test(t));

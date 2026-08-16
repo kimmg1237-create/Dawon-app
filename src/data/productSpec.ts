@@ -13,15 +13,15 @@ export const PRODUCT_SPEC = {
   autoRenew: false,
 } as const
 
-/** 사업자 정보 — 실제 값으로 교체하세요 */
+/** 사업자 정보 — 홈/푸터/약관 공통 */
 export const BUSINESS_INFO = {
-  companyName: '【상호명】',
-  representative: '【대표자명】',
-  businessNumber: '【사업자등록번호】',
-  address: '【사업장 주소】',
-  email: PRODUCT_SPEC.supportEmail,
-  phone: '【고객센터 전화】',
-  mailOrderNumber: '【통신판매업 신고번호】',
+  companyName: '다원',
+  representative: '안현인',
+  businessNumber: '454-95-01878',
+  address: '경기도 고양시 덕양구 신원로 55, 506/904',
+  email: 'book8453@naver.com',
+  phone: '02-6407-7778',
+  mailOrderNumber: '제2024-고양덕양구-2619호',
 } as const
 
 export type PayProduct = 'monthly' | 'b2b'
