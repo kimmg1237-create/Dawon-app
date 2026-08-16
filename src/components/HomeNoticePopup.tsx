@@ -1,7 +1,7 @@
 import { useEffect, useId, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react'
+import { siteConfig } from '../data/siteConfig'
 import './HomeNoticePopup.css'
 
-const DAWON84_URL = 'https://dawon53.com/'
 const STORAGE_KEY = 'dawon_home_notice_hide_until'
 const MOBILE_MQ = '(max-width: 720px)'
 
@@ -114,6 +114,8 @@ export function HomeNoticePopup() {
 
   if (!open) return null
 
+  const { brand, urls } = siteConfig
+
   return (
     <div className="home-notice" role="dialog" aria-modal="false" aria-labelledby={titleId}>
       <div
@@ -129,25 +131,25 @@ export function HomeNoticePopup() {
           ×
         </button>
         <img className="home-notice-logo" src="/brand/dawon-logo.png" alt="" width={72} height={72} />
-        <p className="home-notice-kicker">DAWON OFFICIAL SITE</p>
-        <h2 id={titleId}>다원 공식 홈페이지로 이동할 수 있습니다</h2>
+        <p className="home-notice-kicker">{brand.full}</p>
+        <h2 id={titleId}>여기가 다원 하루설계 홈입니다</h2>
         <p className="home-notice-copy">
-          다원작가 소개, 출판·작품 안내는 <strong>dawon53.com</strong>에서 확인할 수 있습니다.
-          이 앱에서는 오늘설계·작품관·이용권을 이용하세요.
+          오늘 바꿀 딱 한 가지를 정하고, 3분 기록·7일 실천으로 성장을 확인하세요.
+          출판·작가 소개는 출판사 사이트에서 따로 볼 수 있습니다.
         </p>
         <div className="home-notice-actions">
+          <a className="btn btn-primary home-notice-cta" href="#one" onClick={() => close()}>
+            오늘설계 시작하기
+          </a>
           <a
-            className="btn btn-primary home-notice-cta"
-            href={DAWON84_URL}
+            className="btn btn-soft"
+            href={urls.publisherSite}
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => persistHide()}
           >
-            dawon53.com 바로가기
+            출판사 사이트 ↗
           </a>
-          <button type="button" className="btn btn-soft" onClick={close}>
-            이 화면 계속 보기
-          </button>
         </div>
         <div className="home-notice-hide" role="group" aria-label="다시 보지 않기">
           <label>

@@ -45,7 +45,15 @@ export const siteConfig = {
     privacy: `${SITE_ORIGIN}/privacy`,
     refund: `${SITE_ORIGIN}/refund`,
     youtube: 'https://www.youtube.com/@다원작가-y6i',
+    /** Publisher / author site — not this product homepage */
     publisherSite: 'https://www.dawon53.com',
+  },
+  /** Absolute brand asset URLs (cache-bust when swapping files for crawlers) */
+  assets: {
+    logo: `${SITE_ORIGIN}/brand/dawon-logo.png?v=20260816`,
+    favicon: `${SITE_ORIGIN}/brand/dawon-favicon.png?v=20260816`,
+    appleTouchIcon: `${SITE_ORIGIN}/brand/apple-touch-icon.png?v=20260816`,
+    ogImage: `${SITE_ORIGIN}/brand/og-dawon84.png?v=20260816`,
   },
   paths: {
     home: '/',
@@ -62,7 +70,7 @@ export const siteConfig = {
     title: '다원 하루설계 | 오늘 바꿀 딱 한 가지',
     description:
       '오늘 바꿀 딱 한 가지만 정하세요. 3분 기록, 7일 실천, 성장 확인까지 — 다원 하루설계.',
-    ogImage: `${SITE_ORIGIN}/brand/og-dawon84.png`,
+    ogImage: `${SITE_ORIGIN}/brand/og-dawon84.png?v=20260816`,
   },
 } as const
 

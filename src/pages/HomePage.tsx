@@ -69,15 +69,18 @@ export function HomePage() {
             url: siteConfig.urls.home,
             description: siteConfig.seoDefaults.description,
             inLanguage: 'ko-KR',
+            publisher: { '@type': 'Organization', name: siteConfig.brand.nameKo },
           },
           {
             '@context': 'https://schema.org',
             '@type': 'Organization',
-            name: siteConfig.business.companyName,
-            alternateName: siteConfig.brand.nameKo,
+            name: siteConfig.brand.nameKo,
+            alternateName: [siteConfig.business.companyName, siteConfig.brand.mark],
             url: siteConfig.urls.home,
+            logo: siteConfig.assets.logo,
             email: siteConfig.business.email,
             telephone: siteConfig.business.phone,
+            sameAs: [siteConfig.urls.youtube],
           },
         ]}
       />

@@ -43,7 +43,7 @@ export function SiteFooter() {
             YouTube
           </a>
           <a href={urls.publisherSite} target="_blank" rel="noopener noreferrer">
-            {brand.publisher} 공식
+            출판사 사이트
           </a>
           <Link to={paths.login}>로그인</Link>
         </nav>
