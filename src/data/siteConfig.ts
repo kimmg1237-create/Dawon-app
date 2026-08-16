@@ -57,10 +57,10 @@ export const siteConfig = {
   },
   /** Absolute brand asset URLs (cache-bust when swapping files for crawlers) */
   assets: {
-    logo: `${SITE_ORIGIN}/brand/dawon-logo.png?v=20260816`,
-    favicon: `${SITE_ORIGIN}/brand/dawon-favicon.png?v=20260816`,
-    appleTouchIcon: `${SITE_ORIGIN}/brand/apple-touch-icon.png?v=20260816`,
-    ogImage: `${SITE_ORIGIN}/brand/og-dawon84.png?v=20260816`,
+    logo: `${SITE_ORIGIN}/brand/dawon-logo.png?v=20260816c`,
+    favicon: `${SITE_ORIGIN}/brand/site-icon.png?v=20260816c`,
+    appleTouchIcon: `${SITE_ORIGIN}/brand/site-apple-touch.png?v=20260816c`,
+    ogImage: `${SITE_ORIGIN}/brand/og-dawon84.png?v=20260816c`,
   },
   paths: {
     home: '/',
@@ -81,7 +81,7 @@ export const siteConfig = {
     title: '다원 하루설계 | 오늘 바꿀 딱 한 가지',
     description:
       '하루 약 3분, 오늘을 확인하고 하나를 실천하며 결과에서 배워 내일을 설계하는 다원 하루설계입니다.',
-    ogImage: `${SITE_ORIGIN}/brand/og-dawon84.png?v=20260816`,
+    ogImage: `${SITE_ORIGIN}/brand/og-dawon84.png?v=20260816c`,
   },
   /** Per-route title + description (unique titles for SEO) */
   pages: {
