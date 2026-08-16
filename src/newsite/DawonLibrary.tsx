@@ -54,6 +54,7 @@ export function DawonLibrary() {
   const [query, setQuery] = useState('')
   const [slide, setSlide] = useState(0)
   const [open, setOpen] = useState<OpenBook | null>(null)
+  const [preview, setPreview] = useState<LibraryCard | null>(null)
   const [cards, setCards] = useState<LibraryCard[]>(() => mergeLibraryCards([]))
 
   useEffect(() => {
@@ -99,7 +100,7 @@ export function DawonLibrary() {
 
   function openBook(card: LibraryCard, kind: 'ebook' | 'comic') {
     if (!user) {
-      navigate('/login', { state: { from: '/library' } })
+      setPreview(card)
       return
     }
     if (paymentsEnabled && !isPremium) {
@@ -110,6 +111,7 @@ export function DawonLibrary() {
     if (url) {
       void markContentUsed()
       setOpen({ card, kind, url })
+      setPreview(null)
     }
   }
 
@@ -158,7 +160,7 @@ export function DawonLibrary() {
           aria-selected={tab === 'ebook'}
           onClick={() => setTab('ebook')}
         >
-          ▤ 50개의 길 {cards.length}권
+          ▤ 전자책 {cards.length}권
         </button>
         <button
           type="button"
@@ -176,7 +178,7 @@ export function DawonLibrary() {
           aria-selected={tab === 'comic'}
           onClick={() => setTab('comic')}
         >
-          ◔ 만화 {cards.length}권
+          ◔ 만화책 {cards.length}권
         </button>
       </div>
 
@@ -193,7 +195,7 @@ export function DawonLibrary() {
               />
             </label>
             <span className="library-count">
-              {filtered.length}권 · 한 화면에 5권 · 표지를 누르면 {kindLabel}이 열립니다
+              {filtered.length}권 · 표지·소개를 먼저 보고, 전체는 로그인 후 이용합니다
             </span>
           </div>
 
@@ -224,7 +226,7 @@ export function DawonLibrary() {
                         <h3>{card.title}</h3>
                         <p>{card.description}</p>
                         <span className="book-open">
-                          {tab === 'ebook' ? '전자책 읽기 →' : '만화로 보기 →'}
+                          {user ? (tab === 'ebook' ? '전자책 읽기 →' : '만화로 보기 →') : '무료로 미리보기 →'}
                         </span>
                       </span>
                     </button>
@@ -268,7 +270,7 @@ export function DawonLibrary() {
           )}
 
           <div className="library-note">
-            좌우 화살표로 다음 5권을 볼 수 있습니다. 표지를 누르면 페이지 뷰어가 열립니다.
+            로그인 전: 표지·제목·소개 미리보기 · 로그인 후: 전체 {kindLabel} 이용
           </div>
         </>
       )}
@@ -285,11 +287,51 @@ export function DawonLibrary() {
             navigate('/login', { state: { from: '/library' } })
           }}
         >
+          {!user ? (
+            <div className="library-preview-banner">
+              <p>오디오북은 표지·제목을 먼저 확인할 수 있습니다. 전체 듣기는 로그인 후 이용하세요.</p>
+              <Link className="btn btn-primary btn-small" to="/login" state={{ from: '/library' }}>
+                계속 이용하려면 로그인
+              </Link>
+            </div>
+          ) : null}
           <PremiumGate feature="오디오북">
             <AudiobookPage extraTexts={audioExtras} />
           </PremiumGate>
         </div>
       )}
+
+      {preview ? (
+        <div className="library-preview-modal" role="dialog" aria-modal="true" aria-label="작품 미리보기">
+          <div className="library-preview-card">
+            <button
+              type="button"
+              className="library-preview-close"
+              aria-label="미리보기 닫기"
+              onClick={() => setPreview(null)}
+            >
+              ×
+            </button>
+            <div className="library-preview-cover">
+              <BookCover card={preview} tab={tab === 'comic' ? 'comic' : 'ebook'} />
+            </div>
+            <p className="library-preview-kind">{tab === 'comic' ? '만화책' : '전자책'} · {preview.pathNo}</p>
+            <h3>{preview.title}</h3>
+            <p>{preview.description}</p>
+            <p className="library-preview-toc">
+              미리보기: 표지와 짧은 소개까지 공개됩니다. 본문·전체 페이지는 로그인 후 이용할 수 있습니다.
+            </p>
+            <div className="library-preview-actions">
+              <Link className="btn btn-primary" to="/login" state={{ from: '/library' }}>
+                계속 이용하려면 로그인
+              </Link>
+              <button type="button" className="btn btn-soft" onClick={() => setPreview(null)}>
+                닫기
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
 
       {open && (
         <EbookViewer

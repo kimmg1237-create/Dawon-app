@@ -280,6 +280,23 @@
     .hero-focused .hero-subline{margin:0 auto 28px;max-width:560px;font-weight:700;color:var(--muted)}
     .hero-focused .hero-actions{justify-content:center;margin:0}
     .hero-focused .hero-guide-btn{display:none}
+    .hero-minute{margin:0 0 18px;font-size:15px;font-weight:900;color:var(--navy)}
+    .hero-free-note{margin:14px 0 0;font-size:12px;font-weight:800;color:var(--muted)}
+    .hero-flow{margin:10px 0 0;font-size:13px;font-weight:900;letter-spacing:-.02em;color:var(--emerald)}
+    .first-taste-steps{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+    .first-taste-steps li{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:16px;background:var(--paper);border:1px solid var(--line)}
+    .first-taste-steps b{display:grid;place-items:center;width:28px;height:28px;border-radius:10px;background:var(--soft);color:var(--emerald);flex:0 0 auto}
+    .first-taste-steps span{font-size:14px;font-weight:700;line-height:1.45}
+    .seven-days{padding:40px 0 56px}
+    .seven-days-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+    .seven-days-grid article{padding:20px;border-radius:18px;background:var(--paper);border:1px solid var(--line)}
+    .seven-days-grid b{display:block;margin-bottom:8px;color:var(--emerald);font-size:13px}
+    .seven-days-grid p{margin:0;font-size:14px;line-height:1.5;color:var(--muted)}
+    .os-html-footer{display:none!important}
+    @media(max-width:720px){
+      .seven-days-grid{grid-template-columns:1fr}
+      .hero-focused .hero-actions .btn{min-height:48px;padding:14px 18px}
+    }
     .path-gate{padding:28px 0 56px}
     .path-gate-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
     .path-gate-card{padding:22px;border-radius:22px;background:var(--paper);border:1px solid var(--line);box-shadow:0 12px 34px rgba(8,27,54,.07);display:flex;flex-direction:column;min-height:220px}
@@ -383,6 +400,8 @@
     body.dawon-os-active.first-run-focus .first-flow-lock-note{display:block}
     body.dawon-os-active.first-run-focus .hero,
     body.dawon-os-active.first-run-focus #layers,
+    body.dawon-os-active.first-run-focus #first-taste,
+    body.dawon-os-active.first-run-focus #seven-days,
     body.dawon-os-active.first-run-focus #today-pulse,
     body.dawon-os-active.first-run-focus #precision,
     body.dawon-os-active.first-run-focus #challenge,

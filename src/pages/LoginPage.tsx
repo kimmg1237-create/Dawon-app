@@ -1,6 +1,8 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { Seo } from '../components/Seo'
 import { useAuth } from '../context/AuthContext'
+import { pageTitle, siteConfig } from '../data/siteConfig'
 import { PASSWORD_HINT, validatePassword } from '../lib/password'
 
 type Mode = 'in' | 'up' | 'forgot'
@@ -115,6 +117,12 @@ export function LoginPage() {
 
   return (
     <div className="container">
+      <Seo
+        title={pageTitle(title)}
+        description={`${siteConfig.brand.nameKo} ${title}. 무료로 시작하고 기록을 이어가세요.`}
+        path={siteConfig.paths.login}
+        noIndex
+      />
       <form className="login-card" onSubmit={onSubmit} noValidate>
         <h1>{title}</h1>
         <p>

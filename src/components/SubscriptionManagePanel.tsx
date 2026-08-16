@@ -156,7 +156,7 @@ export function SubscriptionManagePanel() {
         </div>
         <p>
           해지는 남은 기간 이용 후 종료입니다. 환불은{' '}
-          <Link to="/refund-policy">환불·청약철회 정책</Link> 조건을 충족할 때만 가능합니다.
+          <Link to="/refund">환불·청약철회 정책</Link> 조건을 충족할 때만 가능합니다.
         </p>
       </div>
 
@@ -223,7 +223,7 @@ export function SubscriptionManagePanel() {
             {busy === 'refund' ? '환불 처리 중…' : '환불 신청'}
           </button>
           <p className="subscribe-manage-hint">
-            문의: {PRODUCT_SPEC.supportEmail} · <Link to="/refund-policy">정책 전문</Link>
+            문의: {PRODUCT_SPEC.supportEmail} · <Link to="/refund">정책 전문</Link>
           </p>
         </div>
       </div>

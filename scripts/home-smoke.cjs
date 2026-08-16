@@ -216,7 +216,7 @@ async function main() {
   pass('신뢰 스트립', trustStrip);
   pass(
     '정책 링크',
-    ['/privacy', '/terms', '/refund-policy'].every((h) => trustLinks.includes(h)),
+    ['/privacy', '/terms', '/refund'].every((h) => trustLinks.includes(h)),
     trustLinks.join(', '),
   );
   const payReady = await page.evaluate(() => {
@@ -265,7 +265,7 @@ async function main() {
   await page.waitForTimeout(400);
   const privacyText = await page.locator('.legal-body').innerText();
   pass('개인정보 초안 문구 없음', !/표준 초안/.test(privacyText));
-  await page.goto(BASE.replace(/\/$/, '') + '/refund-policy', { waitUntil: 'domcontentloaded' });
+  await page.goto(BASE.replace(/\/$/, '') + '/refund', { waitUntil: 'domcontentloaded' });
   await page.waitForTimeout(400);
   const refundText = await page.locator('.legal-body').innerText();
   pass('환불정책 초안 문구 없음', !/표준 운영 초안|법률 자문이 아니며/.test(refundText));

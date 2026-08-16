@@ -1,7 +1,9 @@
 import { useEffect, useRef } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { HomeNoticePopup } from '../components/HomeNoticePopup'
+import { Seo } from '../components/Seo'
 import { useAuth } from '../context/AuthContext'
+import { siteConfig } from '../data/siteConfig'
 import { mountDawonOs, scrollToDawonSection, syncDawonOsAccount } from '../newsite/dawonOs/initDawonOs'
 
 export function HomePage() {
@@ -55,6 +57,30 @@ export function HomePage() {
 
   return (
     <>
+      <Seo
+        title={siteConfig.seoDefaults.title}
+        description={siteConfig.seoDefaults.description}
+        path="/"
+        jsonLd={[
+          {
+            '@context': 'https://schema.org',
+            '@type': 'WebSite',
+            name: siteConfig.brand.nameKo,
+            url: siteConfig.urls.home,
+            description: siteConfig.seoDefaults.description,
+            inLanguage: 'ko-KR',
+          },
+          {
+            '@context': 'https://schema.org',
+            '@type': 'Organization',
+            name: siteConfig.business.companyName,
+            alternateName: siteConfig.brand.nameKo,
+            url: siteConfig.urls.home,
+            email: siteConfig.business.email,
+            telephone: siteConfig.business.phone,
+          },
+        ]}
+      />
       <div ref={host} className="dawon-os-home" />
       <HomeNoticePopup />
     </>

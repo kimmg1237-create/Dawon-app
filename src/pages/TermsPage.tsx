@@ -1,11 +1,18 @@
 import { Link } from 'react-router-dom'
+import { Seo } from '../components/Seo'
 import { BUSINESS_INFO, PRODUCT_SPEC, formatKrw } from '../data/productSpec'
+import { pageTitle, siteConfig } from '../data/siteConfig'
 
 export function TermsPage() {
   return (
     <article className="container legal-page">
+      <Seo
+        title={pageTitle('이용약관')}
+        description={`${siteConfig.brand.nameKo} 디지털 콘텐츠·기간제 이용권 서비스의 이용 조건입니다.`}
+        path={siteConfig.paths.terms}
+      />
       <div className="page-banner">
-        <div className="eyebrow">TERMS OF SERVICE</div>
+        <div className="eyebrow">이용약관</div>
         <h1>이용약관</h1>
         <p>디지털 콘텐츠·기간제 이용권 서비스에 적용되는 이용 조건입니다.</p>
       </div>
@@ -40,7 +47,7 @@ export function TermsPage() {
         <h2>제3조 (약관의 게시와 개정)</h2>
         <p>
           회사는 본 약관과{' '}
-          <Link to="/refund-policy">환불·청약철회 정책</Link>,{' '}
+          <Link to="/refund">환불·청약철회 정책</Link>,{' '}
           <Link to="/privacy">개인정보처리방침</Link>을 서비스에 게시합니다. 약관 변경 시 시행일 및
           변경 사유를 공지합니다.
         </p>
@@ -74,7 +81,7 @@ export function TermsPage() {
             자동 갱신이 없으므로 추가 결제는 발생하지 않습니다.
           </li>
           <li>
-            결제 대금 환불을 원하는 경우 <Link to="/refund-policy">환불·청약철회 정책</Link>에 따라
+            결제 대금 환불을 원하는 경우 <Link to="/refund">환불·청약철회 정책</Link>에 따라
             환불을 신청합니다. 해지와 환불은 별개의 절차입니다.
           </li>
         </ol>
@@ -82,7 +89,7 @@ export function TermsPage() {
         <h2>제7조 (청약철회·환불)</h2>
         <p>
           청약철회 및 환불은 「전자상거래 등에서의 소비자보호에 관한 법률」 및{' '}
-          <Link to="/refund-policy">환불·청약철회 정책</Link>에 따릅니다. 디지털 콘텐츠는 이용 개시
+          <Link to="/refund">환불·청약철회 정책</Link>에 따릅니다. 디지털 콘텐츠는 이용 개시
           후 청약철회가 제한될 수 있으며, 회사는 결제 전 이를 고지하고 동의를 받습니다.
         </p>
 

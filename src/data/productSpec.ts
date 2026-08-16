@@ -1,27 +1,26 @@
-/** 상품·환불·사업자 표시 정책 (약관·결제 UI 공통) */
+import { siteConfig } from './siteConfig'
+
+/** 상품·환불·사업자 표시 정책 (약관·결제 UI 공통) — business fields from siteConfig */
 export const PRODUCT_SPEC = {
-  productName: '다원 하루설계 AI',
-  monthlyPriceKrw: 12900,
+  productName: siteConfig.product.serviceName,
+  monthlyPriceKrw: siteConfig.product.monthlyPriceKrw,
   b2bPriceKrw: 990000,
   currency: 'KRW' as const,
   freeTrialDays: 30,
   subscriptionDays: 30,
-  /** 전자상거래법 청약철회 기준(일) */
-  coolingOffDays: 7,
-  /** 환불 문의·접수 안내 이메일 */
-  supportEmail: 'support@dawon84.com',
+  coolingOffDays: siteConfig.product.coolingOffDays,
+  supportEmail: siteConfig.business.supportEmail,
   autoRenew: false,
 } as const
 
-/** 사업자 정보 — 홈/푸터/약관 공통 */
 export const BUSINESS_INFO = {
-  companyName: '다원',
-  representative: '안현인',
-  businessNumber: '454-95-01878',
-  address: '경기도 고양시 덕양구 신원로 55, 506/904',
-  email: 'book8453@naver.com',
-  phone: '02-6407-7778',
-  mailOrderNumber: '제2024-고양덕양구-2619호',
+  companyName: siteConfig.business.companyName,
+  representative: siteConfig.business.representative,
+  businessNumber: siteConfig.business.businessNumber,
+  address: siteConfig.business.address,
+  email: siteConfig.business.email,
+  phone: siteConfig.business.phone,
+  mailOrderNumber: siteConfig.business.mailOrderNumber,
 } as const
 
 export type PayProduct = 'monthly' | 'b2b'

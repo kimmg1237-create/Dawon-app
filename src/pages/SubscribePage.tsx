@@ -4,6 +4,7 @@ import { loadTossPayments } from '@tosspayments/tosspayments-sdk'
 import { useAuth } from '../context/AuthContext'
 import { useSubscription } from '../context/SubscriptionContext'
 import { SubscriptionManagePanel } from '../components/SubscriptionManagePanel'
+import { Seo } from '../components/Seo'
 import {
   PRODUCT_SPEC,
   formatKrw,
@@ -11,6 +12,7 @@ import {
   productLabel,
   type PayProduct,
 } from '../data/productSpec'
+import { pageTitle, siteConfig } from '../data/siteConfig'
 import { tossClientKey, tossConfigured } from '../lib/toss'
 import { createTossOrder, generateOrderId } from '../services/paymentService'
 import '../newsite/dawonOs/theme.css'
@@ -201,10 +203,15 @@ export function SubscribePage() {
 
   return (
     <section id="subscription" className="section-soft subscribe-page dawon-os-checkout">
+      <Seo
+        title={pageTitle('이용권')}
+        description="자동갱신 없는 기간형 이용권. 가격과 이용기간을 먼저 확인하고 토스페이먼츠로 안전하게 결제하세요."
+        path={siteConfig.paths.subscribe}
+      />
       <div className="container">
         <div className="section-head">
           <div>
-            <div className="kicker">MEMBERSHIP · SIMPLE &amp; CLEAR</div>
+            <div className="kicker">이용권</div>
             <h2>얼마인지, 무엇을 얻는지, 언제까지 쓰는지 먼저 확인하세요.</h2>
             <p>
               다원 하루설계의 유료상품은 기간형 이용권입니다. 원하는 기간을 선택해 이용하고, 기간이 끝난 뒤
@@ -302,7 +309,7 @@ export function SubscribePage() {
                 이용약관
               </Link>
               과{' '}
-              <Link to="/refund-policy" target="_blank">
+              <Link to="/refund" target="_blank">
                 환불·청약철회 정책
               </Link>
               ,{' '}
@@ -499,7 +506,7 @@ export function SubscribePage() {
         <div className="launch-note">
           <b>이용 안내:</b> 모든 유료 이용권은 자동갱신되지 않습니다. 결제 전 선택한 상품의 가격과
           이용기간을 다시 확인할 수 있으며, 환불·해지 기준은{' '}
-          <Link to="/refund-policy">환불정책</Link>에서 확인할 수 있습니다.
+          <Link to="/refund">환불정책</Link>에서 확인할 수 있습니다.
         </div>
       </div>
     </section>

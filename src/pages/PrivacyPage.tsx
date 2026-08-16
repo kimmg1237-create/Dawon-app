@@ -1,11 +1,18 @@
 import { Link } from 'react-router-dom'
+import { Seo } from '../components/Seo'
 import { BUSINESS_INFO, PRODUCT_SPEC } from '../data/productSpec'
+import { pageTitle, siteConfig } from '../data/siteConfig'
 
 export function PrivacyPage() {
   return (
     <article className="container legal-page">
+      <Seo
+        title={pageTitle('개인정보처리방침')}
+        description={`${siteConfig.brand.nameKo} 서비스의 개인정보 수집·이용·보관 기준을 안내합니다.`}
+        path={siteConfig.paths.privacy}
+      />
       <div className="page-banner">
-        <div className="eyebrow">PRIVACY POLICY</div>
+        <div className="eyebrow">개인정보</div>
         <h1>개인정보처리방침</h1>
         <p>서비스 이용에 따라 수집·이용하는 개인정보의 처리 기준을 안내합니다.</p>
       </div>
@@ -55,7 +62,7 @@ export function PrivacyPage() {
 
         <p className="legal-effective">시행일: 2026년 7월 21일</p>
         <p>
-          <Link to="/terms">이용약관</Link> · <Link to="/refund-policy">환불정책</Link>
+          <Link to="/terms">이용약관</Link> · <Link to="/refund">환불정책</Link>
         </p>
       </div>
     </article>

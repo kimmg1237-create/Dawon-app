@@ -157,6 +157,103 @@ body.dawon-os-active.dark .payment-result-page .payment-result-card {
   color: #fff;
 }
 
+.library-preview-banner {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 0 14px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  border: 1px solid var(--line, #d7e0ea);
+  background: var(--paper, #fff);
+}
+
+.library-preview-banner p {
+  margin: 0;
+  font-size: 13px;
+  color: var(--muted, #6b7e90);
+}
+
+.library-preview-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(7, 26, 51, 0.55);
+}
+
+.library-preview-card {
+  position: relative;
+  width: min(440px, 100%);
+  max-height: min(90vh, 720px);
+  overflow: auto;
+  padding: 22px;
+  border-radius: 22px;
+  background: var(--paper, #fff);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.28);
+}
+
+.library-preview-close {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  border: 0;
+  background: transparent;
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+  min-width: 44px;
+  min-height: 44px;
+}
+
+.library-preview-cover {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+.library-preview-cover .book-cover,
+.library-preview-cover .book-cover-fallback {
+  width: 140px;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.library-preview-kind {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 900;
+  color: var(--emerald, #0c8877);
+}
+
+.library-preview-card h3 {
+  margin: 6px 0 8px;
+  font-size: 22px;
+}
+
+.library-preview-card > p {
+  margin: 0 0 10px;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--muted, #6b7e90);
+}
+
+.library-preview-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.library-preview-actions .btn {
+  min-height: 48px;
+}
+
 .dawon-os-home {
   min-height: 100vh;
   overflow: visible;

@@ -64,13 +64,13 @@ export function AppNav() {
   return (
     <header className="header app-nav-header dawon-os-topbar">
       <div className="container app-nav">
-        <Link className="brand" to="/" aria-label="다원 하루설계 홈" onClick={closeMenu}>
+        <Link className="brand" to="/" aria-label="DAWON | 다원 하루설계 홈" onClick={closeMenu}>
           <span className="brandmark brandmark-logo" aria-hidden="true">
             <img src="/brand/dawon-logo.png" alt="" width={46} height={46} decoding="async" />
           </span>
           <span className="brandtext">
-            다원 하루설계
-            <small>TODAY · PRACTICE · GROW</small>
+            DAWON | 다원 하루설계
+            <small>오늘 바꿀 딱 한 가지</small>
           </span>
         </Link>
 

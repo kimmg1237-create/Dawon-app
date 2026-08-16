@@ -1,0 +1,16 @@
+User-agent: *
+Allow: /
+Allow: /library
+Allow: /terms
+Allow: /privacy
+Allow: /refund
+Allow: /subscribe
+Allow: /login
+Disallow: /admin
+Disallow: /admin/
+Disallow: /records
+Disallow: /payment/
+Disallow: /reset-password
+Disallow: /operations
+
+Sitemap: https://www.dawon84.com/sitemap.xml

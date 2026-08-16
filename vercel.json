@@ -2,9 +2,21 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "framework": "vite",
+  "redirects": [
+    {
+      "source": "/refund-policy",
+      "destination": "/refund",
+      "permanent": true
+    },
+    {
+      "source": "/refund-policy/",
+      "destination": "/refund",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
-      "source": "/((?!ebooks/|covers/|comics/|audiobook-texts/|pdfjs/).*)",
+      "source": "/((?!ebooks/|covers/|comics/|audiobook-texts/|pdfjs/|brand/|robots\\.txt|sitemap\\.xml).*)",
       "destination": "/index.html"
     }
   ]

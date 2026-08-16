@@ -21,6 +21,7 @@ import { TermsPage } from './pages/TermsPage'
 import { RefundPolicyPage } from './pages/RefundPolicyPage'
 import { PrivacyPage } from './pages/PrivacyPage'
 import { MovieStudioPage } from './pages/MovieStudioPage'
+import { NotFoundPage } from './pages/NotFoundPage'
 import { FEATURES } from './data/features'
 import { useEffect } from 'react'
 import { migrateLocalDrafts } from './services/userDataService'
@@ -70,11 +71,12 @@ function AppRoutes() {
             element={FEATURES.paymentsEnabled ? <PaymentFailPage /> : <Navigate to="/" replace />}
           />
           <Route path="terms" element={<TermsPage />} />
-          <Route path="refund-policy" element={<RefundPolicyPage />} />
+          <Route path="refund" element={<RefundPolicyPage />} />
+          <Route path="refund-policy" element={<Navigate to="/refund" replace />} />
           <Route path="privacy" element={<PrivacyPage />} />
           <Route path="movie-studio" element={<MovieStudioPage />} />
           <Route path="movie-studio.html" element={<MovieStudioLegacyRedirect />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
+          <Route path="*" element={<NotFoundPage />} />
         </Route>
       </Routes>
     </>
