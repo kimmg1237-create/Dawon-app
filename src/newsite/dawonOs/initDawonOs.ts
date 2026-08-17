@@ -1,7 +1,10 @@
+import { createRoot, type Root } from 'react-dom/client'
+import { createElement } from 'react'
 import bodyHtml from './body.html?raw'
 import scriptsRaw from './scripts.raw.js?raw'
 import { siteConfig } from '../../data/siteConfig'
 import { mountEmoticonPicker } from './emoticonPicker'
+import { DawonVideoStudio } from '../../components/DawonVideoStudio'
 import './theme.css'
 import './bridge.css'
 import './dark-contrast.css'
@@ -13,6 +16,14 @@ declare global {
   interface Window {
     dawonNavigateSection?: (id: string) => void
   }
+}
+
+export function openDawonStudioTab(page: string, root?: ParentNode | null) {
+  const scope = root || document
+  const tab = scope.querySelector(
+    `.studio-tab[data-page="${CSS.escape(page)}"]`,
+  ) as HTMLButtonElement | null
+  tab?.click()
 }
 
 function stickyNavOffset(): number {
@@ -275,6 +286,18 @@ export function mountDawonOs(
 
   runOsScripts()
   const unmountEmo = mountEmoticonPicker(host)
+  const search = new URLSearchParams(window.location.search)
+  const studioTab = search.get('tab')
+  const bookId = search.get('book')
+  const dvsHost = host.querySelector('#dawon-video-studio-root')
+  let dvsRoot: Root | null = null
+  if (dvsHost) {
+    dvsRoot = createRoot(dvsHost)
+    dvsRoot.render(createElement(DawonVideoStudio, { embedded: true, bookId }))
+  }
+  if (studioTab || bookId) {
+    openDawonStudioTab(studioTab || 'video', host)
+  }
   ensureNavigateHelper()
   ensureDarkDefault()
   if (auth) syncDawonOsAccount(host, auth.account)
@@ -299,6 +322,7 @@ export function mountDawonOs(
 
   return () => {
     unmountEmo()
+    dvsRoot?.unmount()
     host.classList.remove('dawon-os-root')
     queueMicrotask(() => {
       if (host.isConnected) host.innerHTML = ''

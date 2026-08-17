@@ -441,31 +441,23 @@
 
       <div class="youtube-band">
         <div><strong>다원작가 유튜브 연계</strong><p>다원작가 채널은 참조·연결용으로 유지합니다. 본인이 보유한 다원작가 음악 MP3를 원스톱 제작기의 BGM 폴더에 넣으면 만화영화에 자동 믹스할 수 있습니다. 유튜브 음원을 임의 복제하지 않습니다.</p></div>
-        <a class="btn btn-gold" href="/movie-studio" target="_blank" rel="noopener">🎬 원스톱 만화영화 제작</a><a class="btn btn-dark" href="https://www.youtube.com/@다원작가-y6i" target="_blank" rel="noopener">유튜브 채널 열기 ↗</a>
+        <a class="btn btn-gold" href="#studio" data-open-video-studio>🎬 영상 제작</a><a class="btn btn-dark" href="https://www.youtube.com/@다원작가-y6i" target="_blank" rel="noopener">유튜브 채널 열기 ↗</a>
       </div>
     </div>
   </section>
 
   <section id="studio" class="section-soft">
     <div class="container">
-      <div class="section-head"><div><div class="kicker">창작 확장</div><h2>기록을 작품으로 확장합니다.</h2><p>필요할 때만 콘텐츠 변환·영화 제작 도구를 여세요. 평소에는 오늘설계와 서재로 충분합니다.</p></div></div>
+      <div class="section-head"><div><div class="kicker">3F · DAWON CREATIVE STUDIO</div><h2>한 번의 경험을 여러 작품으로 확장합니다.</h2><p>오늘의 기록을 검색형 기사, 짧은 노래, 만화·영상, 전자책, 제안서로 바꿉니다. 만화책은 작품관에서 4~7컷을 자동 추천받아 바로 만화영화로 만들 수 있고, DAWON VIDEO STUDIO에서는 사진·PDF와 음악을 넣어 15·30·60초 영상을 실제 렌더링하고 저장할 수 있습니다.</p></div></div>
+      <div class="next-step"><b>이 단계 →</b>생활에서 쌓인 경험을 글·노래·전자책·제안서로 정리하고, 사진·PDF는 실제 영상 파일로 렌더링합니다.</div>
 
-      <div class="studio-public">
-        <p class="studio-public-lead">오늘의 기록을 글·노래·만화·영상으로 확장할 수 있습니다. 제작 도구는 필요할 때만 여세요.</p>
-        <div class="works-actions">
-          <a class="btn btn-primary" href="/movie-studio">원스톱 만화영화 제작</a>
-          <a class="btn btn-soft" href="/library">서재에서 작품 보기</a>
-          <a class="btn btn-gold" href="#studioTools">콘텐츠 변환 도구 열기</a>
-        </div>
-      </div>
-
-      <details class="home-advanced-panel" id="studioTools">
-        <summary class="home-advanced-summary">콘텐츠 변환·전자책·제안서 도구 열기</summary>
-      <div class="home-tool-vault-inline">
       <div class="studio-shell">
-        <div class="studio-tabs" role="tablist"><button class="studio-tab active" data-page="transform">콘텐츠 변환</button><button class="studio-tab" data-page="book">전자책 제작</button><button class="studio-tab" data-page="proposal">제안서 제작</button></div>
+        <div class="studio-tabs" role="tablist"><button type="button" class="studio-tab active" data-page="transform">콘텐츠 변환</button><button type="button" class="studio-tab video-studio-tab" data-page="video">🎬 영상 제작</button><button type="button" class="studio-tab" data-page="book">전자책 제작</button><button type="button" class="studio-tab" data-page="proposal">제안서 제작</button></div>
         <div class="studio-page active" id="page-transform">
-          <div class="studio-grid"><div class="panel panel-pad sticky-form"><div class="field"><label for="ideaTitle">핵심 주제</label><input id="ideaTitle" placeholder="예: 기록이 자기신뢰를 만드는 이유"></div><div class="field" style="margin-top:12px"><label for="ideaSource">경험·자료</label><textarea id="ideaSource" style="min-height:210px" placeholder="오늘의 경험, 독자의 문제, 해결 방법을 입력하세요."></textarea></div><div class="field" style="margin-top:12px"><label>제작 형식</label><div class="type-grid" id="typeGrid"><button class="type-card active" data-type="blog"><b>검색형 기사</b><small>메타·본문·체크리스트</small></button><button class="type-card" data-type="song"><b>30초 노래</b><small>Hook·2절·마무리</small></button><button class="type-card" data-type="comic"><b>7컷 만화</b><small>컷별 장면·멘트</small></button><button class="type-card" data-type="video"><b>7장면 영상</b><small>화면·자막·내레이션</small></button><button class="type-card" data-type="proposal"><b>파트너 제안</b><small>문제·해결·KPI</small></button><button class="type-card" data-type="daily"><b>실천 카드</b><small>오늘 한 가지</small></button></div></div><div class="maker-actions"><button class="btn btn-primary" id="generateContent">콘텐츠 생성</button><button class="btn btn-soft" id="useToday">오늘 기록 불러오기</button><button class="btn btn-soft" id="contentSample">예시</button></div></div><div><div class="label-row" style="margin-bottom:10px"><h3>생성 결과</h3><div class="maker-actions"><button class="btn btn-sm btn-soft" id="copyContent">복사</button><button class="btn btn-sm btn-soft" id="downloadContent">TXT 저장</button></div></div><div class="output-box" id="contentOutput">왼쪽에서 형식을 선택하고 콘텐츠를 생성하세요.</div></div></div>
+          <div class="studio-grid"><div class="panel panel-pad sticky-form"><div class="field"><label for="ideaTitle">핵심 주제</label><input id="ideaTitle" placeholder="예: 기록이 자기신뢰를 만드는 이유"></div><div class="field" style="margin-top:12px"><label for="ideaSource">경험·자료</label><textarea id="ideaSource" style="min-height:210px" placeholder="오늘의 경험, 독자의 문제, 해결 방법을 입력하세요."></textarea></div><div class="field" style="margin-top:12px"><label>제작 형식</label><div class="type-grid" id="typeGrid"><button class="type-card active" data-type="blog"><b>검색형 기사</b><small>메타·본문·체크리스트</small></button><button class="type-card" data-type="song"><b>30초 노래</b><small>Hook·2절·마무리</small></button><button class="type-card" data-type="comic"><b>7컷 만화</b><small>컷별 장면·멘트</small></button><button class="type-card" data-type="video"><b>7장면 영상</b><small>스토리보드 → 실제 영상</small></button><button class="type-card" data-type="proposal"><b>파트너 제안</b><small>문제·해결·KPI</small></button><button class="type-card" data-type="daily"><b>실천 카드</b><small>오늘 한 가지</small></button></div></div><div class="maker-actions"><button class="btn btn-primary" id="generateContent">콘텐츠 생성</button><button class="btn btn-soft" id="useToday">오늘 기록 불러오기</button><button class="btn btn-soft" id="contentSample">예시</button></div></div><div><div class="label-row" style="margin-bottom:10px"><h3>생성 결과</h3><div class="maker-actions"><button class="btn btn-sm btn-soft" id="copyContent">복사</button><button class="btn btn-sm btn-soft" id="downloadContent">TXT 저장</button><button class="btn btn-sm btn-gold" id="openVideoStudioFromTransform" type="button">실제 영상 만들기 🎬</button></div></div><div class="output-box" id="contentOutput">왼쪽에서 형식을 선택하고 콘텐츠를 생성하세요.</div></div></div>
+        </div>
+        <div class="studio-page" id="page-video">
+          <div id="dawon-video-studio-root"></div>
         </div>
         <div class="studio-page" id="page-book">
           <div class="studio-grid"><div class="panel panel-pad sticky-form"><div class="field"><label for="bookTitle">도서명</label><input id="bookTitle" placeholder="나는 내 생활의 설계자"></div><div class="field" style="margin-top:12px"><label for="bookSubtitle">부제</label><input id="bookSubtitle" placeholder="확인하고 실천하며 다음을 만드는 기록법"></div><div class="field" style="margin-top:12px"><label for="bookAuthor">저자</label><input id="bookAuthor" value="다원작가"></div><div class="field" style="margin-top:12px"><label for="bookManuscript">원고</label><textarea id="bookManuscript" style="min-height:360px" placeholder="# 1장 오늘의 나를 확인하다
@@ -482,8 +474,6 @@
 A기업,12,1.1,15,120000,45"></textarea></div><div class="maker-actions"><button class="btn btn-primary" id="analyzeStocks">TOP100 분석</button><button class="btn btn-soft" id="stockSample">예시 데이터</button><button class="btn btn-soft" id="stockCsvDownload">결과 CSV</button></div><div class="disclaimer">이 도구는 입력 데이터를 상대 비교해 정리하는 교육용 보조 기능입니다. 투자 권유나 수익 보장을 제공하지 않으며 실제 투자 전 공시와 재무제표를 별도로 확인해야 합니다.</div></div><div><div class="label-row" style="margin-bottom:12px"><h3>종합 점수 순위</h3><small id="stockCount">0개 종목</small></div><div class="stock-table-wrap"><table class="stock-table"><thead><tr><th>순위</th><th>종목</th><th>PER</th><th>PBR</th><th>ROE</th><th>시가총액</th><th>부채비율</th><th>점수</th></tr></thead><tbody id="stockBody"><tr><td colspan="8"><div class="empty">데이터를 입력해 분석하세요.</div></td></tr></tbody></table></div></div></div>
         </div>
       </div>
-      </div>
-      </details>
     </div>
   </section>
 

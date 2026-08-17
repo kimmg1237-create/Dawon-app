@@ -4,7 +4,7 @@ import { HomeNoticePopup } from '../components/HomeNoticePopup'
 import { Seo } from '../components/Seo'
 import { useAuth } from '../context/AuthContext'
 import { siteConfig } from '../data/siteConfig'
-import { mountDawonOs, scrollToDawonSection, syncDawonOsAccount } from '../newsite/dawonOs/initDawonOs'
+import { mountDawonOs, openDawonStudioTab, scrollToDawonSection, syncDawonOsAccount } from '../newsite/dawonOs/initDawonOs'
 
 export function HomePage() {
   const host = useRef<HTMLDivElement>(null)
@@ -54,6 +54,15 @@ export function HomePage() {
     const t = window.setTimeout(() => scrollToDawonSection(hash, 'smooth'), 50)
     return () => window.clearTimeout(t)
   }, [location.hash, location.key])
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search)
+    const tab = params.get('tab')
+    const book = params.get('book')
+    if (!tab && !book) return
+    const t = window.setTimeout(() => openDawonStudioTab(tab || 'video', host.current), 80)
+    return () => window.clearTimeout(t)
+  }, [location.search])
 
   return (
     <>
