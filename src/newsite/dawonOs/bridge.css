@@ -151,6 +151,17 @@ body.dawon-os-active.dark .payment-result-page .payment-result-card {
   border: 0;
 }
 
+.dawon-library .library-tabs,
+#dawonLibraryRoot .library-tabs {
+  background: var(--soft, #edf6f4);
+}
+
+body.dawon-os-active.dark .dawon-library .library-tabs,
+body.dawon-os-active.dark #dawonLibraryRoot .library-tabs {
+  background: var(--ivory, #071321);
+  box-shadow: 0 12px 18px -14px rgba(0, 0, 0, 0.45);
+}
+
 .dawon-library .library-tabs button.active,
 #dawonLibraryRoot .library-tabs button.active {
   background: linear-gradient(135deg, var(--emerald, #0c8877), var(--mint, #37c6ac));
@@ -182,16 +193,16 @@ body.dawon-os-active.dark .payment-result-page .payment-result-card {
   z-index: 1200;
   display: grid;
   place-items: center;
-  padding: 20px;
+  padding: 16px;
   background: rgba(7, 26, 51, 0.55);
 }
 
 .library-preview-card {
   position: relative;
-  width: min(440px, 100%);
-  max-height: min(90vh, 720px);
+  width: min(640px, 100%);
+  max-height: min(92vh, 900px);
   overflow: auto;
-  padding: 22px;
+  padding: 28px 26px 24px;
   border-radius: 22px;
   background: var(--paper, #fff);
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.28);
@@ -213,15 +224,24 @@ body.dawon-os-active.dark .payment-result-page .payment-result-card {
 .library-preview-cover {
   display: flex;
   justify-content: center;
-  margin-bottom: 12px;
+  margin: 4px 0 16px;
+  padding: 12px;
+  border-radius: 16px;
+  background: linear-gradient(160deg, #f7f9fc 0%, #eef3f8 100%);
 }
 
 .library-preview-cover .book-cover,
 .library-preview-cover .book-cover-fallback {
-  width: 140px;
-  height: 200px;
-  object-fit: cover;
-  border-radius: 12px;
+  width: min(280px, 72vw);
+  height: auto;
+  aspect-ratio: 2 / 3;
+  max-height: min(420px, 48vh);
+  object-fit: contain;
+  object-position: center;
+  border-radius: 10px;
+  padding: 0;
+  border: 0;
+  background: transparent;
 }
 
 .library-preview-kind {

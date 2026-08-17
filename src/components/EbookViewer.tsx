@@ -22,8 +22,8 @@ import ${JSON.stringify(workerUrl)};
 
 installPdfWorker()
 
-const ZOOM_MIN = 0.7
-const ZOOM_MAX = 1.8
+const ZOOM_MIN = 0.8
+const ZOOM_MAX = 2.2
 const ZOOM_STEP = 0.1
 const VIEW_MODE_KEY = 'dawonEbookViewMode'
 
@@ -216,12 +216,12 @@ export function EbookViewer({
       // Wait until stage has real layout so pages aren't sized too tall and clipped mid-page.
       const stageW = stage?.clientWidth ?? 0
       const stageH = stage?.clientHeight ?? 0
-      const availableW = Math.max(240, (stageW || 800) - 24 - gap)
-      const availableH = Math.max(240, (stageH || 600) - 24)
+      const availableW = Math.max(280, (stageW || 960) - 16 - gap)
+      const availableH = Math.max(320, (stageH || 720) - 16)
       const slotW = dualLayout ? availableW / 2 : availableW
       const fit = Math.min(slotW / base.width, availableH / base.height)
-      const dpr = Math.min(2, Math.max(1, window.devicePixelRatio || 1))
-      const cssScale = fit * zoom
+      const dpr = Math.min(3, Math.max(1, window.devicePixelRatio || 1))
+      const cssScale = Math.max(fit * zoom, 0.55)
       const viewport = pdfPage.getViewport({ scale: cssScale * dpr })
 
       canvas.width = Math.floor(viewport.width)

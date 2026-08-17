@@ -1,10 +1,10 @@
 .ebook-reader-panel {
-  width: min(1120px, 100%);
-  height: min(92vh, 960px);
+  width: min(1320px, 100%);
+  height: min(95vh, 1040px);
 }
 
 .ebook-reader-panel.is-dual {
-  width: min(1480px, 100%);
+  width: min(1680px, 100%);
 }
 
 .ebook-toolbar {

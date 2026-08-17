@@ -264,14 +264,14 @@ body.dawon-os-active.dark .proposal-paper * {
   color: #182238 !important;
 }
 
-body.dawon-os-active.dark .book-cover,
-body.dawon-os-active.dark .book-cover *,
+body.dawon-os-active.dark .book-paper > .book-cover,
+body.dawon-os-active.dark .book-paper > .book-cover *,
 body.dawon-os-active.dark .proposal-cover,
 body.dawon-os-active.dark .proposal-cover * {
   color: #fff !important;
 }
 
-body.dawon-os-active.dark .book-cover small,
+body.dawon-os-active.dark .book-paper > .book-cover small,
 body.dawon-os-active.dark .proposal-cover small {
   color: #efcf96 !important;
 }
@@ -350,6 +350,15 @@ body.dawon-os-active.dark .book-card .book-no {
 
 body.dawon-os-active.dark .book-card .book-open {
   color: #b82f42 !important;
+}
+
+body.dawon-os-active.dark .book-card .book-cover {
+  background: linear-gradient(160deg, rgba(16, 36, 62, 0.95), rgba(10, 24, 42, 0.98)) !important;
+  border-bottom-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+body.dawon-os-active.dark .library-preview-cover {
+  background: linear-gradient(160deg, rgba(16, 36, 62, 0.95), rgba(10, 24, 42, 0.98));
 }
 
 body.dawon-os-active.dark .book-card .book-cover-fallback,
@@ -1060,6 +1069,28 @@ body.dawon-os-active.dark .ebook-stage {
 
 body.dawon-os-active.dark .ebook-status.ebook-error {
   color: #ffb4bc !important;
+}
+
+body.dawon-os-active.dark .home-ad-kicker {
+  color: var(--muted);
+}
+
+body.dawon-os-active.dark .home-ad-card {
+  background: rgba(16, 36, 62, 0.92);
+  border-color: var(--line);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28);
+}
+
+body.dawon-os-active.dark .home-ad-copy b {
+  color: var(--ink);
+}
+
+body.dawon-os-active.dark .home-ad-copy p {
+  color: var(--muted);
+}
+
+body.dawon-os-active.dark .home-ad-copy em {
+  color: #ffb4bc;
 }
 
 body.dawon-os-active.dark .ebook-modal .btn-soft {

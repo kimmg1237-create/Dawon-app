@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { EbookViewer } from '../components/EbookViewer'
 import { AudiobookPage } from '../components/AudiobookPage'
 import { PremiumGate } from '../components/PremiumGate'
@@ -18,7 +18,7 @@ interface OpenBook {
   previewMaxPages?: number
 }
 
-const PAGE_SIZE = 5
+const PAGE_SIZE = 4
 const GUEST_PREVIEW_PAGES = 5
 
 function normalizeTitle(value: string): string {
@@ -60,10 +60,12 @@ function BookCover({
       className="book-cover"
       src={cover}
       alt={`${card.title} 표지`}
-      width={160}
-      height={226}
+      width={360}
+      height={510}
+      sizes="(max-width: 680px) 46vw, (max-width: 1080px) 28vw, 220px"
       loading={eager ? 'eager' : 'lazy'}
       decoding="async"
+      fetchPriority={eager ? 'high' : 'auto'}
       onError={() => setFailed(true)}
     />
   )
@@ -78,6 +80,8 @@ export function DawonLibrary({ initialTab = 'ebook', onTabChange }: DawonLibrary
   const { isPremium, statusLabel, markContentUsed, paymentsEnabled } = useSubscription()
   const { user } = useAuth()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+  const openedFromQuery = useRef(false)
   const [tab, setTab] = useState<LibraryTab>(initialTab)
   const [query, setQuery] = useState('')
   const [slide, setSlide] = useState(0)
@@ -166,6 +170,18 @@ export function DawonLibrary({ initialTab = 'ebook', onTabChange }: DawonLibrary
     setPreview(null)
     setOpen({ card, kind, url, previewMaxPages: GUEST_PREVIEW_PAGES })
   }
+
+  useEffect(() => {
+    if (openedFromQuery.current || !cards.length) return
+    const book = searchParams.get('book')
+    if (!book) return
+    const target = normalizeTitle(book)
+    const card = cards.find((c) => c.id === book || normalizeTitle(c.title) === target)
+    if (!card) return
+    openedFromQuery.current = true
+    changeTab('ebook')
+    openBook(card, 'ebook')
+  }, [cards, searchParams])
 
   useEffect(() => {
     function onOpenBook(e: Event) {

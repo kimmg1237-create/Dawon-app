@@ -327,8 +327,20 @@ h1 span{color:#b82f42}h1 span::after{background:rgba(213,167,66,.27)}
 /* ============================================================
    DAWON Content Library (전자책 · 만화 · 오디오북)
    ============================================================ */
-.library-tabs{display:flex;flex-wrap:wrap;gap:9px;margin-bottom:20px}
-.library-tab{border:1px solid var(--line);background:#fff;border-radius:999px;padding:11px 18px;font-size:14px;font-weight:850;color:#43576a;transition:.2s}
+.library-section{padding-top:18px;padding-bottom:56px}
+.library-tabs{
+  position:sticky;
+  top:76px;
+  z-index:45;
+  display:flex;
+  flex-wrap:nowrap;
+  gap:9px;
+  margin:0 0 16px;
+  padding:10px 0 12px;
+  background:var(--soft,#edf6f4);
+  box-shadow:0 12px 18px -14px rgba(7,26,51,.2);
+}
+.library-tab{flex:1 1 0;border:1px solid var(--line);background:#fff;border-radius:999px;padding:11px 12px;font-size:14px;font-weight:850;color:#43576a;transition:.2s;text-align:center;white-space:nowrap}
 .library-tab:hover{transform:translateY(-2px);box-shadow:0 10px 22px rgba(7,26,51,.08)}
 .library-tab.active{background:linear-gradient(135deg,#071a33,#174d7d);color:#fff;border-color:transparent;box-shadow:0 14px 28px rgba(7,26,51,.18)}
 .library-toolbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-bottom:22px}
@@ -338,7 +350,7 @@ h1 span{color:#b82f42}h1 span::after{background:rgba(213,167,66,.27)}
 .library-count{font-size:13px;color:var(--muted);font-weight:800}
 .book-slider{display:grid;grid-template-columns:44px 1fr 44px;gap:10px;align-items:center}
 .book-slider-viewport{min-width:0;overflow:hidden}
-.book-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+.book-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
 .book-grid-slide{animation:bookSlideIn .35s ease}
 @keyframes bookSlideIn{from{opacity:.35;transform:translateX(28px)}to{opacity:1;transform:none}}
 .book-slider-btn{width:44px;height:44px;border:1px solid var(--line);border-radius:50%;background:#fff;color:var(--navy);font-size:28px;line-height:1;box-shadow:0 10px 24px rgba(7,26,51,.08);transition:.2s}
@@ -351,14 +363,14 @@ h1 span{color:#b82f42}h1 span::after{background:rgba(213,167,66,.27)}
 .book-card{border:1px solid rgba(7,26,51,.09);border-radius:19px;background:#fff;box-shadow:0 12px 30px rgba(7,26,51,.06);overflow:hidden;display:flex;flex-direction:column;text-align:left;padding:0;transition:.2s;cursor:pointer;position:relative}
 .book-card::before{content:"";position:absolute;left:0;top:0;right:0;height:4px;background:linear-gradient(90deg,#e34d59,#d5a742,#2478c5);z-index:2}
 .book-card:hover{transform:translateY(-6px);box-shadow:0 22px 46px rgba(7,26,51,.14)}
-.book-cover{width:100%;aspect-ratio:3/4;object-fit:cover;display:block;background:linear-gradient(145deg,#f2f6fa,#e8eef5);border-bottom:1px solid rgba(7,26,51,.07)}
-.book-cover-fallback{width:100%;aspect-ratio:3/4;display:grid;place-content:center;gap:8px;text-align:center;background:linear-gradient(145deg,#0e3154,#174f7d);color:#fff;padding:16px;border-bottom:1px solid rgba(7,26,51,.07)}
+.book-cover{width:100%;aspect-ratio:2/3;object-fit:contain;object-position:center;display:block;padding:10px 10px 0;box-sizing:border-box;background:linear-gradient(160deg,#f7f9fc 0%,#eef3f8 100%);border-bottom:1px solid rgba(7,26,51,.07);image-rendering:auto;-webkit-backface-visibility:hidden;backface-visibility:hidden}
+.book-cover-fallback{width:100%;aspect-ratio:2/3;display:grid;place-content:center;gap:8px;text-align:center;background:linear-gradient(145deg,#0e3154,#174f7d);color:#fff;padding:16px;border-bottom:1px solid rgba(7,26,51,.07)}
 .book-cover-fallback b{font-size:15px;line-height:1.4;word-break:keep-all}
 .book-cover-fallback span{font-size:11px;color:#b9cde0;letter-spacing:.1em}
-.book-body{padding:13px 14px 15px;display:flex;flex-direction:column;gap:5px;flex:1}
+.book-body{padding:14px 15px 16px;display:flex;flex-direction:column;gap:5px;flex:1}
 .book-no{font-size:10px;font-weight:900;letter-spacing:.1em;color:#155f9b}
-.book-body h3{font-size:15px;line-height:1.35;margin:0;color:var(--navy);word-break:keep-all}
-.book-body p{font-size:12px;color:var(--muted);margin:0}
+.book-body h3{font-size:16px;line-height:1.35;margin:0;color:var(--navy);word-break:keep-all}
+.book-body p{font-size:13px;color:var(--muted);margin:0}
 .book-open{margin-top:auto;padding-top:8px;font-size:12px;font-weight:900;color:#b82f42}
 .library-note{margin-top:18px;padding:13px 16px;border-radius:13px;background:#fff8e8;border:1px solid #ead49d;color:#6f5517;font-size:12px}
 .library-audio-shell{border:1px solid rgba(7,26,51,.09);border-radius:24px;background:var(--paper,#fff);box-shadow:0 15px 40px rgba(7,26,51,.075);overflow:hidden;color:var(--ink)}
@@ -372,13 +384,13 @@ h1 span{color:#b82f42}h1 span::after{background:rgba(213,167,66,.27)}
 .library-audio-shell .card{background:var(--paper,#fff);border:1px solid var(--line);border-radius:20px;color:var(--ink)}
 .library-audio-shell .btn-soft{background:var(--soft,#f2f6fa);border-color:var(--line,#cfdbe6);color:var(--ink,#132a45)}
 .library-audio-shell code{background:var(--soft,#f2f6fa);border-radius:6px;padding:2px 6px;font-size:.9em;color:var(--ink)}
-@media(max-width:1080px){.book-grid{grid-template-columns:repeat(5,1fr)}.book-body p{display:none}}
+@media(max-width:1080px){.book-grid{grid-template-columns:repeat(3,1fr)}.book-body p{display:none}}
 @media(max-width:900px){.book-slider{grid-template-columns:36px 1fr 36px;gap:8px}.book-slider-btn{width:36px;height:36px;font-size:24px}.book-grid{grid-template-columns:repeat(3,1fr)}}
-@media(max-width:680px){.book-slider{grid-template-columns:1fr;gap:12px}.book-slider-btn{justify-self:center}.book-slider-prev{order:2}.book-slider-viewport{order:1}.book-slider-next{order:3}.book-slider .book-slider-btn{display:inline-flex;align-items:center;justify-content:center}.book-slider{display:flex;flex-wrap:wrap;justify-content:center}.book-slider-viewport{width:100%}.book-grid{grid-template-columns:repeat(2,1fr)}.library-toolbar{align-items:stretch}.library-search{min-width:0}.library-audio-shell .section{padding:18px 14px}}
+@media(max-width:680px){.book-slider{grid-template-columns:1fr;gap:12px}.book-slider-btn{justify-self:center}.book-slider-prev{order:2}.book-slider-viewport{order:1}.book-slider-next{order:3}.book-slider .book-slider-btn{display:inline-flex;align-items:center;justify-content:center}.book-slider{display:flex;flex-wrap:wrap;justify-content:center}.book-slider-viewport{width:100%}.book-grid{grid-template-columns:repeat(2,1fr)}.book-cover{padding:8px 8px 0}.library-tabs{gap:6px;padding:8px 0 10px}.library-tab{padding:10px 4px;font-size:12px}.library-toolbar{align-items:stretch}.library-search{min-width:0}.library-audio-shell .section{padding:18px 14px}}
 
 /* EbookViewer compat (뷰어 모달) */
-.ebook-modal{position:fixed;inset:0;z-index:400;background:rgba(7,26,51,.55);display:grid;place-items:center;padding:18px;backdrop-filter:blur(4px)}
-.ebook-modal-panel{width:min(1100px,100%);height:min(90vh,920px);background:var(--paper,#fff);border:1px solid var(--line);border-radius:22px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 24px 60px rgba(7,26,51,.28);color:var(--ink)}
+.ebook-modal{position:fixed;inset:0;z-index:400;background:rgba(7,26,51,.55);display:grid;place-items:center;padding:12px;backdrop-filter:blur(4px)}
+.ebook-modal-panel{width:min(1280px,100%);height:min(94vh,980px);background:var(--paper,#fff);border:1px solid var(--line);border-radius:22px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 24px 60px rgba(7,26,51,.28);color:var(--ink)}
 .ebook-modal-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:14px 16px;border-bottom:1px solid var(--line);background:var(--soft,#f4f7fb)}
 .ebook-modal-bar strong{display:block;font-size:16px;color:var(--ink)}
 .ebook-modal-bar span{display:block;font-size:12px;color:var(--muted);margin-top:2px}

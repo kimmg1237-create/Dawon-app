@@ -44,10 +44,12 @@
 }
 
 .audiobook-library-cover {
-  width: 28px;
-  height: 36px;
-  object-fit: cover;
-  border-radius: 4px;
+  width: 40px;
+  height: 56px;
+  object-fit: contain;
+  object-position: center;
+  border-radius: 6px;
+  background: linear-gradient(160deg, #f7f9fc 0%, #eef3f8 100%);
   flex-shrink: 0;
 }
 

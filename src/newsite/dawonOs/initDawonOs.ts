@@ -5,6 +5,7 @@ import { mountEmoticonPicker } from './emoticonPicker'
 import './theme.css'
 import './bridge.css'
 import './dark-contrast.css'
+import './adRail.css'
 
 const THEME_KEY = 'dawon_os95_theme'
 

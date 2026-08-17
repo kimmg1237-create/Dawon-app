@@ -1,0 +1,136 @@
+/* Home right ad rail — follows scroll on wide screens; hidden on phones. */
+
+.home-ad-rail {
+  display: none;
+}
+
+@media (min-width: 1180px) {
+  .dawon-os-home,
+  .dawon-os-root {
+    padding-right: 196px;
+  }
+
+  .home-ad-rail {
+    display: block;
+    position: fixed;
+    top: 92px;
+    right: 10px;
+    z-index: 40;
+    width: 176px;
+    pointer-events: none;
+  }
+
+  .home-ad-rail-inner {
+    pointer-events: auto;
+    display: grid;
+    gap: 12px;
+    max-height: calc(100vh - 108px);
+    overflow: auto;
+    padding-bottom: 8px;
+  }
+
+  .home-ad-kicker {
+    margin: 0;
+    font-size: 10px;
+    font-weight: 900;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted, #65748a);
+  }
+
+  .home-ad-card {
+    display: block;
+    overflow: hidden;
+    border: 1px solid var(--line, #dce4e6);
+    border-radius: 16px;
+    background: var(--paper, #fff);
+    box-shadow: 0 10px 28px rgba(8, 27, 54, 0.1);
+    color: inherit;
+    text-decoration: none;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .home-ad-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 16px 34px rgba(8, 27, 54, 0.16);
+  }
+
+  .home-ad-card img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 3 / 4.15;
+    object-fit: cover;
+    background: #f4eee8;
+  }
+
+  .home-ad-copy {
+    padding: 10px 11px 12px;
+  }
+
+  .home-ad-copy b {
+    display: block;
+    font-size: 14px;
+    line-height: 1.3;
+    color: var(--ink, #122039);
+  }
+
+  .home-ad-copy span {
+    display: block;
+    margin-top: 4px;
+    font-size: 10px;
+    font-weight: 850;
+    letter-spacing: 0.02em;
+    color: var(--emerald, #0c8877);
+  }
+
+  .home-ad-copy p {
+    margin: 7px 0 0;
+    font-size: 12px;
+    line-height: 1.45;
+    color: var(--muted, #65748a);
+  }
+
+  .home-ad-copy em {
+    display: block;
+    margin-top: 8px;
+    font-style: normal;
+    font-size: 11px;
+    font-weight: 900;
+    color: #b82f42;
+  }
+}
+
+@media (min-width: 1600px) {
+  .dawon-os-home,
+  .dawon-os-root {
+    padding-right: 324px;
+  }
+
+  .home-ad-rail {
+    width: 300px;
+    right: 14px;
+  }
+
+  .home-ad-copy {
+    padding: 13px 14px 15px;
+  }
+
+  .home-ad-copy b {
+    font-size: 17px;
+  }
+
+  .home-ad-copy p {
+    font-size: 13px;
+  }
+}
+
+@media print {
+  .home-ad-rail {
+    display: none !important;
+  }
+
+  .dawon-os-home,
+  .dawon-os-root {
+    padding-right: 0 !important;
+  }
+}

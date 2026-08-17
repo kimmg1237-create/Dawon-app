@@ -24,6 +24,19 @@ export function LibraryPage({
     setTab(initialTab)
   }, [initialTab])
 
+  useEffect(() => {
+    const pinTop = () => window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
+    pinTop()
+    const t1 = window.setTimeout(pinTop, 40)
+    const t2 = window.setTimeout(pinTop, 160)
+    const t3 = window.setTimeout(pinTop, 320)
+    return () => {
+      window.clearTimeout(t1)
+      window.clearTimeout(t2)
+      window.clearTimeout(t3)
+    }
+  }, [seoPage])
+
   return (
     <>
       <Seo title={seo.title} description={seo.description} path={seo.path} />

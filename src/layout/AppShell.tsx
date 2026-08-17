@@ -16,6 +16,18 @@ export function AppShell() {
   const isStudio = location.pathname.startsWith('/movie-studio')
 
   useEffect(() => {
+    if (location.hash) return
+    const pinTop = () => window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
+    pinTop()
+    const t1 = window.setTimeout(pinTop, 40)
+    const t2 = window.setTimeout(pinTop, 160)
+    return () => {
+      window.clearTimeout(t1)
+      window.clearTimeout(t2)
+    }
+  }, [location.pathname, location.key])
+
+  useEffect(() => {
     document.body.classList.add('dawon-os-active')
     try {
       if (!localStorage.getItem('dawon_os_theme_v2')) {

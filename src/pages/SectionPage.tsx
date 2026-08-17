@@ -142,7 +142,7 @@ export function SectionPage({
     })
 
     const hash = window.location.hash
-    if (hash) {
+    if (hash && !(mountLibrary && (hash === '#library' || hash === '#dawonLibraryRoot'))) {
       requestAnimationFrame(() => {
         host.querySelector(hash)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
       })
@@ -163,7 +163,7 @@ export function SectionPage({
   return (
     <div className="section-page">
       {hideBanner ? null : (
-        <div className="container page-banner">
+        <div className={`container page-banner${mountLibrary ? ' page-banner-library' : ''}`}>
           <div className="eyebrow">DAWON EXECUTION</div>
           <h1>{title}</h1>
           {description ? <p>{description}</p> : null}
