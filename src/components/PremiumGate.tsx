@@ -15,7 +15,7 @@ export function PremiumGate({ children, feature = '프리미엄 콘텐츠' }: Pr
     return children ? <>{children}</> : null
   }
 
-  if (loading) {
+  if (loading && !isPremium) {
     return <p className="premium-gate-loading">이용 권한 확인 중…</p>
   }
 

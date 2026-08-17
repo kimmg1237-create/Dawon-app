@@ -372,9 +372,10 @@ h1 span{color:#b82f42}h1 span::after{background:rgba(213,167,66,.27)}
 .book-body h3{font-size:16px;line-height:1.35;margin:0;color:var(--navy);word-break:keep-all}
 .book-body p{font-size:13px;color:var(--muted);margin:0}
 .book-open{margin-top:auto;padding-top:8px;font-size:12px;font-weight:900;color:#b82f42}
+.book-card-main{appearance:none;border:0;background:transparent;padding:0;margin:0;display:flex;flex-direction:column;text-align:left;cursor:pointer;color:inherit;width:100%;flex:1}
+.book-movie-btn{appearance:none;margin:0 12px 14px;border:0;border-radius:999px;padding:10px 12px;background:linear-gradient(135deg,#6f42c1,#3f77d7);color:#fff;font-size:12px;font-weight:900;cursor:pointer}
+.book-movie-btn:hover{filter:brightness(1.06)}
 .library-note{margin-top:18px;padding:13px 16px;border-radius:13px;background:#fff8e8;border:1px solid #ead49d;color:#6f5517;font-size:12px}
-.library-studio-cta{display:flex;justify-content:center;margin:20px 0 8px}
-.library-studio-cta .btn{min-width:min(100%,280px);text-align:center}
 .library-audio-shell{border:1px solid rgba(7,26,51,.09);border-radius:24px;background:var(--paper,#fff);box-shadow:0 15px 40px rgba(7,26,51,.075);overflow:hidden;color:var(--ink)}
 .library-audio-shell .section{padding:26px}
 .library-audio-shell .section::before{display:none}

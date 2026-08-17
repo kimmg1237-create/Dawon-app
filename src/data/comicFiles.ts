@@ -1,11 +1,58 @@
-import { PATH_CARDS } from './paths'
+/** Auto-generated — run: node scripts/link-comics.cjs */
+export const COMIC_BY_ID: Record<string, string> = {
+  "00": "/comics/00.pdf",
+  "01": "/comics/01.pdf",
+  "02": "/comics/02.pdf",
+  "03": "/comics/03.pdf",
+  "04": "/comics/04.pdf",
+  "05": "/comics/05.pdf",
+  "06": "/comics/06.pdf",
+  "07": "/comics/07.pdf",
+  "08": "/comics/08.pdf",
+  "09": "/comics/09.pdf",
+  "10": "/comics/10.pdf",
+  "11": "/comics/11.pdf",
+  "12": "/comics/12.pdf",
+  "13": "/comics/13.pdf",
+  "14": "/comics/14.pdf",
+  "15": "/comics/15.pdf",
+  "16": "/comics/16.pdf",
+  "17": "/comics/17.pdf",
+  "18": "/comics/18.pdf",
+  "19": "/comics/19.pdf",
+  "20": "/comics/20.pdf",
+  "21": "/comics/21.pdf",
+  "22": "/comics/22.pdf",
+  "23": "/comics/23.pdf",
+  "24": "/comics/24.pdf",
+  "25": "/comics/25.pdf",
+  "26": "/comics/26.pdf",
+  "27": "/comics/27.pdf",
+  "28": "/comics/28.pdf",
+  "29": "/comics/29.pdf",
+  "30": "/comics/30.pdf",
+  "31": "/comics/31.pdf",
+  "32": "/comics/32.pdf",
+  "33": "/comics/33.pdf",
+  "34": "/comics/34.pdf",
+  "35": "/comics/35.pdf",
+  "36": "/comics/36.pdf",
+  "37": "/comics/37.pdf",
+  "38": "/comics/38.pdf",
+  "39": "/comics/39.pdf",
+  "40": "/comics/40.pdf",
+  "41": "/comics/41.pdf",
+  "42": "/comics/42.pdf",
+  "43": "/comics/43.pdf",
+  "44": "/comics/44.pdf",
+  "45": "/comics/45.pdf",
+  "46": "/comics/46.pdf",
+  "47": "/comics/47.pdf",
+  "48": "/comics/48.pdf",
+  "49": "/comics/49.pdf",
+  "50": "/comics/50.pdf",
+}
 
-const comicTitles = new Map(PATH_CARDS.map((card) => [card.id, card.title]))
-
-export function getComicUrl(id: string): string | null {
-  const title = comicTitles.get(id)
-  if (!title) return null
-
-  const fileName = `${id}_${title}_50p_만화형전자책.pdf`
-  return `/comics/${encodeURIComponent(fileName)}`
+export function getComicUrl(pathId: string): string | null {
+  return COMIC_BY_ID[pathId] ?? null
 }

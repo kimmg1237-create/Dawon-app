@@ -57,6 +57,11 @@ export function AudiobookPage({ extraTexts = [] }: { extraTexts?: AudiobookExtra
   const [paused, setPaused] = useState(false)
   const [error, setError] = useState('')
   const fileRef = useRef<HTMLInputElement>(null)
+  const chunksRef = useRef<string[]>([])
+  const indexRef = useRef(0)
+  const utterRef = useRef<SpeechSynthesisUtterance | null>(null)
+  const playIdRef = useRef(0)
+  const pausedRef = useRef(false)
 
   useEffect(() => {
     fetch('/audiobook-texts/index.json')
@@ -77,18 +82,37 @@ export function AudiobookPage({ extraTexts = [] }: { extraTexts?: AudiobookExtra
 
     function loadVoices() {
       const list = window.speechSynthesis.getVoices()
-      setVoices(list)
+      setVoices((prev) => {
+        if (prev.length === list.length && prev.every((v, i) => v.voiceURI === list[i]?.voiceURI)) {
+          return prev
+        }
+        return list
+      })
       const korean = pickKoreanVoice(list)
-      if (korean) setVoiceUri((prev) => prev || korean.voiceURI)
+      if (korean) setVoiceUri((cur) => cur || korean.voiceURI)
     }
 
     loadVoices()
     window.speechSynthesis.addEventListener('voiceschanged', loadVoices)
     return () => {
       window.speechSynthesis.removeEventListener('voiceschanged', loadVoices)
+      playIdRef.current += 1
       window.speechSynthesis.cancel()
     }
   }, [])
+
+  useEffect(() => {
+    if (!speaking || paused) return
+    const id = window.setInterval(() => {
+      if (pausedRef.current || window.speechSynthesis.paused) return
+      try {
+        window.speechSynthesis.resume()
+      } catch {
+        /* Chrome 장시간 재생 끊김 방지 */
+      }
+    }, 8000)
+    return () => window.clearInterval(id)
+  }, [speaking, paused])
 
   async function loadLibraryFile(name: string) {
     try {
@@ -119,9 +143,52 @@ export function AudiobookPage({ extraTexts = [] }: { extraTexts?: AudiobookExtra
   }
 
   function stop() {
-    window.speechSynthesis.cancel()
+    playIdRef.current += 1
+    utterRef.current = null
+    pausedRef.current = false
+    try {
+      window.speechSynthesis.cancel()
+    } catch {
+      /* ignore */
+    }
     setSpeaking(false)
     setPaused(false)
+  }
+
+  function speakNext(playId: number) {
+    if (playId !== playIdRef.current) return
+    const chunks = chunksRef.current
+    if (indexRef.current >= chunks.length) {
+      utterRef.current = null
+      setSpeaking(false)
+      setPaused(false)
+      return
+    }
+    const selected = voices.find((v) => v.voiceURI === voiceUri)
+    const utter = new SpeechSynthesisUtterance(chunks[indexRef.current])
+    utter.rate = rate
+    utter.lang = 'ko-KR'
+    if (selected) utter.voice = selected
+    utter.onstart = () => {
+      if (playId !== playIdRef.current) return
+      setSpeaking(true)
+      setPaused(false)
+    }
+    utter.onend = () => {
+      if (playId !== playIdRef.current) return
+      indexRef.current += 1
+      speakNext(playId)
+    }
+    utter.onerror = (event) => {
+      if (playId !== playIdRef.current) return
+      const reason = event.error
+      if (reason === 'interrupted' || reason === 'canceled') return
+      setSpeaking(false)
+      setPaused(false)
+      setError('재생 중 오류가 발생했습니다. 다시 시도해 주세요.')
+    }
+    utterRef.current = utter
+    window.speechSynthesis.speak(utter)
   }
 
   function play() {
@@ -134,48 +201,42 @@ export function AudiobookPage({ extraTexts = [] }: { extraTexts?: AudiobookExtra
 
     setError('')
     void markContentUsed()
-    window.speechSynthesis.cancel()
+    playIdRef.current += 1
+    const playId = playIdRef.current
+    chunksRef.current = splitForSpeech(body.slice(0, MAX_CHARS))
+    indexRef.current = 0
+    pausedRef.current = false
+    setSpeaking(true)
+    setPaused(false)
 
-    const chunks = splitForSpeech(body.slice(0, MAX_CHARS))
-    const selected = voices.find((v) => v.voiceURI === voiceUri)
-
-    let index = 0
-    const speakNext = () => {
-      if (index >= chunks.length) {
-        setSpeaking(false)
-        setPaused(false)
-        return
-      }
-      const utter = new SpeechSynthesisUtterance(chunks[index])
-      utter.rate = rate
-      utter.lang = 'ko-KR'
-      if (selected) utter.voice = selected
-      utter.onstart = () => {
-        setSpeaking(true)
-        setPaused(false)
-      }
-      utter.onend = () => {
-        index += 1
-        speakNext()
-      }
-      utter.onerror = () => {
-        setSpeaking(false)
-        setPaused(false)
-        setError('재생 중 오류가 발생했습니다. 다시 시도해 주세요.')
-      }
-      window.speechSynthesis.speak(utter)
+    try {
+      window.speechSynthesis.cancel()
+    } catch {
+      /* ignore */
     }
-
-    speakNext()
+    window.setTimeout(() => {
+      if (playId !== playIdRef.current) return
+      speakNext(playId)
+    }, 80)
   }
 
   function togglePause() {
     if (!speaking) return
     if (paused) {
-      window.speechSynthesis.resume()
+      pausedRef.current = false
+      try {
+        window.speechSynthesis.resume()
+      } catch {
+        /* ignore */
+      }
       setPaused(false)
     } else {
-      window.speechSynthesis.pause()
+      pausedRef.current = true
+      try {
+        window.speechSynthesis.pause()
+      } catch {
+        /* ignore */
+      }
       setPaused(true)
     }
   }

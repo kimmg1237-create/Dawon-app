@@ -1,0 +1,236 @@
+.comic-movie-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 2600;
+  background: rgba(2, 8, 18, 0.94);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+}
+
+.comic-movie-shell {
+  width: min(1180px, 100%);
+  height: min(92vh, 860px);
+  display: grid;
+  grid-template-rows: auto 1fr auto auto;
+  background: #071321;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 26px;
+  overflow: hidden;
+  box-shadow: 0 30px 100px rgba(0, 0, 0, 0.55);
+  color: #fff;
+}
+
+.comic-movie-shell.is-portrait {
+  width: min(430px, 100%);
+  height: min(94vh, 920px);
+}
+
+.comic-movie-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 15px 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(8, 27, 54, 0.9);
+}
+
+.comic-movie-title b {
+  display: block;
+  font-size: 15px;
+}
+
+.comic-movie-title span {
+  font-size: 10px;
+  color: #9fb2ca;
+}
+
+.comic-movie-close {
+  border: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  font-size: 22px;
+}
+
+.comic-movie-stage {
+  position: relative;
+  min-height: 0;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  background: #030914;
+}
+
+.comic-movie-frame {
+  position: relative;
+  height: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  background: #05080f;
+  box-shadow: 0 20px 80px rgba(0, 0, 0, 0.52);
+  transform-origin: center;
+}
+
+.comic-movie-frame canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 0.48s ease;
+}
+
+.comic-movie-frame canvas.is-front {
+  opacity: 1;
+}
+
+.comic-movie-titlecard {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: grid;
+  place-content: center;
+  gap: 8px;
+  background: linear-gradient(180deg, rgba(5, 8, 15, 0.2), rgba(5, 8, 15, 0.72));
+  text-align: center;
+  animation: comicTitleOut 1.6s ease forwards;
+}
+
+.comic-movie-titlecard small {
+  letter-spacing: 0.18em;
+  font-size: 10px;
+  color: #d4a44e;
+  font-weight: 900;
+}
+
+.comic-movie-titlecard strong {
+  font-size: clamp(22px, 4vw, 36px);
+  line-height: 1.25;
+  padding: 0 24px;
+}
+
+.comic-movie-badge,
+.comic-movie-page {
+  position: absolute;
+  top: 15px;
+  padding: 7px 10px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 950;
+  z-index: 4;
+}
+
+.comic-movie-badge {
+  left: 15px;
+  background: rgba(12, 136, 119, 0.88);
+}
+
+.comic-movie-page {
+  right: 15px;
+  background: rgba(0, 0, 0, 0.55);
+  font-weight: 900;
+}
+
+.comic-movie-loading {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(3, 9, 20, 0.82);
+  font-size: 13px;
+  color: #c9d7e8;
+  z-index: 5;
+  padding: 24px;
+  text-align: center;
+}
+
+.comic-movie-preview {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(8, 27, 54, 0.72);
+  font-size: 12px;
+  color: #d5e4f4;
+}
+
+.comic-movie-link {
+  border: 0;
+  border-radius: 999px;
+  padding: 8px 12px;
+  background: linear-gradient(135deg, #0c8877, #37c6ac);
+  color: #fff;
+  font-weight: 850;
+  font-size: 12px;
+}
+
+.comic-movie-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 12px 15px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  background: #081b36;
+}
+
+.comic-movie-controls button,
+.comic-movie-controls select {
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  border-radius: 12px;
+  padding: 9px 12px;
+  font-weight: 850;
+  font-size: 11px;
+}
+
+.comic-movie-controls button.primary {
+  background: linear-gradient(135deg, #0c8877, #37c6ac);
+  border: 0;
+}
+
+.comic-movie-status {
+  margin-left: auto;
+  font-size: 10px;
+  color: #9fb2ca;
+}
+
+@keyframes comicKenA {
+  0% { transform: scale(1.02); }
+  100% { transform: scale(1.08); }
+}
+@keyframes comicKenB {
+  0% { transform: scale(1.07) translate3d(1.2%, 0, 0); }
+  100% { transform: scale(1.02) translate3d(-1.2%, 0, 0); }
+}
+@keyframes comicKenC {
+  0% { transform: scale(1.03) translate3d(0, 1.2%, 0); }
+  100% { transform: scale(1.08) translate3d(0, -1%, 0); }
+}
+@keyframes comicTitleOut {
+  0%, 55% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+.comic-movie-frame.ken-a { animation: comicKenA var(--motion-duration, 6.5s) ease-in-out both; }
+.comic-movie-frame.ken-b { animation: comicKenB var(--motion-duration, 6.5s) ease-in-out both; }
+.comic-movie-frame.ken-c { animation: comicKenC var(--motion-duration, 6.5s) ease-in-out both; }
+
+@media (max-width: 720px) {
+  .comic-movie-modal { padding: 0; }
+  .comic-movie-shell,
+  .comic-movie-shell.is-portrait { width: 100%; height: 100vh; border-radius: 0; }
+  .comic-movie-controls { gap: 6px; }
+  .comic-movie-controls button,
+  .comic-movie-controls select { padding: 8px 9px; font-size: 10px; }
+  .comic-movie-status { width: 100%; margin-left: 0; }
+}

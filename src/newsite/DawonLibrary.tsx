@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { EbookViewer } from '../components/EbookViewer'
+import { ComicMoviePlayer } from '../components/ComicMoviePlayer'
 import { AudiobookPage } from '../components/AudiobookPage'
 import { PremiumGate } from '../components/PremiumGate'
 import { useSubscription } from '../context/SubscriptionContext'
@@ -20,6 +21,7 @@ interface OpenBook {
 
 const PAGE_SIZE = 4
 const GUEST_PREVIEW_PAGES = 5
+const GUEST_MOVIE_PAGES = 1
 
 function normalizeTitle(value: string): string {
   return value.replace(/[《》\s,.·'"!?~\-_]/g, '').toLowerCase()
@@ -86,6 +88,7 @@ export function DawonLibrary({ initialTab = 'ebook', onTabChange }: DawonLibrary
   const [query, setQuery] = useState('')
   const [slide, setSlide] = useState(0)
   const [open, setOpen] = useState<OpenBook | null>(null)
+  const [movie, setMovie] = useState<OpenBook | null>(null)
   const [preview, setPreview] = useState<LibraryCard | null>(null)
   const [cards, setCards] = useState<LibraryCard[]>(() => mergeLibraryCards([]))
 
@@ -169,6 +172,22 @@ export function DawonLibrary({ initialTab = 'ebook', onTabChange }: DawonLibrary
     }
     setPreview(null)
     setOpen({ card, kind, url, previewMaxPages: GUEST_PREVIEW_PAGES })
+  }
+
+  function openComicMovie(card: LibraryCard) {
+    if (!card.comicUrl) return
+    if (!user) {
+      setPreview(null)
+      setMovie({ card, kind: 'comic', url: card.comicUrl, previewMaxPages: GUEST_MOVIE_PAGES })
+      return
+    }
+    if (paymentsEnabled && !isPremium) {
+      navigate('/subscribe')
+      return
+    }
+    void markContentUsed()
+    setPreview(null)
+    setMovie({ card, kind: 'comic', url: card.comicUrl })
   }
 
   useEffect(() => {
@@ -283,30 +302,40 @@ export function DawonLibrary({ initialTab = 'ebook', onTabChange }: DawonLibrary
               <div className="book-slider-viewport" key={`${tab}-${safeSlide}`}>
                 <div className="book-grid book-grid-slide">
                   {visible.map((card, i) => (
-                    <button
-                      key={card.id}
-                      type="button"
-                      className="book-card"
-                      onClick={() => openBook(card, tab === 'ebook' ? 'ebook' : 'comic')}
-                    >
-                      <BookCover
-                        card={card}
-                        tab={tab === 'ebook' ? 'ebook' : 'comic'}
-                        eager={i < 2}
-                      />
-                      <span className="book-body">
-                        <span className="book-no">{card.pathNo}</span>
-                        <h3>{card.title}</h3>
-                        <p>{card.description}</p>
-                        <span className="book-open">
-                          {user
-                            ? tab === 'ebook'
-                              ? '전자책 읽기 →'
-                              : '만화로 보기 →'
-                            : '무료로 미리보기 →'}
+                    <article key={card.id} className="book-card">
+                      <button
+                        type="button"
+                        className="book-card-main"
+                        onClick={() => openBook(card, tab === 'ebook' ? 'ebook' : 'comic')}
+                      >
+                        <BookCover
+                          card={card}
+                          tab={tab === 'ebook' ? 'ebook' : 'comic'}
+                          eager={i < 2}
+                        />
+                        <span className="book-body">
+                          <span className="book-no">{card.pathNo}</span>
+                          <h3>{card.title}</h3>
+                          <p>{card.description}</p>
+                          <span className="book-open">
+                            {user
+                              ? tab === 'ebook'
+                                ? '전자책 읽기 →'
+                                : '만화로 보기 →'
+                              : '무료로 미리보기 →'}
+                          </span>
                         </span>
-                      </span>
-                    </button>
+                      </button>
+                      {tab === 'comic' && card.comicUrl ? (
+                        <button
+                          type="button"
+                          className="book-movie-btn"
+                          onClick={() => openComicMovie(card)}
+                        >
+                          만화영화
+                        </button>
+                      ) : null}
+                    </article>
                   ))}
                 </div>
               </div>
@@ -350,49 +379,26 @@ export function DawonLibrary({ initialTab = 'ebook', onTabChange }: DawonLibrary
             로그인 전: 표지·제목·소개·목차 일부·최대 {GUEST_PREVIEW_PAGES}쪽 미리보기 · 로그인 후: 전체{' '}
             {kindLabel} 이용
           </div>
-
-          <div className="library-studio-cta">
-            <Link className="btn btn-gold" to="/movie-studio">
-              원스톱 만화영화 제작
-            </Link>
-          </div>
         </>
       )}
 
       {tab === 'audio' && (
-        <>
-          <div
-            className="library-audio-shell"
-            onClickCapture={(e) => {
-              if (user) return
-              const t = e.target as HTMLElement
-              if (!t.closest('button, a, input, select, [role="button"]')) return
-              e.preventDefault()
-              e.stopPropagation()
-              navigate('/login', { state: { from: '/audiobooks' } })
-            }}
-          >
-            {!user ? (
-              <div className="library-preview-banner">
-                <p>
-                  오디오북은 표지·제목·설명을 먼저 확인할 수 있습니다. 짧은 샘플 파일이 준비된 작품만
-                  미리듣기가 제공되며, 전체 재생은 로그인 후 이용하세요.
-                </p>
-                <Link className="btn btn-primary btn-small" to="/login" state={{ from: '/audiobooks' }}>
-                  계속 들으려면 로그인해 주세요
-                </Link>
-              </div>
-            ) : null}
-            <PremiumGate feature="오디오북">
-              <AudiobookPage extraTexts={audioExtras} />
-            </PremiumGate>
-          </div>
-          <div className="library-studio-cta">
-            <Link className="btn btn-gold" to="/movie-studio">
-              원스톱 만화영화 제작
-            </Link>
-          </div>
-        </>
+        <div className="library-audio-shell">
+          {!user ? (
+            <div className="library-preview-banner">
+              <p>
+                오디오북은 표지·제목·설명을 먼저 확인할 수 있습니다. 짧은 샘플 파일이 준비된 작품만
+                미리듣기가 제공되며, 전체 재생은 로그인 후 이용하세요.
+              </p>
+              <Link className="btn btn-primary btn-small" to="/login" state={{ from: '/audiobooks' }}>
+                계속 들으려면 로그인해 주세요
+              </Link>
+            </div>
+          ) : null}
+          <PremiumGate feature="오디오북">
+            <AudiobookPage extraTexts={audioExtras} />
+          </PremiumGate>
+        </div>
       )}
 
       {preview ? (
@@ -448,6 +454,11 @@ export function DawonLibrary({ initialTab = 'ebook', onTabChange }: DawonLibrary
               >
                 무료로 미리보기
               </button>
+              {tab === 'comic' && preview.comicUrl ? (
+                <button type="button" className="btn btn-gold" onClick={() => openComicMovie(preview)}>
+                  만화영화
+                </button>
+              ) : null}
               <Link
                 className="btn btn-soft"
                 to="/login"
@@ -462,6 +473,28 @@ export function DawonLibrary({ initialTab = 'ebook', onTabChange }: DawonLibrary
           </div>
         </div>
       ) : null}
+
+      {movie && (
+        <ComicMoviePlayer
+          url={movie.url}
+          title={movie.card.title}
+          subtitle={
+            movie.previewMaxPages
+              ? `${movie.card.pathNo} · 미리보기 ${movie.previewMaxPages}쪽`
+              : `${movie.card.pathNo} · 4컷·7컷 만화영화`
+          }
+          previewMaxPages={movie.previewMaxPages}
+          onClose={() => setMovie(null)}
+          onRequestFullAccess={
+            movie.previewMaxPages
+              ? () => {
+                  setMovie(null)
+                  navigate('/login', { state: { from: '/library' } })
+                }
+              : undefined
+          }
+        />
+      )}
 
       {open && (
         <EbookViewer

@@ -1,26 +1,7 @@
 import { useEffect, useRef, useState, type FormEvent, type MouseEvent } from 'react'
-import { getDocument, GlobalWorkerOptions, type PDFDocumentProxy, type RenderTask } from 'pdfjs-dist'
-import pdfWorker from 'pdfjs-dist/build/pdf.worker.min.mjs?url'
+import { type PDFDocumentProxy, type RenderTask } from 'pdfjs-dist'
+import { loadPdfDocument } from '../lib/loadPdf'
 import './EbookViewer.css'
-
-function installPdfWorker() {
-  if (GlobalWorkerOptions.workerSrc) return
-  const workerUrl = new URL(pdfWorker, window.location.origin).href
-  const boot = `
-if (typeof Map !== 'undefined' && typeof Map.prototype.getOrInsertComputed !== 'function') {
-  Map.prototype.getOrInsertComputed = function (key, callbackFn) {
-    if (this.has(key)) return this.get(key)
-    const value = callbackFn(key)
-    this.set(key, value)
-    return value
-  }
-}
-import ${JSON.stringify(workerUrl)};
-`
-  GlobalWorkerOptions.workerSrc = URL.createObjectURL(new Blob([boot], { type: 'text/javascript' }))
-}
-
-installPdfWorker()
 
 const ZOOM_MIN = 0.8
 const ZOOM_MAX = 2.2
@@ -135,16 +116,7 @@ export function EbookViewer({
       setPage(1)
       setJumpInput('1')
       try {
-        const loadingTask = getDocument({
-          url,
-          cMapUrl: '/pdfjs/cmaps/',
-          cMapPacked: true,
-          standardFontDataUrl: '/pdfjs/standard_fonts/',
-          wasmUrl: '/pdfjs/wasm/',
-          useSystemFonts: true,
-          useWorkerFetch: true,
-        })
-        const pdf = await loadingTask.promise
+        const pdf = await loadPdfDocument(url)
         if (cancelled) {
           void pdf.cleanup()
           return
@@ -157,7 +129,14 @@ export function EbookViewer({
         setPageCount(capped)
       } catch (err) {
         console.error('EbookViewer load 실패:', err)
-        if (!cancelled) setError('전자책을 불러오지 못했습니다.')
+        if (!cancelled) {
+          const message = err instanceof Error ? err.message : ''
+          setError(
+            message === 'NOT_PDF' || message.startsWith('PDF_HTTP_')
+              ? '전자책 파일을 찾지 못했습니다. 잠시 후 다시 시도해 주세요.'
+              : '전자책을 불러오지 못했습니다.',
+          )
+        }
       } finally {
         if (!cancelled) setLoading(false)
       }

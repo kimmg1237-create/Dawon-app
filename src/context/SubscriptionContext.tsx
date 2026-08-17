@@ -41,19 +41,19 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
   const [subscription, setSubscription] = useState<UserSubscription | null>(null)
   const paymentsEnabled = FEATURES.paymentsEnabled
 
-  const refresh = useCallback(async () => {
+  const refresh = useCallback(async (opts?: { silent?: boolean }) => {
     if (!paymentsEnabled || !configured || !user) {
       setSubscription(null)
       return
     }
-    setLoading(true)
+    if (!opts?.silent) setLoading(true)
     try {
       setSubscription(await fetchSubscription(user.id))
     } catch (error) {
       console.error('구독 조회 실패', error)
       setSubscription(null)
     } finally {
-      setLoading(false)
+      if (!opts?.silent) setLoading(false)
     }
   }, [configured, paymentsEnabled, user])
 
@@ -71,7 +71,7 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
   const markContentUsed = useCallback(async () => {
     if (!paymentsEnabled || !user) return
     await markContentFirstUsed(user.id)
-    await refresh()
+    await refresh({ silent: true })
   }, [paymentsEnabled, refresh, user])
 
   const scheduleCancel = useCallback(async () => {
