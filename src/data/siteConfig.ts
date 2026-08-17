@@ -57,9 +57,9 @@ export const siteConfig = {
   },
   /** Absolute brand asset URLs (cache-bust when swapping files for crawlers) */
   assets: {
-    logo: `${SITE_ORIGIN}/brand/dawon-logo.png?v=20260816c`,
-    favicon: `${SITE_ORIGIN}/brand/site-icon.png?v=20260816c`,
-    appleTouchIcon: `${SITE_ORIGIN}/brand/site-apple-touch.png?v=20260816c`,
+    logo: `${SITE_ORIGIN}/brand/dawon-logo.png?v=20260817a`,
+    favicon: `${SITE_ORIGIN}/brand/site-icon.png?v=20260817a`,
+    appleTouchIcon: `${SITE_ORIGIN}/brand/site-apple-touch.png?v=20260817a`,
     ogImage: `${SITE_ORIGIN}/brand/og-dawon84.png?v=20260816c`,
   },
   paths: {

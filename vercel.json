@@ -56,8 +56,12 @@
       "headers": [{ "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }]
     },
     {
-      "source": "/brand/site-(icon|favicon|apple-touch).*",
-      "headers": [{ "key": "Cache-Control", "value": "public, max-age=86400, must-revalidate" }]
+      "source": "/favicon.svg",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }]
+    },
+    {
+      "source": "/brand/(site-icon|site-favicon|site-apple-touch|dawon-favicon|dawon-logo|apple-touch-icon|og-dawon84).*",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }]
     }
   ]
 }
