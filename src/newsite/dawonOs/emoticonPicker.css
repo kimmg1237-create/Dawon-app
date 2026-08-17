@@ -1,0 +1,131 @@
+.dawon-os-home .dawon-os-root,
+.dawon-os-root {
+  position: relative;
+}
+
+.dawon-emo {
+  display: inline-block;
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  vertical-align: middle;
+  margin: 0 2px;
+}
+
+.dawon-emo-btn {
+  flex: 0 0 auto;
+  border: 0;
+  border-radius: 10px;
+  padding: 6px 9px;
+  background: #fff3d6;
+  color: #8a5a12;
+  font-size: 12px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.dark .dawon-emo-btn {
+  background: rgba(255, 214, 120, 0.16);
+  color: #ffd78a;
+}
+
+.dawon-emo-pop {
+  position: absolute;
+  z-index: 80;
+  width: min(340px, calc(100% - 24px));
+  max-height: 420px;
+  overflow: auto;
+  padding: 12px;
+  border-radius: 18px;
+  background: var(--paper, #f7f5ee);
+  border: 1px solid var(--line, rgba(8, 27, 54, 0.14));
+  box-shadow: 0 18px 40px rgba(8, 27, 54, 0.16);
+}
+
+.dark .dawon-emo-pop {
+  background: #122033;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.dawon-emo-pop-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.dawon-emo-close {
+  border: 0;
+  background: transparent;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  color: inherit;
+}
+
+.dawon-emo-cats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.dawon-emo-cat {
+  border: 0;
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-size: 11px;
+  font-weight: 800;
+  background: rgba(12, 136, 119, 0.1);
+  color: inherit;
+  cursor: pointer;
+}
+
+.dawon-emo-cat.active {
+  background: #0c8877;
+  color: #fff;
+}
+
+.dawon-emo-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.dawon-emo-item {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  border: 0;
+  border-radius: 12px;
+  padding: 8px 4px;
+  background: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+}
+
+.dark .dawon-emo-item {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.dawon-emo-item img {
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+}
+
+.dawon-emo-item span {
+  font-size: 11px;
+  font-weight: 800;
+  text-align: center;
+  line-height: 1.2;
+}
+
+@media (max-width: 720px) {
+  .dawon-emo-pop {
+    left: 12px !important;
+    width: calc(100% - 24px);
+  }
+  .dawon-emo-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

@@ -1,0 +1,494 @@
+{
+  "items": [
+    {
+      "id": "01",
+      "label": "화이팅",
+      "category": "응원 · 화이팅",
+      "file": "01.png",
+      "src": "/emoticons/01.png"
+    },
+    {
+      "id": "02",
+      "label": "넌 할 수 있어",
+      "category": "응원 · 화이팅",
+      "file": "02.png",
+      "src": "/emoticons/02.png"
+    },
+    {
+      "id": "03",
+      "label": "끝까지 가자",
+      "category": "응원 · 화이팅",
+      "file": "03.png",
+      "src": "/emoticons/03.png"
+    },
+    {
+      "id": "04",
+      "label": "최고야",
+      "category": "응원 · 화이팅",
+      "file": "04.png",
+      "src": "/emoticons/04.png"
+    },
+    {
+      "id": "05",
+      "label": "응원할게",
+      "category": "응원 · 화이팅",
+      "file": "05.png",
+      "src": "/emoticons/05.png"
+    },
+    {
+      "id": "06",
+      "label": "힘내",
+      "category": "응원 · 화이팅",
+      "file": "06.png",
+      "src": "/emoticons/06.png"
+    },
+    {
+      "id": "07",
+      "label": "너라면 해내",
+      "category": "응원 · 화이팅",
+      "file": "07.png",
+      "src": "/emoticons/07.png"
+    },
+    {
+      "id": "08",
+      "label": "포기하지 마",
+      "category": "응원 · 화이팅",
+      "file": "08.png",
+      "src": "/emoticons/08.png"
+    },
+    {
+      "id": "09",
+      "label": "승리를 향해",
+      "category": "응원 · 화이팅",
+      "file": "09.png",
+      "src": "/emoticons/09.png"
+    },
+    {
+      "id": "10",
+      "label": "멋지다",
+      "category": "응원 · 화이팅",
+      "file": "10.png",
+      "src": "/emoticons/10.png"
+    },
+    {
+      "id": "11",
+      "label": "축하해",
+      "category": "축하 · 기쁨",
+      "file": "11.png",
+      "src": "/emoticons/11.png"
+    },
+    {
+      "id": "12",
+      "label": "생일 축하해",
+      "category": "축하 · 기쁨",
+      "file": "12.png",
+      "src": "/emoticons/12.png"
+    },
+    {
+      "id": "13",
+      "label": "결혼 축하해",
+      "category": "축하 · 기쁨",
+      "file": "13.png",
+      "src": "/emoticons/13.png"
+    },
+    {
+      "id": "14",
+      "label": "해냈다",
+      "category": "축하 · 기쁨",
+      "file": "14.png",
+      "src": "/emoticons/14.png"
+    },
+    {
+      "id": "15",
+      "label": "대박이야",
+      "category": "축하 · 기쁨",
+      "file": "15.png",
+      "src": "/emoticons/15.png"
+    },
+    {
+      "id": "16",
+      "label": "감사해요",
+      "category": "축하 · 기쁨",
+      "file": "16.png",
+      "src": "/emoticons/16.png"
+    },
+    {
+      "id": "17",
+      "label": "행복해",
+      "category": "축하 · 기쁨",
+      "file": "17.png",
+      "src": "/emoticons/17.png"
+    },
+    {
+      "id": "18",
+      "label": "사랑해",
+      "category": "축하 · 기쁨",
+      "file": "18.png",
+      "src": "/emoticons/18.png"
+    },
+    {
+      "id": "19",
+      "label": "기념일 축하해",
+      "category": "축하 · 기쁨",
+      "file": "19.png",
+      "src": "/emoticons/19.png"
+    },
+    {
+      "id": "20",
+      "label": "정말 멋져",
+      "category": "축하 · 기쁨",
+      "file": "20.png",
+      "src": "/emoticons/20.png"
+    },
+    {
+      "id": "21",
+      "label": "괜찮아",
+      "category": "위로 · 공감",
+      "file": "21.png",
+      "src": "/emoticons/21.png"
+    },
+    {
+      "id": "22",
+      "label": "수고했어",
+      "category": "위로 · 공감",
+      "file": "22.png",
+      "src": "/emoticons/22.png"
+    },
+    {
+      "id": "23",
+      "label": "힘들지",
+      "category": "위로 · 공감",
+      "file": "23.png",
+      "src": "/emoticons/23.png"
+    },
+    {
+      "id": "24",
+      "label": "토닥토닥",
+      "category": "위로 · 공감",
+      "file": "24.png",
+      "src": "/emoticons/24.png"
+    },
+    {
+      "id": "25",
+      "label": "넌 소중해",
+      "category": "위로 · 공감",
+      "file": "25.png",
+      "src": "/emoticons/25.png"
+    },
+    {
+      "id": "26",
+      "label": "기다릴게",
+      "category": "위로 · 공감",
+      "file": "26.png",
+      "src": "/emoticons/26.png"
+    },
+    {
+      "id": "27",
+      "label": "언제나 응원해",
+      "category": "위로 · 공감",
+      "file": "27.png",
+      "src": "/emoticons/27.png"
+    },
+    {
+      "id": "28",
+      "label": "오늘도 잘했어",
+      "category": "위로 · 공감",
+      "file": "28.png",
+      "src": "/emoticons/28.png"
+    },
+    {
+      "id": "29",
+      "label": "잘 될 거야",
+      "category": "위로 · 공감",
+      "file": "29.png",
+      "src": "/emoticons/29.png"
+    },
+    {
+      "id": "30",
+      "label": "너는 빛나",
+      "category": "위로 · 공감",
+      "file": "30.png",
+      "src": "/emoticons/30.png"
+    },
+    {
+      "id": "31",
+      "label": "ㅋㅋㅋㅋ",
+      "category": "개그 · 코미디",
+      "file": "31.png",
+      "src": "/emoticons/31.png"
+    },
+    {
+      "id": "32",
+      "label": "빵 터짐",
+      "category": "개그 · 코미디",
+      "file": "32.png",
+      "src": "/emoticons/32.png"
+    },
+    {
+      "id": "33",
+      "label": "헐 대박",
+      "category": "개그 · 코미디",
+      "file": "33.png",
+      "src": "/emoticons/33.png"
+    },
+    {
+      "id": "34",
+      "label": "개꿀잼",
+      "category": "개그 · 코미디",
+      "file": "34.png",
+      "src": "/emoticons/34.png"
+    },
+    {
+      "id": "35",
+      "label": "좋아",
+      "category": "개그 · 코미디",
+      "file": "35.png",
+      "src": "/emoticons/35.png"
+    },
+    {
+      "id": "36",
+      "label": "그렇구나",
+      "category": "개그 · 코미디",
+      "file": "36.png",
+      "src": "/emoticons/36.png"
+    },
+    {
+      "id": "37",
+      "label": "농담이지",
+      "category": "개그 · 코미디",
+      "file": "37.png",
+      "src": "/emoticons/37.png"
+    },
+    {
+      "id": "38",
+      "label": "어이없어",
+      "category": "개그 · 코미디",
+      "file": "38.png",
+      "src": "/emoticons/38.png"
+    },
+    {
+      "id": "39",
+      "label": "또 시작이네",
+      "category": "개그 · 코미디",
+      "file": "39.png",
+      "src": "/emoticons/39.png"
+    },
+    {
+      "id": "40",
+      "label": "완전 웃겨",
+      "category": "개그 · 코미디",
+      "file": "40.png",
+      "src": "/emoticons/40.png"
+    },
+    {
+      "id": "41",
+      "label": "명작이야",
+      "category": "명작 · 찬사",
+      "file": "41.png",
+      "src": "/emoticons/41.png"
+    },
+    {
+      "id": "42",
+      "label": "인정",
+      "category": "명작 · 찬사",
+      "file": "42.png",
+      "src": "/emoticons/42.png"
+    },
+    {
+      "id": "43",
+      "label": "엄지척",
+      "category": "명작 · 찬사",
+      "file": "43.png",
+      "src": "/emoticons/43.png"
+    },
+    {
+      "id": "44",
+      "label": "박수 박수",
+      "category": "명작 · 찬사",
+      "file": "44.png",
+      "src": "/emoticons/44.png"
+    },
+    {
+      "id": "45",
+      "label": "찬사합니다",
+      "category": "명작 · 찬사",
+      "file": "45.png",
+      "src": "/emoticons/45.png"
+    },
+    {
+      "id": "46",
+      "label": "존경해요",
+      "category": "명작 · 찬사",
+      "file": "46.png",
+      "src": "/emoticons/46.png"
+    },
+    {
+      "id": "47",
+      "label": "감동이에요",
+      "category": "명작 · 찬사",
+      "file": "47.png",
+      "src": "/emoticons/47.png"
+    },
+    {
+      "id": "48",
+      "label": "훌륭해요",
+      "category": "명작 · 찬사",
+      "file": "48.png",
+      "src": "/emoticons/48.png"
+    },
+    {
+      "id": "49",
+      "label": "역시 최고",
+      "category": "명작 · 찬사",
+      "file": "49.png",
+      "src": "/emoticons/49.png"
+    },
+    {
+      "id": "50",
+      "label": "빛나는 당신",
+      "category": "명작 · 찬사",
+      "file": "50.png",
+      "src": "/emoticons/50.png"
+    },
+    {
+      "id": "51",
+      "label": "시작",
+      "category": "게임 · 재미",
+      "file": "51.png",
+      "src": "/emoticons/51.png"
+    },
+    {
+      "id": "52",
+      "label": "완성",
+      "category": "게임 · 재미",
+      "file": "52.png",
+      "src": "/emoticons/52.png"
+    },
+    {
+      "id": "53",
+      "label": "가위",
+      "category": "게임 · 재미",
+      "file": "53.png",
+      "src": "/emoticons/53.png"
+    },
+    {
+      "id": "54",
+      "label": "바위",
+      "category": "게임 · 재미",
+      "file": "54.png",
+      "src": "/emoticons/54.png"
+    },
+    {
+      "id": "55",
+      "label": "보",
+      "category": "게임 · 재미",
+      "file": "55.png",
+      "src": "/emoticons/55.png"
+    },
+    {
+      "id": "56",
+      "label": "제로",
+      "category": "게임 · 재미",
+      "file": "56.png",
+      "src": "/emoticons/56.png"
+    },
+    {
+      "id": "57",
+      "label": "개그 타임",
+      "category": "게임 · 재미",
+      "file": "57.png",
+      "src": "/emoticons/57.png"
+    },
+    {
+      "id": "58",
+      "label": "집게집게",
+      "category": "게임 · 재미",
+      "file": "58.png",
+      "src": "/emoticons/58.png"
+    },
+    {
+      "id": "59",
+      "label": "땐데땐데",
+      "category": "게임 · 재미",
+      "file": "59.png",
+      "src": "/emoticons/59.png"
+    },
+    {
+      "id": "60",
+      "label": "신난다",
+      "category": "게임 · 재미",
+      "file": "60.png",
+      "src": "/emoticons/60.png"
+    },
+    {
+      "id": "61",
+      "label": "음악 최고",
+      "category": "음악 · 콘서트",
+      "file": "61.png",
+      "src": "/emoticons/61.png"
+    },
+    {
+      "id": "62",
+      "label": "너의 노래해",
+      "category": "음악 · 콘서트",
+      "file": "62.png",
+      "src": "/emoticons/62.png"
+    },
+    {
+      "id": "63",
+      "label": "감동이야",
+      "category": "음악 · 콘서트",
+      "file": "63.png",
+      "src": "/emoticons/63.png"
+    },
+    {
+      "id": "64",
+      "label": "음표 사랑",
+      "category": "음악 · 콘서트",
+      "file": "64.png",
+      "src": "/emoticons/64.png"
+    },
+    {
+      "id": "65",
+      "label": "멜로디 좋아",
+      "category": "음악 · 콘서트",
+      "file": "65.png",
+      "src": "/emoticons/65.png"
+    },
+    {
+      "id": "66",
+      "label": "노래할래",
+      "category": "음악 · 콘서트",
+      "file": "66.png",
+      "src": "/emoticons/66.png"
+    },
+    {
+      "id": "67",
+      "label": "콘서트 가자",
+      "category": "음악 · 콘서트",
+      "file": "67.png",
+      "src": "/emoticons/67.png"
+    },
+    {
+      "id": "68",
+      "label": "떼창 가자",
+      "category": "음악 · 콘서트",
+      "file": "68.png",
+      "src": "/emoticons/68.png"
+    },
+    {
+      "id": "69",
+      "label": "소리 질러",
+      "category": "음악 · 콘서트",
+      "file": "69.png",
+      "src": "/emoticons/69.png"
+    },
+    {
+      "id": "70",
+      "label": "영원히 함께",
+      "category": "음악 · 콘서트",
+      "file": "70.png",
+      "src": "/emoticons/70.png"
+    }
+  ]
+}

@@ -1,6 +1,7 @@
 import bodyHtml from './body.html?raw'
 import scriptsRaw from './scripts.raw.js?raw'
 import { siteConfig } from '../../data/siteConfig'
+import { mountEmoticonPicker } from './emoticonPicker'
 import './theme.css'
 import './bridge.css'
 import './dark-contrast.css'
@@ -272,6 +273,7 @@ export function mountDawonOs(
   }
 
   runOsScripts()
+  const unmountEmo = mountEmoticonPicker(host)
   ensureNavigateHelper()
   ensureDarkDefault()
   if (auth) syncDawonOsAccount(host, auth.account)
@@ -295,6 +297,7 @@ export function mountDawonOs(
   }
 
   return () => {
+    unmountEmo()
     host.classList.remove('dawon-os-root')
     queueMicrotask(() => {
       if (host.isConnected) host.innerHTML = ''

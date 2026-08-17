@@ -46,7 +46,7 @@
   ],
   "rewrites": [
     {
-      "source": "/((?!ebooks/|covers/|comics/|audiobook-texts/|pdfjs/|brand/|favicon\\.ico|robots\\.txt|sitemap\\.xml).*)",
+      "source": "/((?!ebooks/|covers/|comics/|audiobook-texts/|pdfjs/|brand/|emoticons/|favicon\\.ico|robots\\.txt|sitemap\\.xml).*)",
       "destination": "/index.html"
     }
   ],
