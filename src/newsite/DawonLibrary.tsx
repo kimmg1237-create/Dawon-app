@@ -350,36 +350,49 @@ export function DawonLibrary({ initialTab = 'ebook', onTabChange }: DawonLibrary
             로그인 전: 표지·제목·소개·목차 일부·최대 {GUEST_PREVIEW_PAGES}쪽 미리보기 · 로그인 후: 전체{' '}
             {kindLabel} 이용
           </div>
+
+          <div className="library-studio-cta">
+            <Link className="btn btn-gold" to="/movie-studio">
+              원스톱 만화영화 제작
+            </Link>
+          </div>
         </>
       )}
 
       {tab === 'audio' && (
-        <div
-          className="library-audio-shell"
-          onClickCapture={(e) => {
-            if (user) return
-            const t = e.target as HTMLElement
-            if (!t.closest('button, a, input, select, [role="button"]')) return
-            e.preventDefault()
-            e.stopPropagation()
-            navigate('/login', { state: { from: '/audiobooks' } })
-          }}
-        >
-          {!user ? (
-            <div className="library-preview-banner">
-              <p>
-                오디오북은 표지·제목·설명을 먼저 확인할 수 있습니다. 짧은 샘플 파일이 준비된 작품만
-                미리듣기가 제공되며, 전체 재생은 로그인 후 이용하세요.
-              </p>
-              <Link className="btn btn-primary btn-small" to="/login" state={{ from: '/audiobooks' }}>
-                계속 들으려면 로그인해 주세요
-              </Link>
-            </div>
-          ) : null}
-          <PremiumGate feature="오디오북">
-            <AudiobookPage extraTexts={audioExtras} />
-          </PremiumGate>
-        </div>
+        <>
+          <div
+            className="library-audio-shell"
+            onClickCapture={(e) => {
+              if (user) return
+              const t = e.target as HTMLElement
+              if (!t.closest('button, a, input, select, [role="button"]')) return
+              e.preventDefault()
+              e.stopPropagation()
+              navigate('/login', { state: { from: '/audiobooks' } })
+            }}
+          >
+            {!user ? (
+              <div className="library-preview-banner">
+                <p>
+                  오디오북은 표지·제목·설명을 먼저 확인할 수 있습니다. 짧은 샘플 파일이 준비된 작품만
+                  미리듣기가 제공되며, 전체 재생은 로그인 후 이용하세요.
+                </p>
+                <Link className="btn btn-primary btn-small" to="/login" state={{ from: '/audiobooks' }}>
+                  계속 들으려면 로그인해 주세요
+                </Link>
+              </div>
+            ) : null}
+            <PremiumGate feature="오디오북">
+              <AudiobookPage extraTexts={audioExtras} />
+            </PremiumGate>
+          </div>
+          <div className="library-studio-cta">
+            <Link className="btn btn-gold" to="/movie-studio">
+              원스톱 만화영화 제작
+            </Link>
+          </div>
+        </>
       )}
 
       {preview ? (
