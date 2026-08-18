@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Link, useNavigate, useSearchParams } from 'react-router-dom'
+import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { loadTossPayments } from '@tosspayments/tosspayments-sdk'
 import { useAuth } from '../context/AuthContext'
 import { useSubscription } from '../context/SubscriptionContext'
@@ -18,6 +18,7 @@ import { createTossOrder, generateOrderId } from '../services/paymentService'
 import '../newsite/dawonOs/theme.css'
 import '../newsite/dawonOs/bridge.css'
 import '../newsite/dawonOs/dark-contrast.css'
+import '../newsite/dawonOs/adRail.css'
 
 const isTestPay = tossClientKey.startsWith('test_')
 
@@ -106,6 +107,7 @@ export function SubscribePage() {
   const { isPremium, statusLabel, premiumReason, unlockWithAd, refresh, loading, subscription } =
     useSubscription()
   const navigate = useNavigate()
+  const location = useLocation()
   const [params] = useSearchParams()
   const [busy, setBusy] = useState<UiPlanId | 'ad' | null>(null)
   const [error, setError] = useState('')
@@ -123,6 +125,15 @@ export function SubscribePage() {
       setSelected(plan)
     }
   }, [params])
+
+  useEffect(() => {
+    const id = location.hash.replace(/^#/, '')
+    if (!id) return
+    const t = window.setTimeout(() => {
+      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }, 80)
+    return () => window.clearTimeout(t)
+  }, [location.hash])
 
   const selectedPlan = useMemo(
     () => UI_PLANS.find((p) => p.id === selected) ?? UI_PLANS[2],
@@ -209,6 +220,37 @@ export function SubscribePage() {
         path={siteConfig.pages.subscribe.path}
       />
       <div className="container">
+        <aside className="store-ad-banners" aria-label="종이책 판매">
+          <a
+            className="store-ad-card"
+            href="https://product.kyobobook.co.kr/detail/S000212731582"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img src="/ads/sotong.png" alt="자신과의 소통 표지" width="300" height="420" decoding="async" />
+            <div className="store-ad-copy">
+              <b>자신과의 소통</b>
+              <span>국립중앙도서관 선정도서</span>
+              <p>내가 정말 원하는 것부터 확인하는 대화.</p>
+              <em>교보문고에서 구매 →</em>
+            </div>
+          </a>
+          <a
+            className="store-ad-card"
+            href="https://www.yes24.com/product/goods/125541447"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img src="/ads/healing.png" alt="힐링게임 표지" width="300" height="420" decoding="async" />
+            <div className="store-ad-copy">
+              <b>힐링게임</b>
+              <span>국립중앙도서관 선정도서</span>
+              <p>마음을 놀이처럼 탐험하는 회복 한 판.</p>
+              <em>예스24에서 구매 →</em>
+            </div>
+          </a>
+        </aside>
+
         <div className="section-head">
           <div>
             <div className="kicker">이용권</div>
@@ -245,7 +287,7 @@ export function SubscribePage() {
           </div>
         ) : null}
 
-        <div className="plan-grid">
+        <div className="plan-grid" id="plans">
           {UI_PLANS.map((plan) => (
             <article
               key={plan.id}
@@ -401,7 +443,7 @@ export function SubscribePage() {
             </div>
           </article>
 
-          <article className="status-panel">
+          <article className="status-panel" id="status">
             <span className="status-badge">MY SUBSCRIPTION</span>
             <h3>내 이용권·결제 상태</h3>
             <p>

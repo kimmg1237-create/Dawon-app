@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { SectionPage } from './SectionPage'
 import { Seo } from '../components/Seo'
 import { useSiteCopy } from '../context/SiteCopyContext'
@@ -6,7 +7,13 @@ import { siteConfig } from '../data/siteConfig'
 import library from '../newsite/sections/library.html?raw'
 import type { LibraryTab } from '../newsite/DawonLibrary'
 
-type LibrarySeoKey = 'library' | 'ebooks' | 'audiobooks'
+type LibrarySeoKey = 'library' | 'ebooks' | 'audiobooks' | 'comics'
+
+const TAB_PATH: Record<LibraryTab, string> = {
+  ebook: '/library',
+  audio: '/audiobooks',
+  comic: '/comics',
+}
 
 export function LibraryPage({
   initialTab = 'ebook',
@@ -16,6 +23,7 @@ export function LibraryPage({
   seoPage?: LibrarySeoKey
 }) {
   const { copy } = useSiteCopy()
+  const navigate = useNavigate()
   const page = copy.pages.library
   const [tab, setTab] = useState<LibraryTab>(initialTab)
   const seo = siteConfig.pages[seoPage]
@@ -25,17 +33,14 @@ export function LibraryPage({
   }, [initialTab])
 
   useEffect(() => {
-    const pinTop = () => window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
-    pinTop()
-    const t1 = window.setTimeout(pinTop, 40)
-    const t2 = window.setTimeout(pinTop, 160)
-    const t3 = window.setTimeout(pinTop, 320)
-    return () => {
-      window.clearTimeout(t1)
-      window.clearTimeout(t2)
-      window.clearTimeout(t3)
-    }
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
   }, [seoPage])
+
+  function onTabChange(next: LibraryTab) {
+    setTab(next)
+    const to = TAB_PATH[next]
+    if (to !== TAB_PATH[initialTab]) navigate(to)
+  }
 
   return (
     <>
@@ -47,7 +52,7 @@ export function LibraryPage({
         html={library}
         mountLibrary
         libraryTab={tab}
-        onLibraryTabChange={setTab}
+        onLibraryTabChange={onTabChange}
       />
     </>
   )

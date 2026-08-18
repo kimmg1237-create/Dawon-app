@@ -164,7 +164,9 @@ export function SectionPage({
     <div className="section-page">
       {hideBanner ? null : (
         <div className={`container page-banner${mountLibrary ? ' page-banner-library' : ''}`}>
-          <div className="eyebrow">DAWON EXECUTION</div>
+          <div className={mountLibrary ? 'kicker' : 'eyebrow'}>
+            {mountLibrary ? sectionCopy?.kicker || '3F · LIBRARY & STUDIO' : 'DAWON EXECUTION'}
+          </div>
           <h1>{title}</h1>
           {description ? <p>{description}</p> : null}
         </div>
@@ -172,7 +174,7 @@ export function SectionPage({
       <div ref={hostRef} />
       {libraryHost ? (
         createPortal(
-          <DawonLibrary initialTab={libraryTab} onTabChange={onLibraryTabChange} />,
+          <DawonLibrary initialTab={libraryTab} onTabChange={onLibraryTabChange} hideTabs={mountLibrary} />,
           libraryHost,
         )
       ) : null}

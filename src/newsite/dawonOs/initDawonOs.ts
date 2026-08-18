@@ -8,6 +8,7 @@ import { DawonVideoStudio } from '../../components/DawonVideoStudio'
 import './theme.css'
 import './bridge.css'
 import './dark-contrast.css'
+import './readability.css'
 import './adRail.css'
 
 const THEME_KEY = 'dawon_os95_theme'
@@ -15,7 +16,63 @@ const THEME_KEY = 'dawon_os95_theme'
 declare global {
   interface Window {
     dawonNavigateSection?: (id: string) => void
+    dawonSetAccessState?: (next: {
+      authenticated?: boolean
+      active?: boolean
+      planName?: string
+      endsAt?: string | null
+    }) => void
+    __dawonOsChromeBound?: boolean
   }
+}
+
+export type DawonNavigate = (
+  to: string | { pathname?: string; search?: string; hash?: string },
+  options?: { replace?: boolean; preventScrollReset?: boolean },
+) => void
+
+export type OsFloor = 'today' | 'school' | 'create'
+
+const FLOOR_SECTIONS: Record<OsFloor, readonly string[]> = {
+  today: ['one', 'today', 'precision'],
+  school: ['challenge', 'school', 'report', 'life'],
+  create: ['works', 'studio'],
+}
+
+let scrollGen = 0
+let scrollTimers: number[] = []
+let mountGateUntil = 0
+
+export function cancelDawonSectionScroll() {
+  scrollGen += 1
+  for (const id of scrollTimers) window.clearTimeout(id)
+  scrollTimers = []
+}
+
+function sectionIsHidden(el: Element | null) {
+  if (!el || !(el instanceof HTMLElement)) return true
+  if (!el.isConnected) return true
+  const cs = getComputedStyle(el)
+  return cs.display === 'none' || cs.visibility === 'hidden'
+}
+
+function htmlForFloor(floor?: OsFloor): string {
+  if (!floor) return bodyHtml
+  const doc = new DOMParser().parseFromString(bodyHtml, 'text/html')
+  doc.querySelector('.topbar')?.remove()
+  doc.querySelector('.home-ad-rail')?.remove()
+  doc.querySelector('.floor-quick-nav')?.remove()
+  doc.querySelector('.skip-link')?.remove()
+  doc.querySelector('noscript')?.remove()
+  doc.querySelector('footer')?.remove()
+  const keep = new Set(FLOOR_SECTIONS[floor])
+  const main = doc.getElementById('top')
+  if (main) {
+    ;[...main.children].forEach((child) => {
+      if (child.tagName === 'SECTION' && !keep.has(child.id)) child.remove()
+    })
+  }
+  return doc.body.innerHTML
 }
 
 export function openDawonStudioTab(page: string, root?: ParentNode | null) {
@@ -33,6 +90,13 @@ function stickyNavOffset(): number {
   const banner = document.querySelector('.local-mode-banner') as HTMLElement | null
   let offset = 12
   if (topbar) offset += topbar.getBoundingClientRect().height
+  const subnav = document.querySelector('.section-subnav') as HTMLElement | null
+  if (subnav) {
+    const cs = getComputedStyle(subnav)
+    if (cs.display !== 'none' && cs.visibility !== 'hidden') {
+      offset += subnav.getBoundingClientRect().height
+    }
+  }
   if (banner) {
     const cs = getComputedStyle(banner)
     if (cs.display !== 'none' && cs.visibility !== 'hidden') {
@@ -42,43 +106,83 @@ function stickyNavOffset(): number {
   return Math.max(offset, 88)
 }
 
-/** Scroll a section into view below sticky nav; correct again after layout settles. */
+/** Scroll a visible section into view below sticky nav. Cancels any in-flight scroll. */
 export function scrollToDawonSection(
   idOrEl: string | Element | null | undefined,
-  behavior: ScrollBehavior = 'smooth',
+  behavior: ScrollBehavior = 'auto',
 ) {
+  cancelDawonSectionScroll()
+  const gen = scrollGen
   const el =
     typeof idOrEl === 'string'
       ? document.getElementById(String(idOrEl).replace(/^#/, ''))
       : idOrEl
-  if (!el) return
+  if (!el || sectionIsHidden(el)) return
 
   const run = (mode: ScrollBehavior) => {
+    if (gen !== scrollGen || sectionIsHidden(el)) return
     const offset = stickyNavOffset()
     const top = el.getBoundingClientRect().top + window.scrollY - offset
     window.scrollTo({ top: Math.max(0, top), behavior: mode })
   }
 
   run(behavior)
-  // Smooth scroll + late layout (fonts/images) often leave the section clipped.
-  window.setTimeout(() => run('auto'), behavior === 'smooth' ? 420 : 80)
-  window.setTimeout(() => run('auto'), behavior === 'smooth' ? 900 : 160)
+  const later = (ms: number) => {
+    const id = window.setTimeout(() => run('auto'), ms)
+    scrollTimers.push(id)
+  }
+  later(behavior === 'smooth' ? 420 : 50)
+  later(behavior === 'smooth' ? 900 : 120)
 }
 
-function ensureNavigateHelper() {
+export const OS_SECTION_PATH: Record<string, string> = {
+  one: '/today',
+  today: '/today',
+  precision: '/today',
+  challenge: '/school',
+  school: '/school',
+  report: '/school',
+  life: '/school',
+  works: '/create',
+  studio: '/create',
+  subscription: '/subscribe',
+}
+
+function goToSection(navigate: DawonNavigate, path: string, key: string) {
+  navigate(
+    { pathname: path, hash: `#${key}` },
+    { preventScrollReset: true },
+  )
+}
+
+function ensureNavigateHelper(navigate?: DawonNavigate) {
   window.dawonNavigateSection = (id: string) => {
     const key = String(id || '').replace(/^#/, '')
     if (!key) return
-    scrollToDawonSection(key, 'smooth')
-    try {
-      history.replaceState(null, '', `#${key}`)
-    } catch {
-      /* ignore */
+    const path = OS_SECTION_PATH[key]
+    const here = window.location.pathname
+    const el = document.getElementById(key)
+    const visible = !sectionIsHidden(el)
+    const mounting = Date.now() < mountGateUntil
+
+    if (path && here !== path) {
+      if (mounting || !navigate) return
+      goToSection(navigate, path, key)
+      return
     }
+    if (!visible) {
+      if (mounting) return
+      if (path && navigate) {
+        goToSection(navigate, path, key)
+        return
+      }
+      return
+    }
+    scrollToDawonSection(key, 'auto')
   }
 }
 
-function patchInternalLinks(root: HTMLElement, navigate: (to: string) => void) {
+function patchInternalLinks(root: HTMLElement, navigate: DawonNavigate) {
   root.addEventListener('click', (e) => {
     const a = (e.target as HTMLElement | null)?.closest?.('a[href]') as HTMLAnchorElement | null
     if (!a) return
@@ -111,6 +215,12 @@ function patchInternalLinks(root: HTMLElement, navigate: (to: string) => void) {
     if (href.startsWith('#')) {
       const id = href.slice(1)
       const target = root.querySelector(`#${CSS.escape(id)}`)
+      const path = OS_SECTION_PATH[id]
+      if (path && (!target || sectionIsHidden(target))) {
+        e.preventDefault()
+        navigate(`${path}#${id}`)
+        return
+      }
       if (target) {
         e.preventDefault()
         window.dawonNavigateSection?.(id)
@@ -153,28 +263,36 @@ export function syncDawonOsAccount(root: HTMLElement | null, state: DawonOsAccou
   }
 }
 
+function bindAccountControl(
+  el: HTMLElement | null,
+  navigate: DawonNavigate,
+  auth?: { isLoggedIn: () => boolean; onSignOut: () => void },
+  mode: 'button' | 'chip' = 'button',
+) {
+  if (!el) return
+  el.addEventListener(
+    'click',
+    (e) => {
+      e.preventDefault()
+      e.stopImmediatePropagation()
+      if (auth?.isLoggedIn()) {
+        if (mode === 'button') auth.onSignOut()
+        else navigate('/subscribe')
+        return
+      }
+      navigate('/login')
+    },
+    true,
+  )
+}
+
 function bridgeChrome(
   root: HTMLElement,
-  navigate: (to: string) => void,
+  navigate: DawonNavigate,
   auth?: { isLoggedIn: () => boolean; onSignOut: () => void },
 ) {
-  const accountBtn = root.querySelector('#accountBtn') as HTMLButtonElement | null
-  if (accountBtn) {
-    // Capture phase so React auth wins over removed HTML auth modal handlers.
-    accountBtn.addEventListener(
-      'click',
-      (e) => {
-        e.preventDefault()
-        e.stopImmediatePropagation()
-        if (auth?.isLoggedIn()) {
-          auth.onSignOut()
-          return
-        }
-        navigate('/login')
-      },
-      true,
-    )
-  }
+  bindAccountControl(root.querySelector('#accountBtn'), navigate, auth, 'button')
+  bindAccountControl(root.querySelector('#accountChip'), navigate, auth, 'chip')
 
   root.querySelectorAll('a[href="#subscription"]').forEach((el) => {
     el.addEventListener('click', (e) => {
@@ -188,21 +306,33 @@ function bridgeChrome(
       }
     })
   })
-
-  // Deep-link plan buttons already use /subscribe?plan=...
 }
 
-function ensureDarkDefault() {
+function syncHomeTheme() {
   try {
-    if (!localStorage.getItem('dawon_os_theme_v2')) {
-      localStorage.setItem(THEME_KEY, 'dark')
-      localStorage.setItem('dawon_os_theme_v2', '1')
-    }
-    const saved = localStorage.getItem(THEME_KEY) || 'dark'
-    document.body.classList.toggle('dark', saved === 'dark')
+    const saved =
+      localStorage.getItem('dawon_theme_v28') || localStorage.getItem(THEME_KEY) || 'light'
+    document.documentElement.dataset.theme = saved === 'dark' ? 'dark' : 'light'
+    document.body.classList.remove('dark')
   } catch {
-    document.body.classList.add('dark')
+    document.body.classList.remove('dark')
   }
+}
+
+export type DawonOsAccessState = {
+  authenticated: boolean
+  active: boolean
+  planName?: string
+  endsAt?: string | null
+}
+
+export function syncDawonOsAccess(state: DawonOsAccessState) {
+  window.dawonSetAccessState?.({
+    authenticated: state.authenticated,
+    active: state.active,
+    planName: state.planName || (state.active ? '유료' : '무료'),
+    endsAt: state.endsAt ?? null,
+  })
 }
 
 function runOsScripts() {
@@ -230,6 +360,7 @@ type MountAuth = {
   isLoggedIn: () => boolean
   onSignOut: () => void
   account: DawonOsAccountState
+  access?: DawonOsAccessState
 }
 
 function syncBusinessDisclosure(root: HTMLElement) {
@@ -265,13 +396,18 @@ function syncBusinessDisclosure(root: HTMLElement) {
 /** Mount DAWON OS HTML + non-payment scripts. Payments stay on React /subscribe. */
 export function mountDawonOs(
   host: HTMLElement,
-  navigate: (to: string) => void,
+  navigate: DawonNavigate,
   auth?: MountAuth,
+  floor?: OsFloor,
 ): () => void {
-  ensureDarkDefault()
-  ensureNavigateHelper()
+  cancelDawonSectionScroll()
+  mountGateUntil = Date.now() + 450
+  document.body.classList.remove('modal-open')
+  syncHomeTheme()
+  ensureNavigateHelper(navigate)
   host.classList.add('dawon-os-root')
-  host.innerHTML = bodyHtml
+  if (floor) host.classList.add('os-floor-page', `os-page-${floor}`)
+  host.innerHTML = htmlForFloor(floor)
   syncBusinessDisclosure(host)
   patchInternalLinks(host, navigate)
   bridgeChrome(host, navigate, auth)
@@ -289,43 +425,36 @@ export function mountDawonOs(
   const search = new URLSearchParams(window.location.search)
   const studioTab = search.get('tab')
   const bookId = search.get('book')
-  const dvsHost = host.querySelector('#dawon-video-studio-root')
+  const dvsHost =
+    floor === 'today' || floor === 'school'
+      ? null
+      : host.querySelector('#dawon-video-studio-root')
   let dvsRoot: Root | null = null
   if (dvsHost) {
     dvsRoot = createRoot(dvsHost)
     dvsRoot.render(createElement(DawonVideoStudio, { embedded: true, bookId }))
   }
-  if (studioTab || bookId) {
+  if ((studioTab || bookId) && floor !== 'today' && floor !== 'school') {
     openDawonStudioTab(studioTab || 'video', host)
   }
-  ensureNavigateHelper()
-  ensureDarkDefault()
+  ensureNavigateHelper(navigate)
+  syncHomeTheme()
   if (auth) syncDawonOsAccount(host, auth.account)
+  if (auth?.access) syncDawonOsAccess(auth.access)
 
   // Keep full OS navigable (first-run focus hides major sections/nav).
   document.body.classList.remove('first-run-focus', 'first-step-1', 'first-step-2')
   document.getElementById('firstCompleteOverlay')?.classList.remove('show')
 
-  const hash = window.location.hash.replace(/^#/, '')
-  if (hash) {
-    requestAnimationFrame(() => {
-      scrollToDawonSection(hash, 'smooth')
-    })
-  } else {
-    // Land on hero top under the fixed React nav (never #one by default).
-    const pinHeroTop = () => window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
-    pinHeroTop()
-    requestAnimationFrame(pinHeroTop)
-    window.setTimeout(pinHeroTop, 50)
-    window.setTimeout(pinHeroTop, 160)
-  }
-
   return () => {
+    cancelDawonSectionScroll()
     unmountEmo()
     dvsRoot?.unmount()
-    host.classList.remove('dawon-os-root')
+    document.body.classList.remove('modal-open')
+    host.classList.remove('os-floor-page', 'os-page-today', 'os-page-school', 'os-page-create')
     queueMicrotask(() => {
       if (host.isConnected) host.innerHTML = ''
+      host.classList.remove('dawon-os-root')
     })
   }
 }

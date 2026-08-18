@@ -9,9 +9,10 @@
   background: transparent;
 }
 
+.app-shell.dawon-os-shell:not(.is-home),
 body.dawon-os-active.dark .app-shell.dawon-os-shell:not(.is-home) {
-  background: var(--ivory, #071321);
-  color: var(--ink, #edf5ff);
+  background: var(--bg);
+  color: var(--ink);
 }
 
 .app-shell.dawon-os-shell .topline,
@@ -29,22 +30,21 @@ body.dawon-os-active.dark .app-shell.dawon-os-shell:not(.is-home) {
   display: block !important;
   visibility: visible !important;
   opacity: 1 !important;
-  min-height: 76px;
+  min-height: 78px;
   height: auto;
-  background: rgba(247, 245, 238, 0.96);
-  backdrop-filter: blur(18px);
-  border-bottom: 1px solid rgba(101, 116, 138, 0.16);
+  background: color-mix(in srgb, var(--surface) 89%, transparent);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid color-mix(in srgb, var(--line) 75%, transparent);
   pointer-events: auto;
 }
 
-body.dawon-os-active.dark .app-shell.dawon-os-shell .app-nav-header.dawon-os-topbar {
-  background: rgba(7, 19, 33, 0.96);
-  border-bottom-color: rgba(255, 255, 255, 0.08);
+/* Home uses the 99 Tong sticky topbar inside injected HTML */
+.app-shell.dawon-os-shell.is-home {
+  padding-top: 0;
 }
 
-/* Reserve space so home content is not under the fixed nav */
-.app-shell.dawon-os-shell {
-  padding-top: 76px;
+.app-shell.dawon-os-shell:not(.is-home) {
+  padding-top: 78px;
 }
 
 .app-shell.dawon-os-shell .app-nav-links a {
@@ -139,8 +139,8 @@ body.dawon-os-active.dark .subscribe-page .subscribe-card,
 body.dawon-os-active.dark .subscribe-page .subscribe-manage,
 body.dawon-os-active.dark .subscribe-page .subscribe-manage-card,
 body.dawon-os-active.dark .payment-result-page .payment-result-card {
-  background: rgba(16, 36, 62, 0.92);
-  border-color: var(--line, #29435e);
+  background: var(--surface);
+  border-color: var(--line);
   box-shadow: 0 22px 65px rgba(0, 0, 0, 0.3);
   border-radius: 24px;
 }
@@ -153,19 +153,13 @@ body.dawon-os-active.dark .payment-result-page .payment-result-card {
 
 .dawon-library .library-tabs,
 #dawonLibraryRoot .library-tabs {
-  background: var(--soft, #edf6f4);
-}
-
-body.dawon-os-active.dark .dawon-library .library-tabs,
-body.dawon-os-active.dark #dawonLibraryRoot .library-tabs {
-  background: var(--ivory, #071321);
-  box-shadow: 0 12px 18px -14px rgba(0, 0, 0, 0.45);
+  background: transparent;
 }
 
 .dawon-library .library-tabs button.active,
 #dawonLibraryRoot .library-tabs button.active {
-  background: linear-gradient(135deg, var(--emerald, #0c8877), var(--mint, #37c6ac));
-  color: #fff;
+  background: var(--green);
+  color: var(--bg);
 }
 
 .library-preview-banner {
@@ -303,10 +297,7 @@ body.dawon-os-active.dark #dawonLibraryRoot .library-tabs {
   overflow: visible;
 }
 
-/* React AppNav is the single chrome; hide duplicate OS HTML topbar on home. */
-.app-shell.dawon-os-shell.is-home .dawon-os-root > .topbar {
-  display: none !important;
-}
+/* Home chrome is the 99 Tong topbar + floor dock inside injected HTML. */
 
 /* Keep menu links visible on desktop even if other CSS fights */
 @media (min-width: 981px) {

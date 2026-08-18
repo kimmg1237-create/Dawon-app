@@ -5,8 +5,9 @@
 }
 
 @media (min-width: 1180px) {
-  .dawon-os-home,
-  .dawon-os-root {
+  /* Reserve the rail column only when the banner is actually in the page. */
+  .dawon-os-home:has(> .home-ad-rail),
+  .dawon-os-root:has(> .home-ad-rail) {
     padding-right: 196px;
   }
 
@@ -101,8 +102,8 @@
 }
 
 @media (min-width: 1600px) {
-  .dawon-os-home,
-  .dawon-os-root {
+  .dawon-os-home:has(> .home-ad-rail),
+  .dawon-os-root:has(> .home-ad-rail) {
     padding-right: 324px;
   }
 
@@ -124,8 +125,84 @@
   }
 }
 
+/* Store top book ads — always visible; same covers as the home rail. */
+.store-ad-banners {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin: 0 0 22px;
+}
+
+.store-ad-card {
+  display: grid;
+  grid-template-columns: 92px minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+  overflow: hidden;
+  padding: 10px;
+  border: 1px solid var(--line, #dce4e6);
+  border-radius: 16px;
+  background: var(--paper, #fff);
+  box-shadow: 0 10px 28px rgba(8, 27, 54, 0.08);
+  color: inherit;
+  text-decoration: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.store-ad-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 32px rgba(8, 27, 54, 0.14);
+}
+
+.store-ad-card img {
+  width: 92px;
+  height: auto;
+  aspect-ratio: 3 / 4.15;
+  object-fit: cover;
+  border-radius: 10px;
+  background: #f4eee8;
+}
+
+.store-ad-copy b {
+  display: block;
+  font-size: 16px;
+  line-height: 1.3;
+  color: var(--ink, #122039);
+}
+
+.store-ad-copy span {
+  display: block;
+  margin-top: 4px;
+  font-size: 11px;
+  font-weight: 850;
+  color: var(--emerald, #0c8877);
+}
+
+.store-ad-copy p {
+  margin: 6px 0 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--muted, #65748a);
+}
+
+.store-ad-copy em {
+  display: block;
+  margin-top: 8px;
+  font-style: normal;
+  font-size: 12px;
+  font-weight: 900;
+  color: #b82f42;
+}
+
+@media (max-width: 720px) {
+  .store-ad-banners {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media print {
-  .home-ad-rail {
+  .home-ad-rail,
+  .store-ad-banners {
     display: none !important;
   }
 

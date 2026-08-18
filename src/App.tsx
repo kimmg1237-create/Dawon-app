@@ -8,6 +8,7 @@ import { LifeStagePage } from './pages/LifeStagePage'
 import { QuickDesignPage } from './pages/QuickDesignPage'
 import { RecordsPage } from './pages/RecordsPage'
 import { LibraryPage } from './pages/LibraryPage'
+import { OsFloorPage } from './pages/OsFloorPage'
 import { OperationsPage } from './pages/OperationsPage'
 import { AdminPage } from './pages/AdminPage'
 import { AdminResponsesPage } from './pages/AdminResponsesPage'
@@ -47,6 +48,9 @@ function AppRoutes() {
       <Routes>
         <Route element={<AppShell />}>
           <Route index element={<HomePage />} />
+          <Route path="today" element={<OsFloorPage floor="today" />} />
+          <Route path="school" element={<OsFloorPage floor="school" />} />
+          <Route path="create" element={<OsFloorPage floor="create" />} />
           <Route path="strategy" element={<StrategyPage />} />
           <Route path="life-stage" element={<LifeStagePage />} />
           <Route path="quick-design" element={<QuickDesignPage />} />
@@ -54,7 +58,8 @@ function AppRoutes() {
           <Route path="library" element={<LibraryPage initialTab="ebook" seoPage="library" />} />
           <Route path="ebooks" element={<LibraryPage initialTab="ebook" seoPage="ebooks" />} />
           <Route path="audiobooks" element={<LibraryPage initialTab="audio" seoPage="audiobooks" />} />
-          <Route path="store" element={<Navigate to="/subscribe" replace />} />
+          <Route path="comics" element={<LibraryPage initialTab="comic" seoPage="comics" />} />
+          <Route path="store" element={FEATURES.paymentsEnabled ? <SubscribePage /> : <Navigate to="/" replace />} />
           <Route path="profile" element={<Navigate to="/login" replace />} />
           <Route path="board" element={<Navigate to="/" replace />} />
           <Route path="operations" element={<OperationsPage />} />

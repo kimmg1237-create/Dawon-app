@@ -1,0 +1,192 @@
+/* Unify old index.css tokens with DAWON OS + keep text readable on every page. */
+
+body.dawon-os-active {
+  --navy: var(--ink);
+  --navy2: var(--panel-dark);
+  --paper: var(--surface);
+  --soft: var(--surface-2);
+  --mint: var(--green-2);
+  --mint2: var(--green-2);
+  --ivory: var(--bg);
+  --emerald: var(--green-2);
+  color: var(--ink);
+  background: var(--bg);
+}
+
+html[data-theme="dark"] {
+  --navy: #f6f3e9;
+  --navy2: #1d5a4a;
+  --paper: #102c25;
+  --soft: #16372f;
+  --mint: #7be3cf;
+  --mint2: #7be3cf;
+}
+
+body.dawon-os-active h1,
+body.dawon-os-active h2,
+body.dawon-os-active h3,
+body.dawon-os-active h4,
+body.dawon-os-active .section h2,
+body.dawon-os-active .page-banner h1,
+body.dawon-os-active .brandtext,
+body.dawon-os-active .plan-card h3,
+body.dawon-os-active .layer-card h3,
+body.dawon-os-active .work-card h3,
+body.dawon-os-active .book-card h3 {
+  color: var(--ink);
+}
+
+body.dawon-os-active .lead,
+body.dawon-os-active .section-head p,
+body.dawon-os-active .page-banner p {
+  color: var(--muted);
+}
+
+/* Inverted forest panels keep light type in both themes */
+.one-section,
+.one-main,
+.os-card,
+.layer-card.primary,
+.works-intro,
+.guide-core,
+.life-book-box,
+.works-proof,
+.youtube-band,
+.day-card,
+.precision-card,
+.checkout-summary {
+  color: var(--on-panel);
+}
+
+.one-section h1,
+.one-section h2,
+.one-section h3,
+.one-main h2,
+.one-main h3,
+.os-card h2,
+.os-card h3,
+.os-card strong,
+.layer-card.primary h3,
+.works-intro h2,
+.works-intro h3,
+.guide-core h2,
+.guide-core h3,
+.life-book-box h3,
+.works-proof h2,
+.works-proof h3,
+.checkout-summary h3,
+.checkout-summary strong {
+  color: var(--on-panel) !important;
+}
+
+.os-metric span,
+.server-card span,
+.os-message small {
+  color: var(--on-panel-muted) !important;
+}
+
+.app-shell.dawon-os-shell .app-nav-links a {
+  color: var(--ink);
+}
+
+.app-shell.dawon-os-shell .app-nav-links a:hover,
+.app-shell.dawon-os-shell .app-nav-links a.nav-active,
+.app-shell.dawon-os-shell .app-nav-links a[aria-current="page"] {
+  background: var(--green-3);
+  color: var(--green-2);
+}
+
+.page-banner h1 {
+  color: var(--ink);
+}
+
+.page-banner p {
+  color: var(--muted);
+}
+
+.subscribe-page,
+.dawon-library,
+.payment-result-page,
+.login-card {
+  color: var(--ink);
+}
+
+body.dawon-os-active.dark .subscribe-page .plan-card,
+body.dawon-os-active.dark .subscribe-page .subscribe-consent,
+body.dawon-os-active.dark .subscribe-page .subscribe-status-panel,
+body.dawon-os-active.dark .dawon-library .book-card,
+body.dawon-os-active.dark .library-preview-banner,
+body.dawon-os-active.dark .store-ad-card,
+body.dawon-os-active.dark .login-card {
+  background: var(--surface);
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+body.dawon-os-active.dark .hero,
+body.dawon-os-active.dark .dawon-os-root .hero {
+  background:
+    radial-gradient(circle at 85% 15%, color-mix(in srgb, var(--gold-2) 28%, transparent), transparent 33%),
+    radial-gradient(circle at 7% 100%, color-mix(in srgb, var(--green-3) 70%, transparent), transparent 32%) !important;
+  color: var(--ink);
+}
+
+body.dawon-os-active.dark .hero h1,
+body.dawon-os-active.dark .hero .hero-subline,
+body.dawon-os-active.dark .hero .hero-tech {
+  color: var(--ink) !important;
+}
+
+body.dawon-os-active.dark .hero h1 span {
+  color: var(--green-2) !important;
+}
+
+body.dawon-os-active.dark .btn-soft {
+  color: var(--ink) !important;
+  background: var(--surface) !important;
+  border: 1px solid var(--line) !important;
+}
+
+.site-footer,
+body.dawon-os-active.dark .site-footer {
+  background: var(--surface);
+  color: var(--ink);
+  border-top-color: var(--line);
+}
+
+.site-footer-brand p,
+.site-footer-biz p,
+.site-footer-copy {
+  color: var(--muted);
+}
+
+.site-footer-links a {
+  color: var(--green-2);
+}
+
+.section-subnav {
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  border-bottom-color: var(--line);
+}
+
+.section-subnav-links a {
+  background: var(--surface);
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+.plan-card ul {
+  color: var(--ink);
+  font-size: 13px;
+}
+.plan-contract {
+  color: var(--ink);
+  font-size: 12px;
+}
+.growth-stage {
+  color: var(--muted);
+  font-size: 11px;
+}
+.store-ad-copy em {
+  color: var(--gold);
+}

@@ -1,0 +1,10 @@
+.tmp_*
+.tmp_fav
+.tmp_fav_check
+src/newsite/_incoming
+src/newsite/lifeDesign.raw.js
+supabase/.temp
+scripts/replace-os-logo-refs.cjs
+scripts/replace-strategy-logos.cjs
+agent-transcripts
+.cursor

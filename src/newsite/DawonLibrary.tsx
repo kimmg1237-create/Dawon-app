@@ -76,9 +76,10 @@ function BookCover({
 type DawonLibraryProps = {
   initialTab?: LibraryTab
   onTabChange?: (tab: LibraryTab) => void
+  hideTabs?: boolean
 }
 
-export function DawonLibrary({ initialTab = 'ebook', onTabChange }: DawonLibraryProps = {}) {
+export function DawonLibrary({ initialTab = 'ebook', onTabChange, hideTabs }: DawonLibraryProps = {}) {
   const { isPremium, statusLabel, markContentUsed, paymentsEnabled } = useSubscription()
   const { user } = useAuth()
   const navigate = useNavigate()
@@ -134,6 +135,7 @@ export function DawonLibrary({ initialTab = 'ebook', onTabChange }: DawonLibrary
           title: c.title,
           url: c.audiobookTextUrl!,
           coverUrl: c.audiobookCoverUrl,
+          pdfUrl: c.ebookUrl,
           fromUpload: c.hasUploadedAudiobookText,
         })),
     [cards],
@@ -240,6 +242,7 @@ export function DawonLibrary({ initialTab = 'ebook', onTabChange }: DawonLibrary
           </Link>
         </div>
       ) : null}
+      {hideTabs ? null : (
       <div className="library-tabs" role="tablist" aria-label="라이브러리 콘텐츠 유형">
         <button
           type="button"
@@ -269,6 +272,7 @@ export function DawonLibrary({ initialTab = 'ebook', onTabChange }: DawonLibrary
           ◔ 만화책 {cards.length}권
         </button>
       </div>
+      )}
 
       {tab !== 'audio' && (
         <>
@@ -387,8 +391,8 @@ export function DawonLibrary({ initialTab = 'ebook', onTabChange }: DawonLibrary
           {!user ? (
             <div className="library-preview-banner">
               <p>
-                오디오북은 표지·제목·설명을 먼저 확인할 수 있습니다. 짧은 샘플 파일이 준비된 작품만
-                미리듣기가 제공되며, 전체 재생은 로그인 후 이용하세요.
+                오디오북은 표지·제목·설명을 먼저 확인할 수 있습니다. 성우 7명 미리듣기는 로그인 후 이용하고,
+                전체 낭독은 이용권 확인 뒤 이용하세요.
               </p>
               <Link className="btn btn-primary btn-small" to="/login" state={{ from: '/audiobooks' }}>
                 계속 들으려면 로그인해 주세요

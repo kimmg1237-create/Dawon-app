@@ -44,6 +44,7 @@ export const siteConfig = {
     library: `${SITE_ORIGIN}/library`,
     ebooks: `${SITE_ORIGIN}/ebooks`,
     audiobooks: `${SITE_ORIGIN}/audiobooks`,
+    comics: `${SITE_ORIGIN}/comics`,
     subscribe: `${SITE_ORIGIN}/subscribe`,
     login: `${SITE_ORIGIN}/login`,
     terms: `${SITE_ORIGIN}/terms`,
@@ -64,9 +65,13 @@ export const siteConfig = {
   },
   paths: {
     home: '/',
+    today: '/today',
+    school: '/school',
+    create: '/create',
     library: '/library',
     ebooks: '/ebooks',
     audiobooks: '/audiobooks',
+    comics: '/comics',
     subscribe: '/subscribe',
     login: '/login',
     terms: '/terms',
@@ -91,6 +96,21 @@ export const siteConfig = {
         '하루 약 3분, 오늘을 확인하고 하나를 실천하며 결과에서 배워 내일을 설계하는 다원 하루설계입니다.',
       path: '/',
     },
+    today: {
+      title: '1층 오늘설계 | 다원 하루설계',
+      description: '오늘 바꿀 한 가지를 정하고, 3분 오늘설계와 정밀설계로 하루를 기록합니다.',
+      path: '/today',
+    },
+    school: {
+      title: '2층 365학교 | 다원 하루설계',
+      description: '7일 실천부터 365일 생활방식까지, 쉬어도 다시 시작하는 생활습관학교입니다.',
+      path: '/school',
+    },
+    create: {
+      title: '3층 창작 | 다원 하루설계',
+      description: '오늘의 기록을 글·노래·영상·전자책으로 확장하는 다원 창작스튜디오입니다.',
+      path: '/create',
+    },
     library: {
       title: '작품관 | 다원 하루설계',
       description: '다원작가의 전자책, 오디오북, 만화책을 한곳에서 만나보세요.',
@@ -104,8 +124,13 @@ export const siteConfig = {
     audiobooks: {
       title: '오디오북 | 다원 하루설계',
       description:
-        '다원작가의 오디오북을 듣고 걷기와 휴식 시간에도 생활설계와 자기성장 콘텐츠를 이용해 보세요.',
+        '다원 성우 7명(창조상담·집중·공감·이해·희망·소망·통합)으로 오디오북을 낭독하고, 걷기와 휴식 시간에도 생활설계 콘텐츠를 들어 보세요.',
       path: '/audiobooks',
+    },
+    comics: {
+      title: '만화책 | 다원 하루설계',
+      description: '다원작가의 만화형 전자책을 보고 생활설계 이야기를 장면으로 만나보세요.',
+      path: '/comics',
     },
     author: {
       title: '다원작가 소개 | 다원 하루설계',
