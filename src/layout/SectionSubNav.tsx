@@ -58,14 +58,21 @@ function linksFor(path: string): { label: string; items: SubLink[] } | null {
     }
   }
   if (path === '/subscribe' || path === '/store' || path === '/terms' || path === '/refund' || path === '/privacy' || path.startsWith('/payment')) {
+    const storeItems: SubLink[] = [
+      {
+        to: '/subscribe#plans',
+        label: '이용권',
+        match: (p: string, h: string) => (p === '/subscribe' || p === '/store') && h !== '#status',
+      },
+      { to: '/subscribe#status', label: '내 이용권', match: (_p: string, h: string) => h === '#status' },
+      { to: '/terms', label: '이용약관', match: (p: string) => p === '/terms' },
+      { to: '/refund', label: '환불정책', match: (p: string) => p === '/refund' },
+    ]
     return {
       label: '스토어',
-      items: [
-        { to: '/subscribe#plans', label: '이용권', match: (p, h) => (p === '/subscribe' || p === '/store') && h !== '#status' },
-        { to: '/subscribe#status', label: '내 이용권', match: (_p, h) => h === '#status' },
-        { to: '/terms', label: '이용약관', match: (p) => p === '/terms' },
-        { to: '/refund', label: '환불정책', match: (p) => p === '/refund' },
-      ].filter((item) => FEATURES.paymentsEnabled || item.to === '/terms' || item.to === '/refund'),
+      items: storeItems.filter(
+        (item) => FEATURES.paymentsEnabled || item.to === '/terms' || item.to === '/refund',
+      ),
     }
   }
   return null
