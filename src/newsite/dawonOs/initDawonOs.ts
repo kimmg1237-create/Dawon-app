@@ -42,6 +42,18 @@ const FLOOR_SECTIONS: Record<OsFloor, readonly string[]> = {
 let scrollGen = 0
 let scrollTimers: number[] = []
 let mountGateUntil = 0
+let mountGen = 0
+
+function closeAllOsOverlays() {
+  document.body.classList.remove('modal-open')
+  document
+    .querySelectorAll('.modal.open,.first-complete-overlay.open,.motion-comic-modal.open')
+    .forEach((el) => {
+      el.classList.remove('open')
+      el.setAttribute('aria-hidden', 'true')
+      if (el instanceof HTMLElement) el.inert = true
+    })
+}
 
 export function cancelDawonSectionScroll() {
   scrollGen += 1
@@ -56,14 +68,19 @@ function sectionIsHidden(el: Element | null) {
   return cs.display === 'none' || cs.visibility === 'hidden'
 }
 
+function stripInjectedNoscript(root: ParentNode) {
+  root.querySelectorAll('noscript, .noscript-banner').forEach((n) => n.remove())
+}
+
 function htmlForFloor(floor?: OsFloor): string {
-  if (!floor) return bodyHtml
   const doc = new DOMParser().parseFromString(bodyHtml, 'text/html')
+  stripInjectedNoscript(doc)
+  if (!floor) return doc.body.innerHTML
   doc.querySelector('.topbar')?.remove()
   doc.querySelector('.home-ad-rail')?.remove()
   doc.querySelector('.floor-quick-nav')?.remove()
   doc.querySelector('.skip-link')?.remove()
-  doc.querySelector('noscript')?.remove()
+  doc.querySelector('#menuModal')?.remove()
   doc.querySelector('footer')?.remove()
   const keep = new Set(FLOOR_SECTIONS[floor])
   const main = doc.getElementById('top')
@@ -401,13 +418,15 @@ export function mountDawonOs(
   floor?: OsFloor,
 ): () => void {
   cancelDawonSectionScroll()
+  const gen = ++mountGen
   mountGateUntil = Date.now() + 450
-  document.body.classList.remove('modal-open')
+  closeAllOsOverlays()
   syncHomeTheme()
   ensureNavigateHelper(navigate)
   host.classList.add('dawon-os-root')
   if (floor) host.classList.add('os-floor-page', `os-page-${floor}`)
   host.innerHTML = htmlForFloor(floor)
+  stripInjectedNoscript(host)
   syncBusinessDisclosure(host)
   patchInternalLinks(host, navigate)
   bridgeChrome(host, navigate, auth)
@@ -444,15 +463,18 @@ export function mountDawonOs(
 
   // Keep full OS navigable (first-run focus hides major sections/nav).
   document.body.classList.remove('first-run-focus', 'first-step-1', 'first-step-2')
-  document.getElementById('firstCompleteOverlay')?.classList.remove('show')
+  closeAllOsOverlays()
 
   return () => {
+    const cleanupGen = gen
     cancelDawonSectionScroll()
     unmountEmo()
     dvsRoot?.unmount()
-    document.body.classList.remove('modal-open')
+    closeAllOsOverlays()
     host.classList.remove('os-floor-page', 'os-page-today', 'os-page-school', 'os-page-create')
     queueMicrotask(() => {
+      // Skip stale cleanup when switching /today ↔ /school ↔ /create on the same host.
+      if (cleanupGen !== mountGen) return
       if (host.isConnected) host.innerHTML = ''
       host.classList.remove('dawon-os-root')
     })

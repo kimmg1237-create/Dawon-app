@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { FEATURES } from '../data/features'
@@ -37,6 +37,8 @@ export function AppNav() {
   const [theme, setTheme] = useState<'light' | 'dark'>(() =>
     typeof document !== 'undefined' ? readTheme() : 'light',
   )
+  const menuRef = useRef<HTMLDivElement>(null)
+  const menuBtnRef = useRef<HTMLButtonElement>(null)
 
   const isLibrary =
     location.pathname.startsWith('/library') ||
@@ -49,10 +51,36 @@ export function AppNav() {
   }, [theme])
 
   useEffect(() => {
+    const modal = menuRef.current
+    const active = document.activeElement
+    if (modal && active instanceof HTMLElement && modal.contains(active)) {
+      active.blur()
+    }
     setOpen(false)
   }, [location.pathname, location.hash])
 
+  useEffect(() => {
+    const modal = menuRef.current
+    if (!modal) return
+    modal.inert = !open
+    if (open) return
+    const active = document.activeElement
+    if (active instanceof HTMLElement && modal.contains(active)) {
+      active.blur()
+      menuBtnRef.current?.focus()
+    }
+  }, [open])
+
+  function blurMenuIfFocused() {
+    const modal = menuRef.current
+    const active = document.activeElement
+    if (modal && active instanceof HTMLElement && modal.contains(active)) {
+      active.blur()
+    }
+  }
+
   function closeMenu() {
+    blurMenuIfFocused()
     setOpen(false)
     cancelDawonSectionScroll()
   }
@@ -146,12 +174,16 @@ export function AppNav() {
             {theme === 'dark' ? '☀' : '◐'}
           </button>
           <button
+            ref={menuBtnRef}
             type="button"
             className="icon-btn mobile-toggle"
             aria-label="모바일 메뉴"
             aria-controls="appNavMenuModal"
             aria-expanded={open}
-            onClick={() => setOpen((v) => !v)}
+            onClick={() => {
+              if (open) closeMenu()
+              else setOpen(true)
+            }}
           >
             {open ? '✕' : '☰'}
           </button>
@@ -168,11 +200,13 @@ export function AppNav() {
     </header>
 
       <div
+        ref={menuRef}
         className={`modal${open ? ' open' : ''}`}
         id="appNavMenuModal"
         role="dialog"
-        aria-modal="true"
+        aria-modal={open}
         aria-hidden={!open}
+        inert={!open}
         aria-labelledby="appNavMenuTitle"
         onClick={(e) => {
           if (e.target === e.currentTarget) closeMenu()

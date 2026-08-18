@@ -136,6 +136,7 @@ window.DAWON_CONFIG = Object.assign({
     const el = typeof elOrId === 'string' ? $(elOrId) : elOrId;
     if (!el) return;
     if (document.activeElement instanceof HTMLElement) modalFocusHistory.set(el, document.activeElement);
+    el.inert = false;
     el.classList.add('open'); el.setAttribute('aria-hidden', 'false'); document.body.classList.add('modal-open');
     const focusable = el.querySelector(MODAL_FOCUSABLE);
     setTimeout(() => focusable?.focus(), 20);
@@ -143,12 +144,14 @@ window.DAWON_CONFIG = Object.assign({
   function closeModal(elOrId) {
     const el = typeof elOrId === 'string' ? $(elOrId) : elOrId;
     if (!el) return;
-    el.classList.remove('open'); el.setAttribute('aria-hidden', 'true');
+    const active = document.activeElement;
+    if (active instanceof HTMLElement && el.contains(active)) active.blur();
+    el.classList.remove('open'); el.setAttribute('aria-hidden', 'true'); el.inert = true;
     if (el.id === 'menuModal') $('menuBtn')?.setAttribute('aria-expanded','false');
     if (!document.querySelector('.modal.open,.first-complete-overlay.open,.motion-comic-modal.open')) document.body.classList.remove('modal-open');
     const previous = modalFocusHistory.get(el);
     modalFocusHistory.delete(el);
-    if (previous?.isConnected) setTimeout(() => previous.focus(), 20);
+    if (previous?.isConnected && !el.contains(previous)) setTimeout(() => previous.focus(), 20);
   }
   function showSection(id) { if (window.dawonNavigateSection) window.dawonNavigateSection(id); else { const el = $(id); if (el) el.scrollIntoView({behavior:'smooth',block:'start'}); } }
   function getDays() { return load(KEYS.days, {}); }
@@ -178,6 +181,7 @@ window.DAWON_CONFIG = Object.assign({
     menuBtn?.addEventListener('click', () => { menuBtn.setAttribute('aria-expanded','true'); openModal('menuModal'); });
     $('closeMenu')?.addEventListener('click', () => { menuBtn?.setAttribute('aria-expanded','false'); closeModal('menuModal'); });
     $$('#menuModal a').forEach(a => a.addEventListener('click', () => closeModal('menuModal')));
+    $$('.modal').forEach((el) => { if (!el.classList.contains('open')) el.inert = true; });
     $('heroGuide')?.addEventListener('click', () => speak('다원 하루설계는 오늘 바꿀 딱 한 가지를 정하고, 약 3분 동안 오늘 한 일과 감정, 내일 첫 행동을 기록하는 생활설계입니다. 완벽하게 이어가는 것보다 쉬어도 다시 시작한 경험을 기록합니다.'));
     if (!window.__dawonOsChromeBound) {
       window.__dawonOsChromeBound = true;
