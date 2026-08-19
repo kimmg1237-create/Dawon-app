@@ -23,6 +23,9 @@ import { RefundPolicyPage } from './pages/RefundPolicyPage'
 import { PrivacyPage } from './pages/PrivacyPage'
 import { MovieStudioPage } from './pages/MovieStudioPage'
 import { NotFoundPage } from './pages/NotFoundPage'
+import { ProgramsPage } from './pages/ProgramsPage'
+import { InstitutionPage } from './pages/InstitutionPage'
+import { ReportPage } from './pages/ReportPage'
 import { FEATURES } from './data/features'
 import { useEffect } from 'react'
 import { migrateLocalDrafts } from './services/userDataService'
@@ -51,6 +54,9 @@ function AppRoutes() {
           <Route path="today" element={<OsFloorPage floor="today" />} />
           <Route path="school" element={<OsFloorPage floor="school" />} />
           <Route path="create" element={<OsFloorPage floor="create" />} />
+          <Route path="programs" element={<ProgramsPage />} />
+          <Route path="institution" element={<InstitutionPage />} />
+          <Route path="report" element={<ReportPage />} />
           <Route path="strategy" element={<StrategyPage />} />
           <Route path="life-stage" element={<LifeStagePage />} />
           <Route path="quick-design" element={<QuickDesignPage />} />

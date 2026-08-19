@@ -5,7 +5,7 @@ import { detectComicPanels, type NormBox } from '../lib/detectComicPanels'
 import { createComicScore, type ScoreHandle } from '../lib/comicScore'
 import './ComicMoviePlayer.css'
 
-type CutMode = 4 | 7
+type CutMode = 1 | 4 | 7
 type Ratio = '16:9' | '9:16'
 
 const SIZE: Record<Ratio, { w: number; h: number }> = {
@@ -50,7 +50,7 @@ export function ComicMoviePlayer({
   const playingRef = useRef(true)
   const pageRef = useRef(1)
   const cutRef = useRef(1)
-  const cutsRef = useRef<CutMode>(4)
+  const cutsRef = useRef<CutMode>(1)
   const delayRef = useRef(6500)
   const ratioRef = useRef<Ratio>('16:9')
   const maxPageRef = useRef(1)
@@ -61,14 +61,14 @@ export function ComicMoviePlayer({
   const [page, setPage] = useState(1)
   const [cut, setCut] = useState(1)
   const [pageCount, setPageCount] = useState(0)
-  const [cuts, setCuts] = useState<CutMode>(4)
+  const [cuts, setCuts] = useState<CutMode>(1)
   const [playing, setPlaying] = useState(true)
   const [delay, setDelay] = useState(6500)
   const [ratio, setRatio] = useState<Ratio>('16:9')
   const [muted, setMuted] = useState(false)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
-  const [ken, setKen] = useState<(typeof KEN)[number]>('ken-a')
+  const [ken, setKen] = useState<(typeof KEN)[number] | ''>('ken-a')
   const [front, setFront] = useState<0 | 1>(0)
   const [status, setStatus] = useState('준비 중')
   const [showTitle, setShowTitle] = useState(true)
@@ -102,8 +102,9 @@ export function ComicMoviePlayer({
     target.height = size.h
     ctx.fillStyle = '#05080f'
     ctx.fillRect(0, 0, size.w, size.h)
-    const list = boxesRef.current.length === cutCount ? boxesRef.current : []
-    const fallback: NormBox = [0.04, 0.12, 0.96, 0.9]
+    const fullPage: NormBox = [0, 0, 1, 1]
+    const list = cutCount === 1 ? [fullPage] : (boxesRef.current.length === cutCount ? boxesRef.current : [])
+    const fallback: NormBox = cutCount === 1 ? fullPage : [0.04, 0.12, 0.96, 0.9]
     const b = list[(cutNo - 1) % Math.max(list.length, 1)] || fallback
     const sx = src.width * b[0]
     const sy = src.height * b[1]
@@ -119,7 +120,7 @@ export function ComicMoviePlayer({
     ctx.fillStyle = '#05080f'
     ctx.fillRect(0, 0, size.w, size.h * bar)
     ctx.fillRect(0, size.h * (1 - bar), size.w, size.h * bar)
-    setKen(KEN[(pageNo + cutNo) % KEN.length])
+    setKen(cutCount === 1 ? '' : KEN[(pageNo + cutNo) % KEN.length])
     setStatus(`${cutCount}컷 · ${pageNo}쪽 ${cutNo}컷`)
   }, [])
 
@@ -201,7 +202,7 @@ export function ComicMoviePlayer({
           if (token !== tokenRef.current) return
           pageBitmapRef.current = off
           renderedPageRef.current = pageNo
-          boxesRef.current = detectComicPanels(off, cutsRef.current)
+          boxesRef.current = cutsRef.current === 1 ? [[0, 0, 1, 1] as NormBox] : detectComicPanels(off, cutsRef.current)
         }
         revealCut(pageNo, cutNo, cutsRef.current)
         setLoading(false)
@@ -396,8 +397,9 @@ export function ComicMoviePlayer({
           <select
             value={String(cuts)}
             aria-label="컷 수"
-            onChange={(e) => changeCuts(Number(e.target.value) === 7 ? 7 : 4)}
+            onChange={(e) => { const v = Number(e.target.value); changeCuts(v === 7 ? 7 : v === 4 ? 4 : 1) }}
           >
+            <option value="1">전체 보기</option>
             <option value="4">4컷 인식</option>
             <option value="7">7컷 인식</option>
           </select>

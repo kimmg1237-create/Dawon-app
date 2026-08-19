@@ -8,6 +8,7 @@ import { cancelDawonSectionScroll } from '../newsite/dawonOs/initDawonOs'
 import './AppShell.css'
 import '../newsite/dawonOs/theme.css'
 import '../newsite/dawonOs/bridge.css'
+import '../newsite/dawonOs/subpages.css'
 import '../newsite/dawonOs/dark-contrast.css'
 import '../newsite/dawonOs/readability.css'
 

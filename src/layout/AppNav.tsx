@@ -131,6 +131,20 @@ export function AppNav() {
           <Link to="/create" aria-current={location.pathname === '/create' || location.pathname.startsWith('/movie-studio') ? 'page' : undefined} onClick={closeMenu} preventScrollReset>
             3층 · 창작
           </Link>
+          <div className="nav-dropdown">
+            <Link
+              to="/programs"
+              className="nav-dropdown-trigger"
+              aria-current={['/programs', '/institution', '/report'].includes(location.pathname) ? 'page' : undefined}
+            >
+              대상별 프로그램 <span className="dropdown-arrow">▾</span>
+            </Link>
+            <div className="nav-dropdown-menu">
+              <Link to="/programs" onClick={closeMenu}>대상별 프로그램</Link>
+              <Link to="/institution" onClick={closeMenu}>학교·기관 도입</Link>
+              <Link to="/report" onClick={closeMenu}>성장리포트</Link>
+            </div>
+          </div>
           <Link
             to="/library"
             aria-current={isLibrary ? 'page' : undefined}
@@ -228,6 +242,15 @@ export function AppNav() {
             </Link>
             <Link className="btn btn-soft" to="/create" onClick={closeMenu}>
               3층 · 창작
+            </Link>
+            <Link className="btn btn-soft" to="/programs" onClick={closeMenu}>
+              대상별 프로그램
+            </Link>
+            <Link className="btn btn-soft" to="/institution" onClick={closeMenu}>
+              학교·기관 도입
+            </Link>
+            <Link className="btn btn-soft" to="/report" onClick={closeMenu}>
+              성장리포트
             </Link>
             <Link className="btn btn-soft" to="/library" onClick={closeMenu}>
               작품관

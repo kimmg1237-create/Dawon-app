@@ -12,6 +12,15 @@
   margin: 0 2px;
 }
 
+.dawon-emo-pop-fixed {
+  position: fixed;
+}
+
+.compact-field > label .dawon-emo-btn,
+.question .q-label .dawon-emo-btn {
+  margin-left: 8px;
+}
+
 .dawon-emo-btn {
   flex: 0 0 auto;
   border: 0;
@@ -31,7 +40,7 @@
 
 .dawon-emo-pop {
   position: absolute;
-  z-index: 80;
+  z-index: 1100;
   width: min(340px, calc(100% - 24px));
   max-height: 420px;
   overflow: auto;

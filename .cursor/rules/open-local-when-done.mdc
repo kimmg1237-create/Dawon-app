@@ -1,0 +1,13 @@
+---
+description: After finishing work, always open the local site. Do not deploy unless asked.
+alwaysApply: true
+---
+
+# Open local when done
+
+When a coding or homepage change is finished:
+
+1. Do **not** deploy, commit, or push unless the user asked.
+2. If Vite is not already running, start `npm run dev` in the project root.
+3. Open the local URL in the default browser (`http://localhost:5173/` unless the terminal printed another port).
+4. Tell the user the local URL. Do not wait to be asked.

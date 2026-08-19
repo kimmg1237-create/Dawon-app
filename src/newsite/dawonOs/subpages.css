@@ -1,0 +1,139 @@
+/* ===== 서브페이지 스타일 — 메인 사이트와 동일한 색상 체계 ===== */
+.subpage{
+  --bg:#f7f5ee;--paper:#fffdf8;--ink:#18231f;--muted:#66736e;--line:#d9ddd6;
+  --navy:#143b31;--gold:#cba64d;--green-2:#0c8877;--soft:#f4f0e6;
+  --shadow:0 18px 45px rgba(19,48,39,.10);--radius:22px;
+  font-family:-apple-system,BlinkMacSystemFont,"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",Segoe UI,sans-serif;
+  background:#f7f5ee;color:#18231f;line-height:1.65;
+}
+.subpage *{box-sizing:border-box}
+.subpage .wrap{width:min(1180px,calc(100% - 32px));margin:auto}
+.subpage section{padding:72px 0}
+
+/* 섹션 헤더 */
+.subpage .section-head{display:flex;align-items:end;justify-content:space-between;gap:24px;margin-bottom:28px}
+.subpage .section-head h2{font-size:36px;line-height:1.15;color:#143b31 !important;margin:0}
+.subpage .section-head p{margin:0;color:#66736e !important;max-width:640px}
+
+/* 뱃지 */
+.subpage .badge{display:inline-block;font-size:12px;font-weight:800;color:#143b31;background:#dff2ec;padding:5px 8px;border-radius:999px}
+
+/* 그리드 */
+.subpage .grid{display:grid;gap:18px}
+.subpage .grid-4{grid-template-columns:repeat(4,1fr)}
+.subpage .grid-3{grid-template-columns:repeat(3,1fr)}
+
+/* 카드 */
+.subpage .card{background:#fffdf8;border:1px solid #d9ddd6;border-radius:22px;padding:22px;box-shadow:0 7px 24px rgba(19,48,39,.06)}
+.subpage .card h3{margin:8px 0;color:#143b31 !important}
+.subpage .card p{color:#66736e !important;font-size:14px;margin:0}
+
+/* 아이콘 */
+.subpage .icon{width:42px;height:42px;border-radius:12px;background:#dff2ec;display:grid;place-items:center;font-size:21px}
+
+/* 버튼 */
+.subpage .btn{border:0;border-radius:12px;padding:12px 17px;font-weight:700;cursor:pointer;transition:.2s;display:inline-block;text-align:center}
+.subpage .btn:hover{transform:translateY(-1px)}
+.subpage .btn-primary{background:#143b31;color:#fff}
+.subpage .btn-gold{background:#cba64d;color:#fff}
+.subpage .btn-light{background:#fffdf8;border:1px solid #d9ddd6;color:#143b31}
+
+/* ===== 페이지 히어로 — 초록 배경 + 밝은 텍스트 ===== */
+.subpage .page-hero{padding:76px 0 54px;position:relative;overflow:hidden;background:#12362e !important;--ink:#fff;--muted:#c8ddd5;--green:#fff;--green-2:#cba64d;--navy:#fff}
+.subpage .page-hero::before{content:"";position:absolute;inset:auto -120px -180px auto;width:520px;height:520px;border-radius:50%;background:radial-gradient(circle,rgba(203,166,77,.12),transparent 68%);pointer-events:none}
+.subpage .page-hero h1{font-size:clamp(38px,5.3vw,56px) !important;line-height:1.12 !important;letter-spacing:-.04em !important;margin:18px 0 !important;color:#fff !important;font-family:inherit !important}
+.subpage .page-hero h2{color:#fff !important}
+.subpage .page-hero h3{color:#fff !important}
+.subpage .page-hero h4{color:#fff !important}
+.subpage .page-hero p{font-size:19px !important;color:#c8ddd5 !important;max-width:760px}
+.subpage .page-hero span{color:#fff !important}
+.subpage .page-hero .eyebrow{color:#cba64d !important;display:inline-flex !important;align-items:center;gap:8px;padding:7px 11px;border-radius:999px;background:rgba(255,255,255,.1) !important;font-size:13px !important;font-weight:800}
+.subpage .page-hero .eyebrow::before{background:#cba64d !important}
+.subpage .page-hero a{color:#fff !important}
+.subpage .page-hero button{color:#fff !important}
+.subpage .page-hero .btn-gold{background:#cba64d !important;color:#fff !important}
+.subpage .page-hero .btn-light{background:rgba(255,255,255,.1) !important;border:1px solid rgba(255,255,255,.25) !important;color:#fff !important}
+.subpage .hero-cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
+
+/* ===== 대상별 카드 hover ===== */
+.subpage .audience .card{cursor:pointer;transition:.2s}
+.subpage .audience .card:hover{transform:translateY(-4px);box-shadow:var(--shadow);border-color:#0c8877}
+
+/* ===== 프로세스 섹션 — 초록 배경 + 밝은 텍스트 ===== */
+.subpage .process{background:#12362e !important;--ink:#fff;--muted:#c8ddd5;--green:#fff;--green-2:#cba64d;--navy:#fff}
+.subpage .process h1,.subpage .process h2,.subpage .process h3,.subpage .process h4,.subpage .process span,.subpage .process div,.subpage .process b,.subpage .process strong,.subpage .process small,.subpage .process a{color:#fff !important}
+.subpage .process p{color:#c8ddd5 !important}
+.subpage .process .badge{color:#cba64d !important;background:rgba(203,166,77,.15)}
+.subpage .process .badge::before{background:#cba64d !important}
+.subpage .steps{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+.subpage .step{padding:20px;border:1px solid rgba(255,255,255,.15);border-radius:18px;background:rgba(255,255,255,.06)}
+.subpage .step strong{font-size:28px;color:#cba64d !important}
+.subpage .step h3{margin:8px 0 3px;color:#fff !important}
+.subpage .step p{margin:0;color:#c8ddd5 !important;font-size:13px}
+
+/* ===== 프로그램 표 ===== */
+.subpage .programs table{width:100%;border-collapse:separate;border-spacing:0;background:#fffdf8;border:1px solid #d9ddd6;border-radius:18px;overflow:hidden}
+.subpage .programs th,.subpage .programs td{padding:15px 14px;border-bottom:1px solid #d9ddd6;vertical-align:top;text-align:left}
+.subpage .programs th{background:#f4f0e6;color:#143b31;font-size:13px;font-weight:800}
+.subpage .programs tr:last-child td{border-bottom:0}
+.subpage .programs td{font-size:14px;color:#18231f !important}
+
+/* ===== 리포트 섹션 ===== */
+.subpage .report{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:stretch}
+.subpage .report-left-title{font-size:36px;color:#143b31 !important;margin:12px 0;line-height:1.15}
+.subpage .report-left-desc{color:#66736e !important;margin:0;line-height:1.6}
+.subpage .report-demo{background:#fffdf8;border:1px solid #d9ddd6;border-radius:24px;padding:28px 26px;box-shadow:var(--shadow)}
+.subpage .report-demo-title{color:#143b31 !important;margin:10px 0 16px}
+.subpage .metric{display:flex;justify-content:space-between;padding:13px 0;border-bottom:1px dashed #d9ddd6}
+.subpage .metric:last-child{border-bottom:0}
+.subpage .metric span{color:#18231f !important}
+.subpage .metric b{color:#143b31 !important}
+.subpage .bar-label{color:#66736e !important;font-size:13px}
+.subpage .bar{height:9px;background:#d9ddd6;border-radius:999px;overflow:hidden;margin-top:8px}
+.subpage .bar i{display:block;height:100%;background:linear-gradient(90deg,#143b31,#0c8877);border-radius:999px}
+
+/* ===== 기관 도입 배경 섹션 ===== */
+.subpage .institution{background:#f4f0e6 !important}
+.subpage .institution .section-head h2{color:#143b31 !important}
+.subpage .institution .section-head p{color:#66736e !important}
+.subpage .institution .card h3{color:#143b31 !important}
+.subpage .institution .card p{color:#66736e !important}
+
+/* ===== CTA 패널 — 초록 배경 + 밝은 텍스트 ===== */
+.subpage .cta-panel{background:linear-gradient(135deg,#12362e,#1b5749);border-radius:28px;padding:36px;display:flex;justify-content:space-between;gap:24px;align-items:center;--ink:#fff;--muted:#c8ddd5;--green:#fff;--green-2:#cba64d;--navy:#fff}
+.subpage .cta-panel h1,.subpage .cta-panel h2,.subpage .cta-panel h3,.subpage .cta-panel h4,.subpage .cta-panel span,.subpage .cta-panel div,.subpage .cta-panel b,.subpage .cta-panel strong,.subpage .cta-panel small,.subpage .cta-panel a,.subpage .cta-panel button{color:#fff !important}
+.subpage .cta-panel h2{margin:0 0 10px;font-size:32px}
+.subpage .cta-panel p{color:#c8ddd5 !important;margin:0}
+.subpage .cta-panel .btn-gold{background:#cba64d;color:#fff !important}
+
+/* ===== 모달 ===== */
+.subpage .modal{position:fixed;inset:0;background:rgba(16,24,40,.48);display:none;align-items:center;justify-content:center;z-index:1100;padding:20px}
+.subpage .modal.open{display:flex}
+.subpage .modal-box{width:min(650px,100%);max-height:86vh;overflow:auto;background:#fff;border-radius:24px;padding:26px;box-shadow:0 30px 80px rgba(0,0,0,.22)}
+.subpage .modal-box h2{color:#143b31 !important}
+.subpage .modal-box h3{color:#143b31 !important}
+.subpage .modal-box p{color:#18231f}
+.subpage .close{float:right;border:0;background:#f2f4f7;border-radius:50%;width:36px;height:36px;cursor:pointer;font-size:18px;display:grid;place-items:center}
+.subpage .result{display:none;margin-top:14px;padding:14px;background:#edf7f0;border-radius:12px;color:#315b43}
+.subpage .mini-form{display:grid;gap:12px}
+.subpage label{font-size:13px;font-weight:800;color:#18231f}
+.subpage .input{width:100%;border:1px solid #d9ddd6;background:#fff;border-radius:12px;padding:12px 13px;outline:none;color:#18231f}
+.subpage .input:focus{border-color:#0c8877;box-shadow:0 0 0 3px rgba(12,136,119,.12)}
+.subpage textarea.input{min-height:80px;resize:vertical}
+.subpage .notice{font-size:12px;color:#66736e;margin-top:10px}
+
+/* ===== 반응형 ===== */
+@media(max-width:920px){
+  .subpage .grid-4{grid-template-columns:repeat(2,1fr)}
+  .subpage .grid-3,.subpage .steps{grid-template-columns:1fr 1fr}
+  .subpage .report{grid-template-columns:1fr}
+  .subpage .cta-panel{flex-direction:column;text-align:center}
+  .subpage .cta-panel .btn{margin-top:18px}
+}
+@media(max-width:600px){
+  .subpage .grid-4,.subpage .grid-3,.subpage .steps{grid-template-columns:1fr}
+  .subpage section{padding:54px 0}
+  .subpage .section-head{display:block}
+  .subpage .section-head p{margin-top:10px}
+  .subpage .page-hero{padding-top:48px}
+}
