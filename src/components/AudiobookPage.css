@@ -594,22 +594,17 @@
   flex: 1;
   min-width: 130px;
 }
-.dvs7-server {
-  margin-top: 13px;
-  padding: 13px;
+.dvs7-mp3-result {
+  margin-top: 12px;
+  padding: 12px;
   border-radius: 14px;
-  background: #fff7e8;
-  color: #725320;
-  font-size: 11px;
-  line-height: 1.6;
+  background: #edf7f0;
+  border: 1px solid #b8d8c8;
+  display: grid;
+  gap: 10px;
 }
-.dvs7-server b {
-  display: block;
-  margin-bottom: 3px;
-}
-.dvs7-server audio {
+.dvs7-mp3-result audio {
   width: 100%;
-  margin-top: 9px;
 }
 .dvs7-disclosure {
   margin: 0 22px 22px;

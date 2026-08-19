@@ -175,10 +175,19 @@ body.dawon-os-active.dark .payment-result-page .payment-result-card {
   background: var(--paper, #fff);
 }
 
+.library-preview-banner.library-premium-banner {
+  background: #fff8e8;
+  border-color: #ead49d;
+}
+
 .library-preview-banner p {
   margin: 0;
   font-size: 13px;
   color: var(--muted, #6b7e90);
+}
+
+.library-preview-banner.library-premium-banner p {
+  color: #6f5517;
 }
 
 .library-preview-modal {

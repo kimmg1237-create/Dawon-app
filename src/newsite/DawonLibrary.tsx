@@ -3,12 +3,12 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { EbookViewer } from '../components/EbookViewer'
 import { ComicMoviePlayer } from '../components/ComicMoviePlayer'
 import { AudiobookPage } from '../components/AudiobookPage'
-import { PremiumGate } from '../components/PremiumGate'
 import { useSubscription } from '../context/SubscriptionContext'
 import { useAuth } from '../context/AuthContext'
 import { fetchLibraryItems } from '../services/libraryService'
 import { loadAudiobookIndex } from '../data/libraryStaticAssets'
 import { coverUrlForCard, mergeLibraryCards, type LibraryCard } from '../services/libraryCatalog'
+import { PRODUCT_SPEC } from '../data/productSpec'
 
 export type LibraryTab = 'ebook' | 'comic' | 'audio'
 
@@ -150,20 +150,22 @@ export function DawonLibrary({ initialTab = 'ebook', onTabChange, hideTabs }: Da
   }, [tab, query])
 
   function openBook(card: LibraryCard, kind: 'ebook' | 'comic') {
-    if (!user) {
-      setPreview(card)
-      return
-    }
-    if (paymentsEnabled && !isPremium) {
-      navigate('/subscribe')
-      return
-    }
     const url = kind === 'ebook' ? card.ebookUrl : card.comicUrl
-    if (url) {
-      void markContentUsed()
-      setOpen({ card, kind, url })
+    if (!url) return
+
+    if (!isPremium) {
+      if (!user) {
+        setPreview(card)
+        return
+      }
       setPreview(null)
+      setOpen({ card, kind, url, previewMaxPages: GUEST_PREVIEW_PAGES })
+      return
     }
+
+    void markContentUsed()
+    setOpen({ card, kind, url })
+    setPreview(null)
   }
 
   function openGuestPreview(card: LibraryCard, kind: 'ebook' | 'comic') {
@@ -178,13 +180,14 @@ export function DawonLibrary({ initialTab = 'ebook', onTabChange, hideTabs }: Da
 
   function openComicMovie(card: LibraryCard) {
     if (!card.comicUrl) return
-    if (!user) {
+    if (!isPremium) {
       setPreview(null)
-      setMovie({ card, kind: 'comic', url: card.comicUrl, previewMaxPages: GUEST_MOVIE_PAGES })
-      return
-    }
-    if (paymentsEnabled && !isPremium) {
-      navigate('/subscribe')
+      setMovie({
+        card,
+        kind: 'comic',
+        url: card.comicUrl,
+        previewMaxPages: GUEST_MOVIE_PAGES,
+      })
       return
     }
     void markContentUsed()
@@ -227,18 +230,18 @@ export function DawonLibrary({ initialTab = 'ebook', onTabChange, hideTabs }: Da
     setSlide((s) => Math.min(totalSlides - 1, s + 1))
   }
 
-  const kindLabel = tab === 'ebook' ? '전자책' : '만화'
   const previewKind: 'ebook' | 'comic' = tab === 'comic' ? 'comic' : 'ebook'
 
   return (
     <div className="dawon-library">
-      {paymentsEnabled && user && !isPremium ? (
+      {paymentsEnabled && !isPremium && tab !== 'audio' ? (
         <div className="library-premium-banner">
           <span>
-            {statusLabel} · 전자책·만화·오디오북 열람은 구독·체험·광고 이용이 필요합니다.
+            {statusLabel} · 전자책·만화·오디오북은 미리보기로 먼저 확인할 수 있습니다. 첫 가입 시{' '}
+            <strong>{PRODUCT_SPEC.freeTrialDays}일 무료</strong> 전체 이용(아이디당 1회).
           </span>
           <Link to="/subscribe" className="btn btn-primary btn-small">
-            구독·결제
+            {user ? '이용권 보기' : '가입하고 7일 무료'}
           </Link>
         </div>
       ) : null}
@@ -287,7 +290,7 @@ export function DawonLibrary({ initialTab = 'ebook', onTabChange, hideTabs }: Da
               />
             </label>
             <span className="library-count">
-              {filtered.length}권 · 표지·소개·목차 일부를 먼저 보고, 전체는 로그인 후 이용합니다
+              {filtered.length}권 · 표지·소개·목차 + 최대 {GUEST_PREVIEW_PAGES}쪽 미리보기
             </span>
           </div>
 
@@ -322,7 +325,7 @@ export function DawonLibrary({ initialTab = 'ebook', onTabChange, hideTabs }: Da
                           <h3>{card.title}</h3>
                           <p>{card.description}</p>
                           <span className="book-open">
-                            {user
+                            {isPremium
                               ? tab === 'ebook'
                                 ? '전자책 읽기 →'
                                 : '만화로 보기 →'
@@ -380,28 +383,48 @@ export function DawonLibrary({ initialTab = 'ebook', onTabChange, hideTabs }: Da
           )}
 
           <div className="library-note">
-            로그인 전: 표지·제목·소개·목차 일부·최대 {GUEST_PREVIEW_PAGES}쪽 미리보기 · 로그인 후: 전체{' '}
-            {kindLabel} 이용
+            <span>
+              미리보기: 전자책·만화 최대 {GUEST_PREVIEW_PAGES}쪽 · 오디오북 성우 미리듣기 · 만화영화{' '}
+              {GUEST_MOVIE_PAGES}쪽
+            </span>
+            {!isPremium ? (
+              <span className="library-trial-promo">
+                · 첫 가입 시 <strong>{PRODUCT_SPEC.freeTrialDays}일 무료</strong> 전체 이용 (아이디당 1회)
+                {!user ? (
+                  <>
+                    {' '}
+                    ·{' '}
+                    <Link to="/login" state={{ from: '/library' }}>
+                      가입하고 시작
+                    </Link>
+                  </>
+                ) : null}
+              </span>
+            ) : null}
           </div>
         </>
       )}
 
       {tab === 'audio' && (
         <div className="library-audio-shell">
-          {!user ? (
-            <div className="library-preview-banner">
+          {!isPremium ? (
+            <div className="library-preview-banner library-premium-banner">
               <p>
-                오디오북은 표지·제목·설명을 먼저 확인할 수 있습니다. 성우 7명 미리듣기는 로그인 후 이용하고,
-                전체 낭독은 이용권 확인 뒤 이용하세요.
+                {statusLabel} · 오디오북은 성우 미리듣기와 짧은 원고 미리보기로 먼저 확인할 수 있습니다.
+                첫 가입 시 <strong>{PRODUCT_SPEC.freeTrialDays}일 무료</strong> 전체 이용(아이디당 1회).
               </p>
-              <Link className="btn btn-primary btn-small" to="/login" state={{ from: '/audiobooks' }}>
-                계속 들으려면 로그인해 주세요
-              </Link>
+              {user ? (
+                <Link className="btn btn-primary btn-small" to="/subscribe">
+                  이용권 보기
+                </Link>
+              ) : (
+                <Link className="btn btn-primary btn-small" to="/login" state={{ from: '/audiobooks' }}>
+                  가입하고 7일 무료
+                </Link>
+              )}
             </div>
           ) : null}
-          <PremiumGate feature="오디오북">
-            <AudiobookPage extraTexts={audioExtras} />
-          </PremiumGate>
+          <AudiobookPage extraTexts={audioExtras} previewOnly={paymentsEnabled && !isPremium} />
         </div>
       )}
 
@@ -465,10 +488,10 @@ export function DawonLibrary({ initialTab = 'ebook', onTabChange, hideTabs }: Da
               ) : null}
               <Link
                 className="btn btn-soft"
-                to="/login"
+                to={user ? '/subscribe' : '/login'}
                 state={{ from: tab === 'comic' ? '/library' : '/ebooks' }}
               >
-                계속 읽으려면 로그인해 주세요
+                {user ? '전체 이용권 보기' : '가입하고 7일 무료'}
               </Link>
               <button type="button" className="btn btn-soft" onClick={() => setPreview(null)}>
                 닫기
@@ -493,7 +516,7 @@ export function DawonLibrary({ initialTab = 'ebook', onTabChange, hideTabs }: Da
             movie.previewMaxPages
               ? () => {
                   setMovie(null)
-                  navigate('/login', { state: { from: '/library' } })
+                  navigate(user ? '/subscribe' : '/login', { state: { from: '/library' } })
                 }
               : undefined
           }
@@ -515,7 +538,7 @@ export function DawonLibrary({ initialTab = 'ebook', onTabChange, hideTabs }: Da
             open.previewMaxPages
               ? () => {
                   setOpen(null)
-                  navigate('/login', {
+                  navigate(user ? '/subscribe' : '/login', {
                     state: { from: open.kind === 'comic' ? '/library' : '/ebooks' },
                   })
                 }

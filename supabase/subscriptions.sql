@@ -56,7 +56,7 @@ create policy "Users update own subscription"
   using (auth.uid() = user_id)
   with check (auth.uid() = user_id);
 
--- 신규 가입: 30일 무료 체험
+-- 신규 가입: 7일 무료 체험 (아이디당 1회)
 create or replace function public.handle_new_user_subscription()
 returns trigger
 language plpgsql
@@ -71,7 +71,7 @@ begin
     new.id,
     'free',
     'active',
-    now() + interval '30 days',
+    now() + interval '7 days',
     'trial'
   )
   on conflict (user_id) do nothing;

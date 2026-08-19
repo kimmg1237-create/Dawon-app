@@ -45,7 +45,7 @@ export function evaluatePremium(sub: UserSubscription | null): {
 
   if (sub.status === 'active' || sub.status === 'cancelled') {
     if (isFuture(sub.trial_ends_at) && sub.status === 'active') {
-      return { isPremium: true, reason: 'trial', label: '첫 달 무료 체험 중' }
+      return { isPremium: true, reason: 'trial', label: '7일 무료 체험 중' }
     }
     if (isFuture(sub.ad_access_until) && sub.status === 'active') {
       return { isPremium: true, reason: 'ads', label: '광고 시청 이용 중' }

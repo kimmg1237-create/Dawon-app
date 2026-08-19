@@ -363,7 +363,7 @@ export function ComicMoviePlayer({
 
         {previewMaxPages ? (
           <div className="comic-movie-preview">
-            미리보기는 앞 {previewMaxPages}쪽까지입니다.
+            미리보기는 앞 {previewMaxPages}쪽까지입니다. 첫 가입 시 7일 무료(아이디당 1회)로 전체 만화영화를 이용하세요.
             {onRequestFullAccess ? (
               <button type="button" className="comic-movie-link" onClick={onRequestFullAccess}>
                 전체 만화영화 보기

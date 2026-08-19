@@ -1,6 +1,7 @@
 import { type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { useSubscription } from '../context/SubscriptionContext'
+import { PRODUCT_SPEC, formatKrw } from '../data/productSpec'
 
 type Props = {
   children?: ReactNode
@@ -29,7 +30,8 @@ export function PremiumGate({ children, feature = '프리미엄 콘텐츠' }: Pr
         <p>
           현재 상태: <strong>{statusLabel}</strong>
           <br />
-          첫 가입 후 30일 무료 체험, 이후 월 12,900원 결제 또는 광고 시청으로 이용할 수 있습니다.
+          첫 가입 시 <strong>{PRODUCT_SPEC.freeTrialDays}일 무료</strong> 전체 이용(아이디당 1회).
+          이후 월 {formatKrw(PRODUCT_SPEC.monthlyPriceKrw)} 이용권 또는 광고 시청으로 이용할 수 있습니다.
         </p>
         <div className="premium-gate-actions">
           <Link to="/subscribe" className="btn btn-primary">

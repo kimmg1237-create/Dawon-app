@@ -3,13 +3,13 @@ import { useLocation } from 'react-router-dom'
 import { useSubscription } from '../context/SubscriptionContext'
 import {
   DAWON_VOICE_PROFILES,
-  DAWON_VOICE_VERSION,
   type DawonVoiceProfile,
 } from '../data/dawonVoiceProfiles'
 import { loadPdfFromBytes } from '../lib/loadPdf'
 import './AudiobookPage.css'
 
 const MAX_CHARS = 180_000
+const PREVIEW_CHARS = 900
 const PREFS_KEY = 'dawon_voice_studio_v1'
 
 export type AudiobookExtraText = {
@@ -137,7 +137,13 @@ async function extractPdfText(data: ArrayBuffer, onProgress?: (page: number, tot
   return { text: rows.join('\n\n').slice(0, MAX_CHARS), pages, chars }
 }
 
-export function AudiobookPage({ extraTexts = [] }: { extraTexts?: AudiobookExtraText[] }) {
+export function AudiobookPage({
+  extraTexts = [],
+  previewOnly = false,
+}: {
+  extraTexts?: AudiobookExtraText[]
+  previewOnly?: boolean
+}) {
   const { markContentUsed } = useSubscription()
   const location = useLocation()
   const saved = useMemo(() => readPrefs(), [])
@@ -358,6 +364,11 @@ export function AudiobookPage({ extraTexts = [] }: { extraTexts?: AudiobookExtra
       setStatusKind('error')
       return
     }
+    if (previewOnly && !preview) {
+      setStatus('미리보기 모드입니다. 예문 미리듣기를 이용하거나, 가입 후 7일 무료 체험으로 전체 낭독을 이용하세요.')
+      setStatusKind('error')
+      return
+    }
     if (!('speechSynthesis' in window)) return
     void markContentUsed()
     playIdRef.current += 1
@@ -412,10 +423,11 @@ export function AudiobookPage({ extraTexts = [] }: { extraTexts?: AudiobookExtra
 
   async function applyLoadedText(raw: string, name: string, source: string, pdfUrl = '') {
     haltSpeech()
-    const cleaned = raw.replace(/\u0000/g, '').slice(0, MAX_CHARS)
+    const limit = previewOnly ? PREVIEW_CHARS : MAX_CHARS
+    const cleaned = raw.replace(/\u0000/g, '').slice(0, limit)
     setText(cleaned)
     setFileName(name)
-    setSourceLabel(source)
+    setSourceLabel(previewOnly ? `${source} · 미리보기 ${PREVIEW_CHARS}자` : source)
     setConnectedPdfUrl(pdfUrl)
     setProgress({ index: 0, total: 0 })
     setStatus(`${name} 원고를 불러왔습니다.`)
@@ -478,6 +490,11 @@ export function AudiobookPage({ extraTexts = [] }: { extraTexts?: AudiobookExtra
 
   async function onFile(file: File | null) {
     if (!file) return
+    if (previewOnly) {
+      setStatus('미리보기 모드에서는 파일 업로드 대신 예문 미리듣기를 이용해 주세요.')
+      setStatusKind('error')
+      return
+    }
     const lower = file.name.toLowerCase()
     try {
       if (file.type === 'application/pdf' || lower.endsWith('.pdf')) {
@@ -494,33 +511,6 @@ export function AudiobookPage({ extraTexts = [] }: { extraTexts?: AudiobookExtra
       setStatus(`파일을 읽지 못했습니다: ${error instanceof Error ? error.message : '오류'}`)
       setStatusKind('error')
     }
-  }
-
-  function exportProject() {
-    const selected = voices.find((v) => v.voiceURI === voiceUri)
-    const project = {
-      version: DAWON_VOICE_VERSION,
-      createdAt: new Date().toISOString(),
-      bookTitle: fileName || '오디오북 낭독 원고',
-      chapter,
-      profile,
-      systemVoice: selected
-        ? { name: selected.name, lang: selected.lang, voiceURI: selected.voiceURI }
-        : null,
-      settings: { rate, pitch, pauseMs, volume },
-      manuscript: text,
-    }
-    const blob = new Blob([JSON.stringify(project, null, 2)], { type: 'application/json;charset=utf-8' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = `DAWON_${profile.name}_목소리설계.json`
-    document.body.appendChild(a)
-    a.click()
-    a.remove()
-    window.setTimeout(() => URL.revokeObjectURL(url), 1200)
-    setStatus('목소리 설계와 원고를 JSON 파일로 저장했습니다.')
-    setStatusKind('idle')
   }
 
   async function serverRender() {
@@ -828,7 +818,8 @@ export function AudiobookPage({ extraTexts = [] }: { extraTexts?: AudiobookExtra
                   type="button"
                   className="btn voice-primary"
                   onClick={() => playBody(text)}
-                  disabled={speaking && !paused}
+                  disabled={(speaking && !paused) || previewOnly}
+                  title={previewOnly ? '전체 낭독은 7일 무료 체험 또는 이용권이 필요합니다' : undefined}
                 >
                   ▶ 전체 낭독
                 </button>
@@ -847,10 +838,7 @@ export function AudiobookPage({ extraTexts = [] }: { extraTexts?: AudiobookExtra
                 <button type="button" className="btn btn-soft" onClick={() => playBody(profile.sample, true)}>
                   10초 미리듣기
                 </button>
-                <button type="button" className="btn btn-soft" onClick={exportProject}>
-                  설정 JSON
-                </button>
-                <button type="button" className="btn voice-hope" onClick={() => void serverRender()} disabled={mp3Busy}>
+                <button type="button" className="btn voice-hope" onClick={() => void serverRender()} disabled={mp3Busy || previewOnly}>
                   {mp3Busy ? 'MP3 만드는 중…' : 'MP3 만들기'}
                 </button>
               </div>
@@ -884,6 +872,14 @@ export function AudiobookPage({ extraTexts = [] }: { extraTexts?: AudiobookExtra
               <div className="dvs7-progress" aria-hidden="true">
                 <span style={{ width: `${percent}%` }} />
               </div>
+              {mp3Url ? (
+                <div className="dvs7-mp3-result">
+                  <audio src={mp3Url} controls />
+                  <button type="button" className="btn btn-sm btn-soft" onClick={downloadAudio}>
+                    완성 음원 저장
+                  </button>
+                </div>
+              ) : null}
             </section>
 
             <aside className="dvs7-detail" aria-label="선택한 목소리의 전문 연출 기준">
@@ -925,24 +921,6 @@ export function AudiobookPage({ extraTexts = [] }: { extraTexts?: AudiobookExtra
                 </button>
                 <button type="button" className="btn btn-soft" onClick={() => applyProfile(profile)}>
                   기본값 복원
-                </button>
-              </div>
-              <div className="dvs7-server">
-                <b>{cfg.apiBase ? '운영 MP3 서버 연결됨' : '브라우저 미리듣기 모드'}</b>
-                <span>
-                  {cfg.apiBase
-                    ? '선택한 프로필과 원고를 서버로 보내 완성 음원을 생성합니다. 비밀키는 서버 환경변수에서 관리합니다.'
-                    : '현재 기기에 설치된 한국어 음성을 사용합니다. 프로 성우급 고정 음색과 MP3 저장은 운영 TTS 서버 연결 후 활성화됩니다. API 비밀키는 사이트에 넣지 않습니다.'}
-                </span>
-                {mp3Url ? <audio src={mp3Url} controls /> : null}
-                <button
-                  type="button"
-                  className="btn btn-sm btn-soft"
-                  onClick={downloadAudio}
-                  disabled={!mp3Url}
-                  style={{ marginTop: 9 }}
-                >
-                  완성 음원 저장
                 </button>
               </div>
             </aside>

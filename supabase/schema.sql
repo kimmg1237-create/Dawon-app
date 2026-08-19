@@ -239,7 +239,7 @@ begin
     new.id,
     'free',
     'active',
-    now() + interval '30 days',
+    now() + interval '7 days',
     'trial'
   )
   on conflict (user_id) do nothing;

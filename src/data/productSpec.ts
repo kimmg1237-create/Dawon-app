@@ -6,7 +6,7 @@ export const PRODUCT_SPEC = {
   monthlyPriceKrw: siteConfig.product.monthlyPriceKrw,
   b2bPriceKrw: 990000,
   currency: 'KRW' as const,
-  freeTrialDays: 30,
+  freeTrialDays: 7,
   subscriptionDays: 30,
   coolingOffDays: siteConfig.product.coolingOffDays,
   supportEmail: siteConfig.business.supportEmail,

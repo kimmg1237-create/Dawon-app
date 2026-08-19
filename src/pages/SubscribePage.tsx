@@ -48,11 +48,18 @@ const UI_PLANS: UiPlan[] = [
     name: '무료 시작',
     price: '0원',
     renewal: '결제 없음',
-    items: ['오늘 하나를 정하고 바로 시작', '3분 오늘설계', '7일간 핵심 흐름 경험', '브라우저 로컬 기록'],
-    period: '무료 기능 상시',
+    items: [
+      '오늘 하나를 정하고 바로 시작',
+      '3분 오늘설계',
+      '전자책·만화·오디오북 미리보기',
+      `첫 가입 ${PRODUCT_SPEC.freeTrialDays}일 무료 전체 이용 (아이디당 1회)`,
+      '7일간 핵심 흐름 경험',
+      '브라우저 로컬 기록',
+    ],
+    period: `무료 기능 상시 · 첫 가입 ${PRODUCT_SPEC.freeTrialDays}일 체험`,
     nextPay: '없음',
     payProduct: null,
-    cta: '무료로 사용하기',
+    cta: '무료로 시작하기',
   },
   {
     id: 'trial',
@@ -406,17 +413,18 @@ export function SubscribePage() {
             <h3>
               처음에는 무료로,
               <br />
-              변화를 확인하려면 30일을 추천합니다.
+              전체 이용은 7일 무료 체험으로 시작하세요.
             </h3>
             <p>
-              기능을 많이 쓰는 것이 목적이 아닙니다. 오늘 하나를 정하고 3분 기록을 반복해 내 생활의 변화를
-              확인하는 것이 핵심입니다.
+              전자책·만화·오디오북은 미리보기로 먼저 확인할 수 있습니다. 첫 가입 시{' '}
+              <strong>{PRODUCT_SPEC.freeTrialDays}일 무료</strong> 전체 이용이 열리며, 아이디당 1회만
+              제공됩니다.
             </p>
             <div className="readiness-list">
               <div className="readiness-item">
                 <i>1</i>
                 <span>먼저 경험하기</span>
-                <strong>무료 시작</strong>
+                <strong>7일 무료 체험</strong>
               </div>
               <div className="readiness-item">
                 <i>2</i>

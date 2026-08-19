@@ -385,11 +385,11 @@ export function EbookViewer({
         {previewMaxPages ? (
           <div className="ebook-preview-banner" role="status">
             <span>
-              미리보기 {previewMaxPages}쪽까지 볼 수 있습니다. 전체 본문은 로그인 후 이용하세요.
+              미리보기 {previewMaxPages}쪽까지 볼 수 있습니다. 첫 가입 시 7일 무료(아이디당 1회)로 전체 본문을 이용하세요.
             </span>
             {onRequestFullAccess ? (
               <button type="button" className="btn btn-primary btn-small" onClick={onRequestFullAccess}>
-                계속 읽으려면 로그인해 주세요
+                계속 읽으려면 가입 · 7일 무료
               </button>
             ) : null}
           </div>
