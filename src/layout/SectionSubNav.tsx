@@ -1,58 +1,62 @@
+import { useEffect, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { FEATURES } from '../data/features'
 import { scrollToDawonSection } from '../newsite/dawonOs/initDawonOs'
+import { dawonT, getDawonLang, type DawonLang } from '../newsite/dawonOs/i18n'
 import './SectionSubNav.css'
 
 type SubLink = {
   to: string
-  label: string
+  labelKey: string
   match?: (path: string, hash: string) => boolean
 }
 
-function linksFor(path: string): { label: string; items: SubLink[] } | null {
+function linksFor(path: string, lang: DawonLang): { label: string; items: SubLink[] } | null {
+  const t = (key: string) => dawonT(key, lang)
   if (path === '/today') {
     return {
-      label: '1층 오늘설계',
+      label: t('floor1'),
       items: [
-        { to: '/today#one', label: '오늘 하나', match: (_p, h) => !h || h === '#one' },
-        { to: '/today#today', label: '3분 오늘설계', match: (_p, h) => h === '#today' },
-        { to: '/today#precision', label: '정밀설계', match: (_p, h) => h === '#precision' },
+        { to: '/today#one', labelKey: 'navOne', match: (_p, h) => !h || h === '#one' },
+        { to: '/today#lifeMissions', labelKey: 'navMissions', match: (_p, h) => h === '#lifeMissions' },
+        { to: '/today#today', labelKey: 'navToday', match: (_p, h) => h === '#today' },
+        { to: '/today#precision', labelKey: 'navPrecision', match: (_p, h) => h === '#precision' || h === '#ideaLab' },
       ],
     }
   }
   if (path === '/school') {
     return {
-      label: '2층 365학교',
+      label: t('floor2'),
       items: [
-        { to: '/school#challenge', label: '7일 실천', match: (_p, h) => !h || h === '#challenge' },
-        { to: '/school#school', label: '365학교', match: (_p, h) => h === '#school' },
-        { to: '/school#report', label: '성장리포트', match: (_p, h) => h === '#report' },
-        { to: '/school#life', label: '생애맞춤', match: (_p, h) => h === '#life' },
+        { to: '/school#challenge', labelKey: 'navChallenge', match: (_p, h) => !h || h === '#challenge' || h === '#transfer' },
+        { to: '/school#school', labelKey: 'navSchool', match: (_p, h) => h === '#school' || h === '#schoolProgram' },
+        { to: '/school#report', labelKey: 'report', match: (_p, h) => h === '#report' },
+        { to: '/school#life', labelKey: 'navLife', match: (_p, h) => h === '#life' || h === '#audienceBridge' },
       ],
     }
   }
   if (path === '/create' || path === '/movie-studio') {
     return {
-      label: '3층 창작',
+      label: t('floor3'),
       items: [
-        { to: '/create#works', label: '작품 안내', match: (p, h) => p === '/create' && (!h || h === '#works') },
-        { to: '/create#studio', label: '창작스튜디오', match: (p, h) => p === '/create' && h === '#studio' },
-        { to: '/library', label: '작품관 열기' },
+        { to: '/create#works', labelKey: 'navWorks', match: (p, h) => p === '/create' && (!h || h === '#works') },
+        { to: '/create#studio', labelKey: 'navStudio', match: (p, h) => p === '/create' && h === '#studio' },
+        { to: '/library', labelKey: 'openLibrary' },
       ],
     }
   }
   if (path === '/library' || path === '/ebooks' || path === '/audiobooks' || path === '/comics') {
     return {
-      label: '작품관',
+      label: t('library'),
       items: [
         {
           to: '/library',
-          label: '전자책',
+          labelKey: 'ebook',
           match: (p) => p === '/library' || p === '/ebooks',
         },
-        { to: '/audiobooks', label: '오디오북', match: (p) => p === '/audiobooks' },
-        { to: '/comics', label: '만화책', match: (p) => p === '/comics' },
-        { to: '/create#studio', label: '창작스튜디오' },
+        { to: '/audiobooks', labelKey: 'audiobook', match: (p) => p === '/audiobooks' },
+        { to: '/comics', labelKey: 'comic', match: (p) => p === '/comics' },
+        { to: '/create#studio', labelKey: 'navStudio' },
       ],
     }
   }
@@ -60,15 +64,15 @@ function linksFor(path: string): { label: string; items: SubLink[] } | null {
     const storeItems: SubLink[] = [
       {
         to: '/subscribe#plans',
-        label: '이용권',
+        labelKey: 'plans',
         match: (p: string, h: string) => (p === '/subscribe' || p === '/store') && h !== '#status',
       },
-      { to: '/subscribe#status', label: '내 이용권', match: (_p: string, h: string) => h === '#status' },
-      { to: '/terms', label: '이용약관', match: (p: string) => p === '/terms' },
-      { to: '/refund', label: '환불정책', match: (p: string) => p === '/refund' },
+      { to: '/subscribe#status', labelKey: 'myPlan', match: (_p: string, h: string) => h === '#status' },
+      { to: '/terms', labelKey: 'terms', match: (p: string) => p === '/terms' },
+      { to: '/refund', labelKey: 'refund', match: (p: string) => p === '/refund' },
     ]
     return {
-      label: '스토어',
+      label: t('store'),
       items: storeItems.filter(
         (item) => FEATURES.paymentsEnabled || item.to === '/terms' || item.to === '/refund',
       ),
@@ -80,11 +84,19 @@ function linksFor(path: string): { label: string; items: SubLink[] } | null {
 export function SectionSubNav() {
   const { pathname, hash } = useLocation()
   const navigate = useNavigate()
-  const group = linksFor(pathname)
+  const [lang, setLang] = useState<DawonLang>(() => getDawonLang())
+
+  useEffect(() => {
+    const onLang = () => setLang(getDawonLang())
+    window.addEventListener('dawon-lang-changed', onLang)
+    return () => window.removeEventListener('dawon-lang-changed', onLang)
+  }, [])
+
+  const group = linksFor(pathname, lang)
   if (!group) return null
 
   return (
-    <div className="section-subnav" aria-label={`${group.label} 바로가기`}>
+    <div className="section-subnav" aria-label={`${group.label}`}>
       <div className="container section-subnav-inner">
         <span className="section-subnav-kicker">{group.label}</span>
         <nav className="section-subnav-links">
@@ -107,7 +119,7 @@ export function SectionSubNav() {
                   scrollToDawonSection(itemHash, 'auto')
                 }}
               >
-                {item.label}
+                {dawonT(item.labelKey, lang)}
               </Link>
             )
           })}

@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext'
 import { useSubscription } from '../context/SubscriptionContext'
 import { formatDateKo, formatKrw, PRODUCT_SPEC } from '../data/productSpec'
 import type { PaymentOrderRow } from '../data/refundPolicy'
+import { dawonT, getDawonLang, type DawonLang } from '../newsite/dawonOs/i18n'
 import {
   deletePaymentOrder,
   fetchLatestPaidOrder,
@@ -16,12 +17,20 @@ export function SubscriptionManagePanel() {
   const { user, isAdmin } = useAuth()
   const { subscription, statusLabel, refresh, scheduleCancel, undoCancel, premiumReason } =
     useSubscription()
+  const [lang, setLang] = useState<DawonLang>(() => getDawonLang())
+  const t = (key: string) => dawonT(key, lang)
   const [orders, setOrders] = useState<PaymentOrderRow[]>([])
   const [latestPaid, setLatestPaid] = useState<PaymentOrderRow | null>(null)
   const [busy, setBusy] = useState<'cancel' | 'resume' | 'refund' | null>(null)
   const [deletingOrderId, setDeletingOrderId] = useState<string | null>(null)
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
+
+  useEffect(() => {
+    const onLang = () => setLang(getDawonLang())
+    window.addEventListener('dawon-lang-changed', onLang)
+    return () => window.removeEventListener('dawon-lang-changed', onLang)
+  }, [])
 
   async function reloadOrders() {
     if (!user) return
@@ -163,7 +172,7 @@ export function SubscriptionManagePanel() {
       <div className="subscribe-manage-grid">
         <div className="subscribe-manage-card">
           <h4>현재 상태</h4>
-          <p className="subscribe-manage-strong">{statusLabel}</p>
+          <p className="subscribe-manage-strong">{t(statusLabel)}</p>
           <ul className="subscribe-manage-meta">
             <li>만료·종료 예정: {formatDateKo(subscription?.expires_at)}</li>
             <li>체험 종료: {formatDateKo(subscription?.trial_ends_at)}</li>

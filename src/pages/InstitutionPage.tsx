@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 import { Seo } from '../components/Seo'
 import '../newsite/dawonOs/subpages.css'
 import institutionHtml from '../newsite/dawonOs/institution.html?raw'
+import { applyDawonI18n, dawonT, getDawonLang } from '../newsite/dawonOs/i18n'
 
 export function InstitutionPage() {
   const host = useRef<HTMLDivElement>(null)
@@ -10,6 +11,7 @@ export function InstitutionPage() {
     const el = host.current
     if (!el) return
     el.innerHTML = institutionHtml
+    applyDawonI18n(el)
 
     const openModal = (id: string) => {
       const m = el.querySelector<HTMLElement>('#' + id)
@@ -25,7 +27,9 @@ export function InstitutionPage() {
       })
     })
     el.querySelectorAll<HTMLElement>('.modal').forEach((m) => {
-      m.addEventListener('click', (e) => { if (e.target === m) m.classList.remove('open') })
+      m.addEventListener('click', (e) => {
+        if (e.target === m) m.classList.remove('open')
+      })
     })
 
     el.querySelector('#submitInquiry')?.addEventListener('click', () => {
@@ -35,24 +39,40 @@ export function InstitutionPage() {
       const contact = (el.querySelector<HTMLInputElement>('#inqContact')?.value || '').trim()
       const body = (el.querySelector<HTMLTextAreaElement>('#inqBody')?.value || '').trim()
       const result = el.querySelector<HTMLElement>('#inquiryResult')
+      const lang = getDawonLang()
       if (!org) {
-        if (result) { result.style.display = 'block'; result.textContent = '기관명을 입력해 주세요.'; result.style.background = '#fef3cd'; result.style.color = '#856404' }
+        if (result) {
+          result.style.display = 'block'
+          result.textContent = dawonT('instNeedOrg', lang)
+          result.style.background = '#fef3cd'
+          result.style.color = '#856404'
+        }
         return
       }
-      const data = { org, target, period, contact, body }
-      localStorage.setItem('dawon_inquiry', JSON.stringify(data))
-      if (result) { result.style.display = 'block'; result.textContent = '문의 내용이 임시 저장되었습니다. 실제 사이트에서는 담당자에게 자동 전송됩니다.' }
+      localStorage.setItem('dawon_inquiry', JSON.stringify({ org, target, period, contact, body }))
+      if (result) {
+        result.style.display = 'block'
+        result.textContent = dawonT('instSaved', lang)
+      }
     })
 
+    const onLang = () => applyDawonI18n(el)
+    window.addEventListener('dawon-lang-changed', onLang)
+
     window.scrollTo({ top: 0, behavior: 'auto' })
-    return () => { el.innerHTML = '' }
+    return () => {
+      window.removeEventListener('dawon-lang-changed', onLang)
+      el.innerHTML = ''
+    }
   }, [])
+
+  const lang = getDawonLang()
 
   return (
     <>
       <Seo
-        title="학교·기관 도입 | DAWON 다원 하루설계"
-        description="학교·기관 담당자를 위한 도입 절차, 운영 프로세스, 성과지표, 개인정보 보호 안내"
+        title={`${dawonT('institution', lang)} | DAWON`}
+        description={dawonT('instHeroDesc', lang)}
         path="/institution"
       />
       <div ref={host} />

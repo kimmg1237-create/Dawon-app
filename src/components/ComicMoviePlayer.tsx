@@ -3,6 +3,7 @@ import { type PDFDocumentProxy, type RenderTask } from 'pdfjs-dist'
 import { loadPdfDocument } from '../lib/loadPdf'
 import { detectComicPanels, type NormBox } from '../lib/detectComicPanels'
 import { createComicScore, type ScoreHandle } from '../lib/comicScore'
+import { dawonT, getDawonLang, type DawonLang } from '../newsite/dawonOs/i18n'
 import './ComicMoviePlayer.css'
 
 type CutMode = 1 | 4 | 7
@@ -58,6 +59,11 @@ export function ComicMoviePlayer({
   const primedRef = useRef(false)
   const scoreRef = useRef<ScoreHandle | null>(null)
 
+  const [lang, setLang] = useState<DawonLang>(() => getDawonLang())
+  const t = (key: string) => dawonT(key, lang)
+  const langRef = useRef(lang)
+  langRef.current = lang
+
   const [page, setPage] = useState(1)
   const [cut, setCut] = useState(1)
   const [pageCount, setPageCount] = useState(0)
@@ -70,7 +76,7 @@ export function ComicMoviePlayer({
   const [error, setError] = useState('')
   const [ken, setKen] = useState<(typeof KEN)[number] | ''>('ken-a')
   const [front, setFront] = useState<0 | 1>(0)
-  const [status, setStatus] = useState('준비 중')
+  const [status, setStatus] = useState(() => dawonT('comicStatusReady', getDawonLang()))
   const [showTitle, setShowTitle] = useState(true)
 
   playingRef.current = playing
@@ -80,6 +86,12 @@ export function ComicMoviePlayer({
   delayRef.current = delay
   ratioRef.current = ratio
   frontRef.current = front
+
+  useEffect(() => {
+    const onLang = () => setLang(getDawonLang())
+    window.addEventListener('dawon-lang-changed', onLang)
+    return () => window.removeEventListener('dawon-lang-changed', onLang)
+  }, [])
 
   const cappedCount =
     previewMaxPages && previewMaxPages > 0 ? Math.min(pageCount, previewMaxPages) : pageCount
@@ -121,7 +133,12 @@ export function ComicMoviePlayer({
     ctx.fillRect(0, 0, size.w, size.h * bar)
     ctx.fillRect(0, size.h * (1 - bar), size.w, size.h * bar)
     setKen(cutCount === 1 ? '' : KEN[(pageNo + cutNo) % KEN.length])
-    setStatus(`${cutCount}컷 · ${pageNo}쪽 ${cutNo}컷`)
+    setStatus(
+      dawonT('comicStatusCut', langRef.current)
+        .replace('{cuts}', String(cutCount))
+        .replace('{page}', String(pageNo))
+        .replace('{cut}', String(cutNo)),
+    )
   }, [])
 
   const revealCut = useCallback(
@@ -167,7 +184,7 @@ export function ComicMoviePlayer({
       }
       playingRef.current = false
       setPlaying(false)
-      setStatus('재생 완료')
+      setStatus(dawonT('comicStatusDone', langRef.current))
     }, wait)
   }, [clearTimer, revealCut])
 
@@ -211,8 +228,8 @@ export function ComicMoviePlayer({
         if ((err as { name?: string })?.name === 'RenderingCancelledException') return
         if (token !== tokenRef.current) return
         setLoading(false)
-        setError('만화 장면을 만들지 못했습니다.')
-        setStatus('장면 변환 실패')
+        setError('comicErrScene')
+        setStatus(dawonT('comicStatusSceneFail', langRef.current))
       }
     },
     [clearTimer, revealCut, scheduleAdvance],
@@ -248,7 +265,7 @@ export function ComicMoviePlayer({
         await showScene(1, 1, true)
       } catch {
         if (!cancelled) {
-          setError('만화 PDF를 불러오지 못했습니다.')
+          setError('comicErrLoad')
           setLoading(false)
         }
       }
@@ -295,7 +312,7 @@ export function ComicMoviePlayer({
     if (next) scheduleAdvance()
     else {
       clearTimer()
-      setStatus('일시정지')
+      setStatus(dawonT('comicStatusPaused', langRef.current))
     }
   }
 
@@ -320,7 +337,7 @@ export function ComicMoviePlayer({
       className="comic-movie-modal"
       role="dialog"
       aria-modal="true"
-      aria-label={`${title} 만화영화`}
+      aria-label={t('comicAriaLabel').replace('{title}', title)}
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose()
       }}
@@ -329,9 +346,9 @@ export function ComicMoviePlayer({
         <div className="comic-movie-head">
           <div className="comic-movie-title">
             <b>{title}</b>
-            <span>{subtitle || '컷 인식 · 페이드 · BGM'}</span>
+            <span>{subtitle || t('comicDefaultSubtitle')}</span>
           </div>
-          <button type="button" className="comic-movie-close" onClick={onClose} aria-label="닫기">
+          <button type="button" className="comic-movie-close" onClick={onClose} aria-label={t('comicClose')}>
             ×
           </button>
         </div>
@@ -353,20 +370,25 @@ export function ComicMoviePlayer({
               </div>
             ) : null}
           </div>
-          <div className="comic-movie-badge">{cuts}컷 LIVE</div>
-          <div className="comic-movie-page">
-            {page}쪽 · {cut}/{cuts}컷
+          <div className="comic-movie-badge">
+            {t('comicBadgeLive').replace('{cuts}', String(cuts))}
           </div>
-          {loading ? <div className="comic-movie-loading">컷을 찾고 장면을 만드는 중…</div> : null}
-          {error ? <div className="comic-movie-loading">{error}</div> : null}
+          <div className="comic-movie-page">
+            {t('comicPageCut')
+              .replace('{page}', String(page))
+              .replace('{cut}', String(cut))
+              .replace('{cuts}', String(cuts))}
+          </div>
+          {loading ? <div className="comic-movie-loading">{t('comicLoading')}</div> : null}
+          {error ? <div className="comic-movie-loading">{t(error)}</div> : null}
         </div>
 
         {previewMaxPages ? (
           <div className="comic-movie-preview">
-            미리보기는 앞 {previewMaxPages}쪽까지입니다. 첫 가입 시 7일 무료(아이디당 1회)로 전체 만화영화를 이용하세요.
+            {t('comicPreviewBanner').replace('{pages}', String(previewMaxPages))}
             {onRequestFullAccess ? (
               <button type="button" className="comic-movie-link" onClick={onRequestFullAccess}>
-                전체 만화영화 보기
+                {t('comicPreviewCta')}
               </button>
             ) : null}
           </div>
@@ -380,10 +402,10 @@ export function ComicMoviePlayer({
               else if (page > 1) void showScene(page - 1, cuts, playing)
             }}
           >
-            ◀ 이전
+            {t('comicPrev')}
           </button>
           <button type="button" className="primary" onClick={togglePlay}>
-            {playing ? '❚❚ 일시정지' : previewEnded ? '▶ 처음부터' : '▶ 재생'}
+            {playing ? t('comicPause') : previewEnded ? t('comicReplay') : t('comicPlay')}
           </button>
           <button
             type="button"
@@ -392,29 +414,29 @@ export function ComicMoviePlayer({
               else if (page < maxPageRef.current) void showScene(page + 1, 1, playing)
             }}
           >
-            다음 ▶
+            {t('comicNext')}
           </button>
           <select
             value={String(cuts)}
-            aria-label="컷 수"
+            aria-label={t('comicCutsAria')}
             onChange={(e) => { const v = Number(e.target.value); changeCuts(v === 7 ? 7 : v === 4 ? 4 : 1) }}
           >
-            <option value="1">전체 보기</option>
-            <option value="4">4컷 인식</option>
-            <option value="7">7컷 인식</option>
+            <option value="1">{t('comicCutsFull')}</option>
+            <option value="4">{t('comicCuts4')}</option>
+            <option value="7">{t('comicCuts7')}</option>
           </select>
-          <select value={ratio} aria-label="화면 비율" onChange={(e) => changeRatio(e.target.value as Ratio)}>
-            <option value="16:9">유튜브 16:9</option>
-            <option value="9:16">쇼츠 9:16</option>
+          <select value={ratio} aria-label={t('comicRatioAria')} onChange={(e) => changeRatio(e.target.value as Ratio)}>
+            <option value="16:9">{t('comicRatioYt')}</option>
+            <option value="9:16">{t('comicRatioShorts')}</option>
           </select>
           <select
             value={String(delay)}
-            aria-label="장면 속도"
+            aria-label={t('comicSpeedAria')}
             onChange={(e) => setDelay(Number(e.target.value))}
           >
-            <option value="4500">빠르게</option>
-            <option value="6500">기본</option>
-            <option value="9000">천천히</option>
+            <option value="4500">{t('comicSpeedFast')}</option>
+            <option value="6500">{t('comicSpeedNormal')}</option>
+            <option value="9000">{t('comicSpeedSlow')}</option>
           </select>
           <button
             type="button"
@@ -425,7 +447,7 @@ export function ComicMoviePlayer({
               scoreRef.current?.setMuted(next)
             }}
           >
-            {muted ? 'BGM 켜기' : 'BGM 끄기'}
+            {muted ? t('comicBgmOn') : t('comicBgmOff')}
           </button>
           <span className="comic-movie-status">{status}</span>
         </div>

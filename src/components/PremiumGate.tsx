@@ -1,7 +1,8 @@
-import { type ReactNode } from 'react'
+import { type ReactNode, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useSubscription } from '../context/SubscriptionContext'
 import { PRODUCT_SPEC, formatKrw } from '../data/productSpec'
+import { dawonT, getDawonLang, type DawonLang } from '../newsite/dawonOs/i18n'
 
 type Props = {
   children?: ReactNode
@@ -11,6 +12,14 @@ type Props = {
 /** 프리미엄 콘텐츠(전자책·오디오북 등) 접근 게이트 */
 export function PremiumGate({ children, feature = '프리미엄 콘텐츠' }: Props) {
   const { loading, isPremium, statusLabel, paymentsEnabled } = useSubscription()
+  const [lang, setLang] = useState<DawonLang>(() => getDawonLang())
+  const t = (key: string) => dawonT(key, lang)
+
+  useEffect(() => {
+    const onLang = () => setLang(getDawonLang())
+    window.addEventListener('dawon-lang-changed', onLang)
+    return () => window.removeEventListener('dawon-lang-changed', onLang)
+  }, [])
 
   if (!paymentsEnabled) {
     return children ? <>{children}</> : null
@@ -28,7 +37,7 @@ export function PremiumGate({ children, feature = '프리미엄 콘텐츠' }: Pr
         <span className="premium-gate-badge">PRO</span>
         <h3>{feature}은 구독 또는 체험·광고 이용이 필요합니다</h3>
         <p>
-          현재 상태: <strong>{statusLabel}</strong>
+          현재 상태: <strong>{t(statusLabel)}</strong>
           <br />
           첫 가입 시 <strong>{PRODUCT_SPEC.freeTrialDays}일 무료</strong> 전체 이용(아이디당 1회).
           이후 월 {formatKrw(PRODUCT_SPEC.monthlyPriceKrw)} 이용권 또는 광고 시청으로 이용할 수 있습니다.

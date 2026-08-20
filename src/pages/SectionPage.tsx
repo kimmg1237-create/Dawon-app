@@ -66,12 +66,11 @@ export function SectionPage({
       setLibraryHost(document.getElementById('dawonLibraryRoot'))
     } else {
       setLibraryHost(null)
-    }
-
-    try {
-      initStrategySite()
-    } catch (error) {
-      console.error('섹션 초기화 오류', error)
+      try {
+        initStrategySite()
+      } catch (error) {
+        console.error('섹션 초기화 오류', error)
+      }
     }
 
     const journeyQs = isJourneyActive() ? '?journey=1' : ''

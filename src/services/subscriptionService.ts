@@ -12,11 +12,11 @@ export function evaluatePremium(sub: UserSubscription | null): {
   label: string
 } {
   if (!sub) {
-    return { isPremium: false, reason: 'none', label: '무료 이용' }
+    return { isPremium: false, reason: 'none', label: 'subLabelFree' }
   }
 
   if (sub.status === 'cancelled' && !isFuture(sub.expires_at)) {
-    return { isPremium: false, reason: 'none', label: '해지·만료됨' }
+    return { isPremium: false, reason: 'none', label: 'subLabelExpired' }
   }
 
   // 기간 종료형 해지: 만료일까지 이용 가능
@@ -26,7 +26,7 @@ export function evaluatePremium(sub: UserSubscription | null): {
         return {
           isPremium: true,
           reason: 'paid',
-          label: sub.cancel_at_period_end ? '기관 이용 중(기간 종료 해지)' : '기관·B2B 이용 중',
+          label: sub.cancel_at_period_end ? 'subLabelOrgCancelEnd' : 'subLabelOrg',
         }
       }
       if (isFuture(sub.expires_at)) {
@@ -34,10 +34,10 @@ export function evaluatePremium(sub: UserSubscription | null): {
           isPremium: true,
           reason: 'paid',
           label: sub.cancel_at_period_end
-            ? '월 구독 이용 중(기간 종료 후 해지)'
+            ? 'subLabelMonthlyCancelEnd'
             : sub.plan === 'b2b'
-              ? '기관·B2B 이용 중'
-              : '월 구독 이용 중',
+              ? 'subLabelOrg'
+              : 'subLabelMonthly',
         }
       }
     }
@@ -45,18 +45,18 @@ export function evaluatePremium(sub: UserSubscription | null): {
 
   if (sub.status === 'active' || sub.status === 'cancelled') {
     if (isFuture(sub.trial_ends_at) && sub.status === 'active') {
-      return { isPremium: true, reason: 'trial', label: '7일 무료 체험 중' }
+      return { isPremium: true, reason: 'trial', label: 'subLabelTrial' }
     }
     if (isFuture(sub.ad_access_until) && sub.status === 'active') {
-      return { isPremium: true, reason: 'ads', label: '광고 시청 이용 중' }
+      return { isPremium: true, reason: 'ads', label: 'subLabelAds' }
     }
   }
 
   if (sub.status !== 'active') {
-    return { isPremium: false, reason: 'none', label: '해지·만료됨' }
+    return { isPremium: false, reason: 'none', label: 'subLabelExpired' }
   }
 
-  return { isPremium: false, reason: 'none', label: '유료 전환 필요' }
+  return { isPremium: false, reason: 'none', label: 'subLabelNeedPaid' }
 }
 
 export async function fetchSubscription(userId: string): Promise<UserSubscription | null> {

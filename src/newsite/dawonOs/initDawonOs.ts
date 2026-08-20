@@ -4,6 +4,7 @@ import bodyHtml from './body.html?raw'
 import scriptsRaw from './scripts.raw.js?raw'
 import { siteConfig } from '../../data/siteConfig'
 import { mountEmoticonPicker } from './emoticonPicker'
+import { installDawonI18n, dawonT, getDawonLang } from './i18n'
 import { DawonVideoStudio } from '../../components/DawonVideoStudio'
 import './theme.css'
 import './bridge.css'
@@ -153,14 +154,25 @@ export function scrollToDawonSection(
 }
 
 export const OS_SECTION_PATH: Record<string, string> = {
+  top: '/',
+  layers: '/',
+  publisher: '/',
+  guide: '/',
   one: '/today',
   today: '/today',
   precision: '/today',
+  lifeMissions: '/today',
+  onePrinciple: '/today',
+  ideaLab: '/today',
   challenge: '/school',
   school: '/school',
+  schoolProgram: '/school',
   report: '/school',
   life: '/school',
+  audienceBridge: '/school',
+  transfer: '/school',
   works: '/create',
+  libraryBridge: '/create',
   studio: '/create',
   subscription: '/subscribe',
 }
@@ -199,8 +211,11 @@ function ensureNavigateHelper(navigate?: DawonNavigate) {
   }
 }
 
-function patchInternalLinks(root: HTMLElement, navigate: DawonNavigate) {
-  root.addEventListener('click', (e) => {
+function patchInternalLinks(root: HTMLElement, navigate: DawonNavigate, signal?: AbortSignal) {
+  const opts = signal ? { signal } : undefined
+  root.addEventListener(
+    'click',
+    (e) => {
     const a = (e.target as HTMLElement | null)?.closest?.('a[href]') as HTMLAnchorElement | null
     if (!a) return
     const href = a.getAttribute('href') || ''
@@ -243,7 +258,9 @@ function patchInternalLinks(root: HTMLElement, navigate: DawonNavigate) {
         window.dawonNavigateSection?.(id)
       }
     }
-  })
+  },
+    opts,
+  )
 }
 
 export type DawonOsAccountState = {
@@ -267,14 +284,14 @@ export function syncDawonOsAccount(root: HTMLElement | null, state: DawonOsAccou
   btn.hidden = false
 
   if (state.email) {
-    const label = state.email.split('@')[0] || '회원'
-    btn.textContent = '로그아웃'
+    const label = state.email.split('@')[0] || dawonT('guestName', getDawonLang())
+    btn.textContent = dawonT('logout', getDawonLang())
     if (name) name.textContent = label
     chip?.classList.add('show')
     dot?.classList.add('online')
   } else {
-    btn.textContent = '로그인'
-    if (name) name.textContent = '게스트'
+    btn.textContent = dawonT('login', getDawonLang())
+    if (name) name.textContent = dawonT('guestName', getDawonLang())
     chip?.classList.remove('show')
     dot?.classList.remove('online')
   }
@@ -285,8 +302,10 @@ function bindAccountControl(
   navigate: DawonNavigate,
   auth?: { isLoggedIn: () => boolean; onSignOut: () => void },
   mode: 'button' | 'chip' = 'button',
+  signal?: AbortSignal,
 ) {
   if (!el) return
+  const opts = signal ? { capture: true, signal } : { capture: true }
   el.addEventListener(
     'click',
     (e) => {
@@ -299,7 +318,7 @@ function bindAccountControl(
       }
       navigate('/login')
     },
-    true,
+    opts,
   )
 }
 
@@ -307,21 +326,27 @@ function bridgeChrome(
   root: HTMLElement,
   navigate: DawonNavigate,
   auth?: { isLoggedIn: () => boolean; onSignOut: () => void },
+  signal?: AbortSignal,
 ) {
-  bindAccountControl(root.querySelector('#accountBtn'), navigate, auth, 'button')
-  bindAccountControl(root.querySelector('#accountChip'), navigate, auth, 'chip')
+  bindAccountControl(root.querySelector('#accountBtn'), navigate, auth, 'button', signal)
+  bindAccountControl(root.querySelector('#accountChip'), navigate, auth, 'chip', signal)
 
   root.querySelectorAll('a[href="#subscription"]').forEach((el) => {
-    el.addEventListener('click', (e) => {
-      const target = root.querySelector('#subscription')
-      if (target) {
-        e.preventDefault()
-        window.dawonNavigateSection?.('subscription')
-      } else {
-        e.preventDefault()
-        navigate('/subscribe')
-      }
-    })
+    const linkOpts = signal ? { signal } : undefined
+    el.addEventListener(
+      'click',
+      (e) => {
+        const target = root.querySelector('#subscription')
+        if (target) {
+          e.preventDefault()
+          window.dawonNavigateSection?.('subscription')
+        } else {
+          e.preventDefault()
+          navigate('/subscribe')
+        }
+      },
+      linkOpts,
+    )
   })
 }
 
@@ -347,12 +372,18 @@ export function syncDawonOsAccess(state: DawonOsAccessState) {
   window.dawonSetAccessState?.({
     authenticated: state.authenticated,
     active: state.active,
-    planName: state.planName || (state.active ? '유료' : '무료'),
+    // Store locale-neutral keys; renderSubscription localizes for display.
+    planName: state.planName || (state.active ? 'Paid' : 'Free'),
     endsAt: state.endsAt ?? null,
   })
 }
 
 function runOsScripts() {
+  if (window.Dawon?.bindPage) {
+    window.Dawon.bindPage()
+    window.Dawon.bindFeatures?.()
+    return
+  }
   try {
     // eslint-disable-next-line no-new-func
     new Function(scriptsRaw)()
@@ -428,8 +459,9 @@ export function mountDawonOs(
   host.innerHTML = htmlForFloor(floor)
   stripInjectedNoscript(host)
   syncBusinessDisclosure(host)
-  patchInternalLinks(host, navigate)
-  bridgeChrome(host, navigate, auth)
+  const mountAbort = new AbortController()
+  patchInternalLinks(host, navigate, mountAbort.signal)
+  bridgeChrome(host, navigate, auth, mountAbort.signal)
 
   // Integration mode: unlock first-run before scripts so they do not auto-scroll to #one.
   // (scripts.raw.js setStep(1) scrolls to 오늘설계 when first-run-focus is active.)
@@ -440,7 +472,11 @@ export function mountDawonOs(
   }
 
   runOsScripts()
+  installDawonI18n(host, mountAbort.signal)
   const unmountEmo = mountEmoticonPicker(host)
+  queueMicrotask(() => {
+    window.Dawon?.bindFeatures?.()
+  })
   const search = new URLSearchParams(window.location.search)
   const studioTab = search.get('tab')
   const bookId = search.get('book')
@@ -468,6 +504,7 @@ export function mountDawonOs(
   return () => {
     const cleanupGen = gen
     cancelDawonSectionScroll()
+    mountAbort.abort()
     unmountEmo()
     dvsRoot?.unmount()
     closeAllOsOverlays()

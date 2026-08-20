@@ -377,3 +377,39 @@ body.dawon-os-active {
     position: static;
   }
 }
+
+/* Language select: always white bg + black text on AppNav */
+.app-shell.dawon-os-shell .lang-wrap {
+  display: inline-flex;
+  align-items: center;
+}
+
+.app-shell.dawon-os-shell .dawon-lang,
+.app-shell.dawon-os-shell select.dawon-lang {
+  border: 1px solid #c9c9c9 !important;
+  background: #ffffff !important;
+  color: #111111 !important;
+  border-radius: 11px;
+  padding: 8px 10px;
+  font-size: 12px;
+  font-weight: 700;
+  min-height: 38px;
+  max-width: 118px;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04);
+  -webkit-text-fill-color: #111111;
+  color-scheme: light;
+}
+
+.app-shell.dawon-os-shell .dawon-lang option,
+.app-shell.dawon-os-shell select.dawon-lang option {
+  background: #ffffff !important;
+  color: #111111 !important;
+}
+
+body.dark .app-shell.dawon-os-shell .dawon-lang,
+.app-shell.dawon-os-shell .dawon-lang {
+  background: #ffffff !important;
+  color: #111111 !important;
+  border-color: #c9c9c9 !important;
+  -webkit-text-fill-color: #111111;
+}

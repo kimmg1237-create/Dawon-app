@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 import { Seo } from '../components/Seo'
 import '../newsite/dawonOs/subpages.css'
 import programsHtml from '../newsite/dawonOs/programs.html?raw'
+import { applyDawonI18n, dawonT, getDawonLang } from '../newsite/dawonOs/i18n'
 
 export function ProgramsPage() {
   const host = useRef<HTMLDivElement>(null)
@@ -10,6 +11,10 @@ export function ProgramsPage() {
     const el = host.current
     if (!el) return
     el.innerHTML = programsHtml
+    applyDawonI18n(el)
+
+    const onLang = () => applyDawonI18n(el)
+    window.addEventListener('dawon-lang-changed', onLang)
 
     el.querySelectorAll<HTMLElement>('.audience .card[data-aud-name]').forEach((card) => {
       card.addEventListener('click', () => {
@@ -18,7 +23,9 @@ export function ProgramsPage() {
         const eN = modal.querySelector('#audienceName')
         const eD = modal.querySelector('#audienceDetail')
         const eC = modal.querySelector('#audienceCode')
-        if (eN) eN.textContent = (card.dataset.audName || '') + ' 프로그램'
+        const lang = getDawonLang()
+        const suffix = lang === 'en' ? ' program' : lang === 'ja' ? ' プログラム' : lang === 'zh' ? ' 项目' : ' 프로그램'
+        if (eN) eN.textContent = (card.dataset.audName || '') + suffix
         if (eD) eD.textContent = card.dataset.audDetail || ''
         if (eC) eC.textContent = card.dataset.audCode || ''
         modal.classList.add('open')
@@ -36,14 +43,18 @@ export function ProgramsPage() {
     })
 
     window.scrollTo({ top: 0, behavior: 'auto' })
-    return () => { el.innerHTML = '' }
+    return () => {
+      window.removeEventListener('dawon-lang-changed', onLang)
+      el.innerHTML = ''
+    }
   }, [])
+
 
   return (
     <>
       <Seo
-        title="대상별 프로그램 | DAWON 다원 하루설계"
-        description="초등학생부터 시니어까지 대상에 맞는 생활설계 프로그램을 확인하세요."
+        title={`${dawonT('programs', getDawonLang())} | DAWON`}
+        description={dawonT('programsHeroDesc', getDawonLang())}
         path="/programs"
       />
       <div ref={host} />

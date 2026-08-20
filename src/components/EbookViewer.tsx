@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type FormEvent, type MouseEvent } from 'react'
 import { type PDFDocumentProxy, type RenderTask } from 'pdfjs-dist'
 import { loadPdfDocument } from '../lib/loadPdf'
+import { dawonT, getDawonLang, type DawonLang } from '../newsite/dawonOs/i18n'
 import './EbookViewer.css'
 
 const ZOOM_MIN = 0.8
@@ -48,6 +49,9 @@ export function EbookViewer({
   const pageCountRef = useRef(0)
   const viewModeRef = useRef<ViewMode>('single')
 
+  const [lang, setLang] = useState<DawonLang>(() => getDawonLang())
+  const t = (key: string) => dawonT(key, lang)
+
   const [page, setPage] = useState(1)
   const [pageCount, setPageCount] = useState(0)
   const [zoom, setZoom] = useState(1)
@@ -66,6 +70,12 @@ export function EbookViewer({
   const rightPage = dual && page < pageCount ? page + 1 : null
   const canPrev = page > 1
   const canNext = dual ? page + 1 < pageCount : page < pageCount
+
+  useEffect(() => {
+    const onLang = () => setLang(getDawonLang())
+    window.addEventListener('dawon-lang-changed', onLang)
+    return () => window.removeEventListener('dawon-lang-changed', onLang)
+  }, [])
 
   useEffect(() => {
     const onResize = () => setLayoutTick((n) => n + 1)
@@ -133,8 +143,8 @@ export function EbookViewer({
           const message = err instanceof Error ? err.message : ''
           setError(
             message === 'NOT_PDF' || message.startsWith('PDF_HTTP_')
-              ? '전자책 파일을 찾지 못했습니다. 잠시 후 다시 시도해 주세요.'
-              : '전자책을 불러오지 못했습니다.',
+              ? 'ebookErrNotFound'
+              : 'ebookErrLoad',
           )
         }
       } finally {
@@ -240,7 +250,7 @@ export function EbookViewer({
       } catch (err) {
         if (err && (err as { name?: string }).name === 'RenderingCancelledException') return
         console.error('EbookViewer render 실패:', err)
-        if (!cancelled) setError('페이지를 그리지 못했습니다.')
+        if (!cancelled) setError('ebookErrRender')
       } finally {
         renderTasksRef.current = []
       }
@@ -329,7 +339,7 @@ export function EbookViewer({
       className="ebook-modal"
       role="dialog"
       aria-modal="true"
-      aria-label={`${title} 전자책`}
+      aria-label={t('ebookAriaLabel').replace('{title}', title)}
       onClick={onClose}
     >
       <div
@@ -339,27 +349,27 @@ export function EbookViewer({
         <div className="ebook-modal-bar">
           <div>
             <strong>{title}</strong>
-            <span>{subtitle || '전자책'}</span>
+            <span>{subtitle || t('ebookDefaultSubtitle')}</span>
           </div>
           <div className="ebook-toolbar">
-            <div className="ebook-view-toggle" role="group" aria-label="보기 방식">
+            <div className="ebook-view-toggle" role="group" aria-label={t('ebookViewMode')}>
               <button
                 type="button"
                 className={`ebook-view-btn${viewMode === 'single' ? ' active' : ''}`}
                 onClick={() => setViewMode('single')}
               >
-                1쪽
+                {t('ebookPage1')}
               </button>
               <button
                 type="button"
                 className={`ebook-view-btn${viewMode === 'dual' ? ' active' : ''}`}
                 onClick={() => setViewMode('dual')}
               >
-                2쪽
+                {t('ebookPage2')}
               </button>
             </div>
-            <div className="ebook-zoom" aria-label="크기 조절">
-              <button type="button" className="ebook-tool-btn" onClick={() => bumpZoom(-ZOOM_STEP)} aria-label="축소">
+            <div className="ebook-zoom" aria-label={t('ebookZoom')}>
+              <button type="button" className="ebook-tool-btn" onClick={() => bumpZoom(-ZOOM_STEP)} aria-label={t('ebookZoomOut')}>
                 −
               </button>
               <input
@@ -369,15 +379,15 @@ export function EbookViewer({
                 step={ZOOM_STEP}
                 value={zoom}
                 onChange={(e) => setZoom(Number(e.target.value))}
-                aria-label="확대 비율"
+                aria-label={t('ebookZoomRatio')}
               />
-              <button type="button" className="ebook-tool-btn" onClick={() => bumpZoom(ZOOM_STEP)} aria-label="확대">
+              <button type="button" className="ebook-tool-btn" onClick={() => bumpZoom(ZOOM_STEP)} aria-label={t('ebookZoomIn')}>
                 +
               </button>
               <span className="ebook-zoom-label">{Math.round(zoom * 100)}%</span>
             </div>
             <button type="button" className="btn btn-primary btn-small" onClick={onClose}>
-              닫기
+              {t('ebookClose')}
             </button>
           </div>
         </div>
@@ -385,11 +395,11 @@ export function EbookViewer({
         {previewMaxPages ? (
           <div className="ebook-preview-banner" role="status">
             <span>
-              미리보기 {previewMaxPages}쪽까지 볼 수 있습니다. 첫 가입 시 7일 무료(아이디당 1회)로 전체 본문을 이용하세요.
+              {t('ebookPreviewBanner').replace('{pages}', String(previewMaxPages))}
             </span>
             {onRequestFullAccess ? (
               <button type="button" className="btn btn-primary btn-small" onClick={onRequestFullAccess}>
-                계속 읽으려면 가입 · 7일 무료
+                {t('ebookPreviewCta')}
               </button>
             ) : null}
           </div>
@@ -412,8 +422,8 @@ export function EbookViewer({
             if (dx > 48) goPrev()
           }}
         >
-          {loading && <p className="ebook-status">전자책을 여는 중…</p>}
-          {error && <p className="ebook-status ebook-error">{error}</p>}
+          {loading && <p className="ebook-status">{t('ebookLoading')}</p>}
+          {error && <p className="ebook-status ebook-error">{t(error)}</p>}
           {!loading && (
             <div className={`ebook-page-shell flip-${flip}${dual ? ' is-dual' : ''}`} hidden={Boolean(error)}>
               <canvas ref={canvasLeftRef} className="ebook-canvas" />
@@ -429,7 +439,7 @@ export function EbookViewer({
               goPrev()
             }}
             disabled={!canPrev}
-            aria-label="이전 페이지"
+            aria-label={t('ebookPrevPage')}
           >
             ‹
           </button>
@@ -441,7 +451,7 @@ export function EbookViewer({
               goNext()
             }}
             disabled={!canNext}
-            aria-label="다음 페이지"
+            aria-label={t('ebookNextPage')}
           >
             ›
           </button>
@@ -449,12 +459,12 @@ export function EbookViewer({
 
         <div className="ebook-footer">
           <button type="button" className="btn btn-soft btn-small" onClick={goPrev} disabled={!canPrev}>
-            이전
+            {t('ebookPrev')}
           </button>
 
           <form className="ebook-jump" onSubmit={onJumpSubmit}>
             <label className="ebook-jump-label" htmlFor="ebookJumpPage">
-              페이지
+              {t('ebookPage')}
             </label>
             <input
               id="ebookJumpPage"
@@ -465,11 +475,11 @@ export function EbookViewer({
               inputMode="numeric"
               value={jumpInput}
               onChange={(e) => setJumpInput(e.target.value)}
-              aria-label="이동할 페이지 번호"
+              aria-label={t('ebookJumpAria')}
             />
             <span className="ebook-page-label ebook-page-total">/ {pageCount || '—'}</span>
             <button type="submit" className="btn btn-soft btn-small">
-              이동
+              {t('ebookJump')}
             </button>
             <span className="ebook-page-label ebook-page-spread" aria-live="polite">
               {pageLabel}
@@ -477,7 +487,7 @@ export function EbookViewer({
           </form>
 
           <button type="button" className="btn btn-soft btn-small" onClick={goNext} disabled={!canNext}>
-            다음
+            {t('ebookNext')}
           </button>
         </div>
       </div>

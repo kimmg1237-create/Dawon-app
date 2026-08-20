@@ -6,6 +6,7 @@ import {
   type DawonVoiceProfile,
 } from '../data/dawonVoiceProfiles'
 import { loadPdfFromBytes } from '../lib/loadPdf'
+import { dawonT, getDawonLang, type DawonLang } from '../newsite/dawonOs/i18n'
 import './AudiobookPage.css'
 
 const MAX_CHARS = 180_000
@@ -132,7 +133,7 @@ async function extractPdfText(data: ArrayBuffer, onProgress?: (page: number, tot
     if (chars > MAX_CHARS) break
   }
   if (!rows.length) {
-    throw new Error('텍스트를 찾지 못했습니다. 스캔 PDF는 교정 원고 TXT가 필요합니다.')
+    throw new Error('audioErrPdfNoText')
   }
   return { text: rows.join('\n\n').slice(0, MAX_CHARS), pages, chars }
 }
@@ -150,10 +151,16 @@ export function AudiobookPage({
   const firstProfile =
     DAWON_VOICE_PROFILES.find((p) => p.id === saved?.profileId) ?? DAWON_VOICE_PROFILES[0]
 
+  const [lang, setLang] = useState<DawonLang>(() => getDawonLang())
+  const t = (key: string) => dawonT(key, lang)
+  const locale = lang === 'ja' ? 'ja-JP' : lang === 'zh' ? 'zh-CN' : lang === 'en' ? 'en-US' : 'ko-KR'
+  const tRef = useRef(t)
+  tRef.current = t
+
   const [text, setText] = useState(firstProfile.sample)
   const [fileName, setFileName] = useState('')
-  const [sourceLabel, setSourceLabel] = useState('직접 입력 원고')
-  const [chapter, setChapter] = useState('제1장 · 오늘을 다시 설계하다')
+  const [sourceLabel, setSourceLabel] = useState(() => dawonT('audioSourceManual', getDawonLang()))
+  const [chapter, setChapter] = useState(() => dawonT('audioChapterDefault', getDawonLang()))
   const [library, setLibrary] = useState<string[]>([])
   const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([])
   const [voiceUri, setVoiceUri] = useState(saved?.voiceURI ?? '')
@@ -164,7 +171,7 @@ export function AudiobookPage({
   const [volume, setVolume] = useState(Number(saved?.volume ?? firstProfile.volume))
   const [speaking, setSpeaking] = useState(false)
   const [paused, setPaused] = useState(false)
-  const [status, setStatus] = useState('성우를 선택하고 미리듣기를 눌러보세요.')
+  const [status, setStatus] = useState(() => dawonT('audioStatusHint', getDawonLang()))
   const [statusKind, setStatusKind] = useState<'idle' | 'speaking' | 'error'>('idle')
   const [progress, setProgress] = useState({ index: 0, total: 0 })
   const [connectedPdfUrl, setConnectedPdfUrl] = useState('')
@@ -184,6 +191,12 @@ export function AudiobookPage({
   const profile = DAWON_VOICE_PROFILES.find((p) => p.id === profileId) ?? DAWON_VOICE_PROFILES[0]
   const koreanVoices = useMemo(() => pickKoreanVoices(voices), [voices])
   const cfg = voiceConfig()
+
+  useEffect(() => {
+    const onLang = () => setLang(getDawonLang())
+    window.addEventListener('dawon-lang-changed', onLang)
+    return () => window.removeEventListener('dawon-lang-changed', onLang)
+  }, [])
 
   useEffect(() => {
     fetch('/audiobook-texts/index.json')
@@ -221,7 +234,7 @@ export function AudiobookPage({
 
   useEffect(() => {
     if (!('speechSynthesis' in window)) {
-      setStatus('이 브라우저는 음성 읽기를 지원하지 않습니다. Chrome 또는 Edge를 사용해 주세요.')
+      setStatus(t('audioErrNoSpeech'))
       setStatusKind('error')
       return
     }
@@ -285,7 +298,7 @@ export function AudiobookPage({
       const chosen = koreanVoices[idx % koreanVoices.length]
       if (chosen) setVoiceUri(chosen.voiceURI)
     }
-    setStatus(`${next.name} 목소리를 선택했습니다. 예문 미리듣기로 음색을 확인해 보세요.`)
+    setStatus(t('audioStatusProfileSelected').replace('{name}', next.name))
     setStatusKind('idle')
   }
 
@@ -306,7 +319,7 @@ export function AudiobookPage({
   function stop() {
     haltSpeech()
     setProgress({ index: 0, total: 0 })
-    setStatus('낭독을 정지했습니다.')
+    setStatus(t('audioStatusStopped'))
     setStatusKind('idle')
   }
 
@@ -317,7 +330,7 @@ export function AudiobookPage({
       setSpeaking(false)
       setPaused(false)
       setProgress({ index: chunks.length, total: chunks.length })
-      setStatus(previewRef.current ? '미리듣기를 마쳤습니다.' : '원고 낭독을 마쳤습니다.')
+      setStatus(previewRef.current ? tRef.current('audioStatusPreviewDone') : tRef.current('audioStatusReadDone'))
       setStatusKind('idle')
       return
     }
@@ -351,7 +364,7 @@ export function AudiobookPage({
       if (event.error === 'interrupted' || event.error === 'canceled') return
       setSpeaking(false)
       setPaused(false)
-      setStatus(`음성 재생 중 문제가 발생했습니다: ${event.error || '알 수 없는 오류'}`)
+      setStatus(tRef.current('audioErrSpeech').replace('{error}', event.error || tRef.current('audioUnknownError')))
       setStatusKind('error')
     }
     window.speechSynthesis.speak(utter)
@@ -360,12 +373,12 @@ export function AudiobookPage({
   function playBody(body: string, preview = false) {
     const next = body.trim()
     if (!next) {
-      setStatus('낭독할 원고를 입력하거나 불러와 주세요.')
+      setStatus(t('audioErrNeedText'))
       setStatusKind('error')
       return
     }
     if (previewOnly && !preview) {
-      setStatus('미리보기 모드입니다. 예문 미리듣기를 이용하거나, 가입 후 7일 무료 체험으로 전체 낭독을 이용하세요.')
+      setStatus(t('audioErrPreviewOnly'))
       setStatusKind('error')
       return
     }
@@ -382,8 +395,8 @@ export function AudiobookPage({
     setStatusKind('speaking')
     setStatus(
       preview
-        ? `${profile.name} 목소리 예문을 미리듣습니다.`
-        : `${profile.name} 목소리로 낭독을 시작합니다.`,
+        ? t('audioStatusPreviewing').replace('{name}', profile.name)
+        : t('audioStatusStarting').replace('{name}', profile.name),
     )
     try {
       window.speechSynthesis.cancel()
@@ -398,13 +411,13 @@ export function AudiobookPage({
 
   function togglePause() {
     if (!speaking) {
-      setStatus('먼저 전체 낭독 또는 미리듣기를 시작해 주세요.')
+      setStatus(t('audioErrNeedStart'))
       return
     }
     if (paused) {
       pausedRef.current = false
       setPaused(false)
-      setStatus('낭독을 이어갑니다.')
+      setStatus(t('audioStatusResumed'))
       setStatusKind('speaking')
       speakNext(playIdRef.current)
       return
@@ -417,7 +430,7 @@ export function AudiobookPage({
       /* ignore */
     }
     setPaused(true)
-    setStatus('낭독을 잠시 멈췄습니다. 이어듣기로 중간부터 계속할 수 있습니다.')
+    setStatus(t('audioStatusPaused'))
     setStatusKind('idle')
   }
 
@@ -427,10 +440,10 @@ export function AudiobookPage({
     const cleaned = raw.replace(/\u0000/g, '').slice(0, limit)
     setText(cleaned)
     setFileName(name)
-    setSourceLabel(previewOnly ? `${source} · 미리보기 ${PREVIEW_CHARS}자` : source)
+    setSourceLabel(previewOnly ? t('audioSourcePreview').replace('{source}', source).replace('{chars}', String(PREVIEW_CHARS)) : source)
     setConnectedPdfUrl(pdfUrl)
     setProgress({ index: 0, total: 0 })
-    setStatus(`${name} 원고를 불러왔습니다.`)
+    setStatus(t('audioStatusLoaded').replace('{name}', name))
     setStatusKind('idle')
   }
 
@@ -438,9 +451,9 @@ export function AudiobookPage({
     try {
       const res = await fetch(`/audiobook-texts/${encodeURIComponent(name)}`)
       if (!res.ok) throw new Error('not found')
-      await applyLoadedText(await res.text(), name, `${displayTitle(name)} · 폴더 텍스트`)
+      await applyLoadedText(await res.text(), name, t('audioSourceFolder').replace('{title}', displayTitle(name)))
     } catch {
-      setStatus(`폴더에서 "${name}"을(를) 불러오지 못했습니다.`)
+      setStatus(t('audioErrFolderLoad').replace('{name}', name))
       setStatusKind('error')
     }
   }
@@ -449,15 +462,15 @@ export function AudiobookPage({
     try {
       const res = await fetch(item.url)
       if (!res.ok) throw new Error('not found')
-      await applyLoadedText(await res.text(), item.title, `${item.title} · 작품 원고`, item.pdfUrl || '')
+      await applyLoadedText(await res.text(), item.title, t('audioSourceWork').replace('{title}', item.title), item.pdfUrl || '')
     } catch {
-      setStatus(`“${item.title}” 텍스트를 불러오지 못했습니다.`)
+      setStatus(t('audioErrWorkLoad').replace('{title}', item.title))
       setStatusKind('error')
     }
   }
 
   async function loadPdfBytes(data: ArrayBuffer, label: string) {
-    setStatus(`${label}에서 낭독 원고를 추출하고 있습니다.`)
+    setStatus(t('audioStatusExtracting').replace('{label}', label))
     setStatusKind('speaking')
     const extracted = await extractPdfText(data, (page, total) => {
       setProgress({ index: page, total })
@@ -465,15 +478,15 @@ export function AudiobookPage({
     await applyLoadedText(
       extracted.text,
       label,
-      `${label} · ${extracted.pages}쪽 원고`,
+      t('audioSourcePdfPages').replace('{label}', label).replace('{pages}', String(extracted.pages)),
       connectedPdfUrl,
     )
-    setStatus(`${extracted.pages}쪽, ${extracted.chars.toLocaleString('ko-KR')}자를 준비했습니다.`)
+    setStatus(t('audioStatusReadyChars').replace('{pages}', String(extracted.pages)).replace('{chars}', extracted.chars.toLocaleString(locale)))
   }
 
   async function loadConnectedPdf() {
     if (!connectedPdfUrl) {
-      setStatus('작품 목록에서 책을 고르거나 PDF 파일을 직접 불러와 주세요.')
+      setStatus(t('audioErrNeedBook'))
       setStatusKind('error')
       return
     }
@@ -481,9 +494,9 @@ export function AudiobookPage({
       stop()
       const res = await fetch(connectedPdfUrl)
       if (!res.ok) throw new Error(`HTTP ${res.status}`)
-      await loadPdfBytes(await res.arrayBuffer(), fileName || '연결 PDF')
+      await loadPdfBytes(await res.arrayBuffer(), fileName || t('audioConnectedPdf'))
     } catch (error) {
-      setStatus(`연결 PDF 원고를 불러오지 못했습니다: ${error instanceof Error ? error.message : '오류'}`)
+      setStatus(t('audioErrConnectedPdf').replace('{error}', error instanceof Error ? (error.message === 'audioErrPdfNoText' ? t('audioErrPdfNoText') : error.message) : t('audioUnknownError')))
       setStatusKind('error')
     }
   }
@@ -491,7 +504,7 @@ export function AudiobookPage({
   async function onFile(file: File | null) {
     if (!file) return
     if (previewOnly) {
-      setStatus('미리보기 모드에서는 파일 업로드 대신 예문 미리듣기를 이용해 주세요.')
+      setStatus(t('audioErrPreviewUpload'))
       setStatusKind('error')
       return
     }
@@ -502,31 +515,31 @@ export function AudiobookPage({
         return
       }
       if (!lower.endsWith('.txt') && !lower.endsWith('.md') && file.type && !file.type.startsWith('text/')) {
-        setStatus('텍스트(.txt) 또는 PDF 파일만 업로드할 수 있습니다.')
+        setStatus(t('audioErrFileType'))
         setStatusKind('error')
         return
       }
       await applyLoadedText(await file.text(), file.name, file.name)
     } catch (error) {
-      setStatus(`파일을 읽지 못했습니다: ${error instanceof Error ? error.message : '오류'}`)
+      setStatus(t('audioErrFileRead').replace('{error}', error instanceof Error ? (error.message === 'audioErrPdfNoText' ? t('audioErrPdfNoText') : error.message) : t('audioUnknownError')))
       setStatusKind('error')
     }
   }
 
   async function serverRender() {
     if (!cfg.apiBase) {
-      setStatus('MP3 생성 서버가 아직 연결되지 않았습니다. 브라우저 미리듣기는 바로 사용할 수 있습니다.')
+      setStatus(t('audioErrMp3Server'))
       setStatusKind('error')
       return
     }
     const body = text.trim()
     if (!body) {
-      setStatus('MP3로 만들 원고를 입력해 주세요.')
+      setStatus(t('audioErrMp3NeedText'))
       setStatusKind('error')
       return
     }
     setMp3Busy(true)
-    setStatus('운영 TTS 서버에서 MP3를 만들고 있습니다. 이 창을 닫지 마세요.')
+    setStatus(t('audioStatusMp3Busy'))
     setStatusKind('speaking')
     const controller = new AbortController()
     const timer = window.setTimeout(() => controller.abort(), cfg.timeoutMs)
@@ -549,7 +562,7 @@ export function AudiobookPage({
         }),
         signal: controller.signal,
       })
-      if (!res.ok) throw new Error(`서버 응답 ${res.status}`)
+      if (!res.ok) throw new Error(t('audioErrServerStatus').replace('{status}', String(res.status)))
       const type = res.headers.get('content-type') || ''
       let out = ''
       if (type.includes('audio/')) {
@@ -559,14 +572,14 @@ export function AudiobookPage({
       } else {
         const data = (await res.json()) as { audioUrl?: string; url?: string }
         out = data.audioUrl || data.url || ''
-        if (!out) throw new Error('완성 음원 주소가 없습니다.')
+        if (!out) throw new Error(t('audioErrNoAudioUrl'))
       }
       setMp3Url(out)
-      setStatus('완성 음원을 재생해 확인한 뒤 저장할 수 있습니다.')
+      setStatus(t('audioStatusMp3Ready'))
       setStatusKind('idle')
     } catch (error) {
       const aborted = error instanceof DOMException && error.name === 'AbortError'
-      setStatus(`MP3 생성에 실패했습니다: ${aborted ? '시간이 초과되었습니다.' : error instanceof Error ? error.message : '오류'}`)
+      setStatus(t('audioErrMp3Fail').replace('{error}', aborted ? t('audioErrTimeout') : error instanceof Error ? error.message : t('audioUnknownError')))
       setStatusKind('error')
     } finally {
       window.clearTimeout(timer)
@@ -579,7 +592,7 @@ export function AudiobookPage({
       const url = URL.createObjectURL(mp3BlobRef.current)
       const a = document.createElement('a')
       a.href = url
-      a.download = `DAWON_${profile.name}_오디오북.mp3`
+      a.download = `DAWON_${profile.name}_audiobook.mp3`
       a.click()
       window.setTimeout(() => URL.revokeObjectURL(url), 1200)
       return
@@ -587,7 +600,7 @@ export function AudiobookPage({
     if (mp3Url) {
       const a = document.createElement('a')
       a.href = mp3Url
-      a.download = `DAWON_${profile.name}_오디오북.mp3`
+      a.download = `DAWON_${profile.name}_audiobook.mp3`
       a.target = '_blank'
       a.rel = 'noopener'
       a.click()
@@ -603,13 +616,12 @@ export function AudiobookPage({
           <header className="dvs7-head">
             <div>
               <small>DAWON 7 VOICE STUDIO · AUDIOBOOK NARRATION</small>
-              <h3 id="dvs7Title">마음을 이해하고, 가능성을 깨우는 성우 7명</h3>
+              <h3 id="dvs7Title">{t('audioTitle')}</h3>
               <p>
-                프로의 창조상담부터 집중·공감·이해·희망·소망·통합까지, 원고의 목적에 맞는 목소리를 고릅니다.
-                브라우저에서는 즉시 미리듣고, 운영 TTS 서버를 연결하면 같은 설계로 MP3 오디오북을 만들 수 있습니다.
+                {t('audioDesc')}
               </p>
             </div>
-            <div className="dvs7-badge" aria-label="7가지 목소리">
+            <div className="dvs7-badge" aria-label={t('audioBadgeAria')}>
               <b>7</b>
               <span>
                 VOICE
@@ -619,7 +631,7 @@ export function AudiobookPage({
             </div>
           </header>
 
-          <div className="dvs7-profile-grid" role="radiogroup" aria-label="다원 성우 목소리 7종">
+          <div className="dvs7-profile-grid" role="radiogroup" aria-label={t('audioProfilesAria')}>
             {DAWON_VOICE_PROFILES.map((item) => (
               <button
                 key={item.id}
@@ -627,7 +639,7 @@ export function AudiobookPage({
                 className="dvs7-profile"
                 role="radio"
                 aria-checked={profileId === item.id}
-                aria-label={`${item.name} 목소리 선택`}
+                aria-label={t('audioProfileSelectAria').replace('{name}', item.name)}
                 onClick={() => applyProfile(item)}
               >
                 <span className="dvs7-profile-top">
@@ -644,10 +656,10 @@ export function AudiobookPage({
           </div>
 
           <div className="dvs7-workspace">
-            <section className="dvs7-editor" aria-label="오디오북 낭독 원고와 재생 설정">
+            <section className="dvs7-editor" aria-label={t('audioEditorAria')}>
               {extraTexts.length > 0 && (
                 <div className="audiobook-library">
-                  <p className="audiobook-label">책 목록 (기본 + 업로드)</p>
+                  <p className="audiobook-label">{t('audioBookList')}</p>
                   <div className="audiobook-library-list">
                     {extraTexts.map((item) => (
                       <button
@@ -668,7 +680,7 @@ export function AudiobookPage({
 
               {library.length > 0 && (
                 <div className="audiobook-library">
-                  <p className="audiobook-label">폴더 텍스트</p>
+                  <p className="audiobook-label">{t('audioFolderText')}</p>
                   <div className="audiobook-library-list">
                     {library.map((name) => (
                       <button
@@ -685,13 +697,13 @@ export function AudiobookPage({
               )}
 
               <div className="dvs7-toolbar">
-                <h4>{fileName ? `${fileName} · 성우 7명 낭독` : '오디오북 낭독 원고'}</h4>
+                <h4>{fileName ? t('audioToolbarWithFile').replace('{file}', fileName) : t('audioToolbarDefault')}</h4>
                 <div className="dvs7-toolbar-actions">
                   <button type="button" className="btn btn-sm btn-soft" onClick={() => void loadConnectedPdf()}>
-                    연결 PDF 원고
+                    {t('audioLoadConnectedPdf')}
                   </button>
                   <button type="button" className="btn btn-sm btn-soft" onClick={() => fileRef.current?.click()}>
-                    PDF·TXT 불러오기
+                    {t('audioLoadFile')}
                   </button>
                   <input
                     ref={fileRef}
@@ -707,44 +719,44 @@ export function AudiobookPage({
               </div>
 
               <label className="sr-only" htmlFor="audiobook-text">
-                낭독할 오디오북 원고
+                {t('audioTextLabel')}
               </label>
               <textarea
                 id="audiobook-text"
                 className="dvs7-text"
                 value={text}
                 onChange={(e) => setText(e.target.value.slice(0, MAX_CHARS))}
-                placeholder="여기에 텍스트를 붙여 넣거나, 위에서 파일을 올려 주세요."
+                placeholder={t('audioTextPlaceholder')}
                 rows={12}
                 spellCheck
               />
               <div className="dvs7-source-line">
                 <span>{sourceLabel}</span>
                 <span>
-                  <b>{text.length.toLocaleString('ko-KR')}</b>자 · 장문은 문장별로 나누어 낭독합니다.
+                  <b>{text.length.toLocaleString(locale)}</b>{t('audioCharHint')}
                 </span>
               </div>
 
               <div className="dvs7-select-grid">
                 <div className="dvs7-field">
-                  <label htmlFor="dvs7SystemVoice">이 기기에서 사용할 실제 한국어 음성</label>
+                  <label htmlFor="dvs7SystemVoice">{t('audioVoiceLabel')}</label>
                   <select
                     id="dvs7SystemVoice"
                     value={voiceUri}
                     onChange={(e) => setVoiceUri(e.target.value)}
                     disabled={koreanVoices.length === 0}
                   >
-                    {koreanVoices.length === 0 && <option value="">불러오는 중…</option>}
+                    {koreanVoices.length === 0 && <option value="">{t('audioVoiceLoading')}</option>}
                     {koreanVoices.map((v) => (
                       <option key={v.voiceURI} value={v.voiceURI}>
                         {v.name} · {v.lang}
-                        {v.localService ? ' · 기기' : ' · 온라인'}
+                        {v.localService ? t('audioVoiceLocal') : t('audioVoiceOnline')}
                       </option>
                     ))}
                   </select>
                 </div>
                 <div className="dvs7-field">
-                  <label htmlFor="dvs7Chapter">장·회차 이름</label>
+                  <label htmlFor="dvs7Chapter">{t('audioChapterLabel')}</label>
                   <input
                     id="dvs7Chapter"
                     type="text"
@@ -757,7 +769,7 @@ export function AudiobookPage({
               <div className="dvs7-sliders">
                 <div className="dvs7-slider">
                   <label htmlFor="dvs7Rate">
-                    속도 <output>{rate.toFixed(2)}×</output>
+                    {t('audioRate')} <output>{rate.toFixed(2)}×</output>
                   </label>
                   <input
                     id="dvs7Rate"
@@ -771,7 +783,7 @@ export function AudiobookPage({
                 </div>
                 <div className="dvs7-slider">
                   <label htmlFor="dvs7Pitch">
-                    높낮이 <output>{pitch.toFixed(2)}</output>
+                    {t('audioPitch')} <output>{pitch.toFixed(2)}</output>
                   </label>
                   <input
                     id="dvs7Pitch"
@@ -785,7 +797,7 @@ export function AudiobookPage({
                 </div>
                 <div className="dvs7-slider">
                   <label htmlFor="dvs7Pause">
-                    문장 쉼 <output>{Math.round(pauseMs)}ms</output>
+                    {t('audioPause')} <output>{Math.round(pauseMs)}ms</output>
                   </label>
                   <input
                     id="dvs7Pause"
@@ -799,7 +811,7 @@ export function AudiobookPage({
                 </div>
                 <div className="dvs7-slider">
                   <label htmlFor="dvs7Volume">
-                    음량 <output>{Math.round(volume * 100)}%</output>
+                    {t('audioVolume')} <output>{Math.round(volume * 100)}%</output>
                   </label>
                   <input
                     id="dvs7Volume"
@@ -813,15 +825,15 @@ export function AudiobookPage({
                 </div>
               </div>
 
-              <div className="dvs7-controls" role="group" aria-label="오디오북 재생 조절">
+              <div className="dvs7-controls" role="group" aria-label={t('audioControlsAria')}>
                 <button
                   type="button"
                   className="btn voice-primary"
                   onClick={() => playBody(text)}
                   disabled={(speaking && !paused) || previewOnly}
-                  title={previewOnly ? '전체 낭독은 7일 무료 체험 또는 이용권이 필요합니다' : undefined}
+                  title={previewOnly ? t('audioFullTitleLocked') : undefined}
                 >
-                  ▶ 전체 낭독
+                  {t('audioPlayFull')}
                 </button>
                 <button
                   type="button"
@@ -830,33 +842,33 @@ export function AudiobookPage({
                   disabled={!speaking}
                   aria-pressed={paused}
                 >
-                  {paused ? '▶ 이어듣기' : '⏸ 일시정지'}
+                  {paused ? t('audioResume') : t('audioPauseBtn')}
                 </button>
                 <button type="button" className="btn btn-soft" onClick={stop} disabled={!speaking}>
-                  ■ 정지
+                  {t('audioStop')}
                 </button>
                 <button type="button" className="btn btn-soft" onClick={() => playBody(profile.sample, true)}>
-                  10초 미리듣기
+                  {t('audioPreview10')}
                 </button>
                 <button type="button" className="btn voice-hope" onClick={() => void serverRender()} disabled={mp3Busy || previewOnly}>
-                  {mp3Busy ? 'MP3 만드는 중…' : 'MP3 만들기'}
+                  {mp3Busy ? t('audioMp3Busy') : t('audioMp3Make')}
                 </button>
               </div>
 
               {speaking ? (
-                <div className="dvs7-now-playing" role="region" aria-label="지금 낭독 중">
+                <div className="dvs7-now-playing" role="region" aria-label={t('audioNowPlayingAria')}>
                   <div>
-                    <b>{paused ? '일시정지' : '낭독 중'}</b>
+                    <b>{paused ? t('audioPaused') : t('audioSpeaking')}</b>
                     <span>
                       {profile.name} · {progress.index} / {progress.total}
                     </span>
                   </div>
                   <div className="dvs7-now-playing-actions">
                     <button type="button" className="btn dvs7-pause-btn" onClick={togglePause}>
-                      {paused ? '▶ 이어듣기' : '⏸ 일시정지'}
+                      {paused ? t('audioResume') : t('audioPauseBtn')}
                     </button>
                     <button type="button" className="btn btn-soft" onClick={stop}>
-                      ■ 정지
+                      {t('audioStop')}
                     </button>
                   </div>
                 </div>
@@ -876,13 +888,13 @@ export function AudiobookPage({
                 <div className="dvs7-mp3-result">
                   <audio src={mp3Url} controls />
                   <button type="button" className="btn btn-sm btn-soft" onClick={downloadAudio}>
-                    완성 음원 저장
+                    {t('audioSaveMp3')}
                   </button>
                 </div>
               ) : null}
             </section>
 
-            <aside className="dvs7-detail" aria-label="선택한 목소리의 전문 연출 기준">
+            <aside className="dvs7-detail" aria-label={t('audioDetailAria')}>
               <div className="dvs7-current">
                 <span className="dvs7-current-icon" aria-hidden="true">
                   {profile.symbol}
@@ -894,11 +906,11 @@ export function AudiobookPage({
                 </div>
               </div>
               <div className="dvs7-detail-block">
-                <b>목소리 연출 원칙</b>
+                <b>{t('audioGuidanceTitle')}</b>
                 <p>{profile.guidance}</p>
               </div>
               <div className="dvs7-detail-block">
-                <b>추천 활용</b>
+                <b>{t('audioUseTitle')}</b>
                 <p>{profile.use}</p>
                 <div className="dvs7-chip-row">
                   {profile.tone.split('·').map((chip) => (
@@ -909,29 +921,26 @@ export function AudiobookPage({
                 </div>
               </div>
               <div className="dvs7-detail-block">
-                <b>전문 낭독 기준</b>
+                <b>{t('audioStandardTitle')}</b>
                 <p>
-                  사실을 과장하지 않고, 쉼표와 마침표에서 충분히 호흡합니다. 듣는 사람을 평가하거나 몰아붙이지 않으며,
-                  공감 → 이해 → 가능성 → 오늘 한 행동의 순서로 마무리합니다.
+                  {t('audioStandardBody')}
                 </p>
               </div>
               <div className="dvs7-mini-preview">
                 <button type="button" className="btn btn-primary" onClick={() => playBody(profile.sample, true)}>
-                  선택 목소리 예문 듣기
+                  {t('audioHearSample')}
                 </button>
                 <button type="button" className="btn btn-soft" onClick={() => applyProfile(profile)}>
-                  기본값 복원
+                  {t('audioResetDefaults')}
                 </button>
               </div>
             </aside>
           </div>
 
           <details className="dvs7-disclosure">
-            <summary>제작 방식·저작권·실제 성우 음성 안내</summary>
+            <summary>{t('audioDisclosureSummary')}</summary>
             <p>
-              이 화면의 즉시 낭독은 브라우저가 제공하는 합성 음성을 사용하므로 기기마다 음색 수와 품질이 다를 수 있습니다.
-              실제 성우의 목소리를 복제하려면 본인의 명시적 동의와 사용계약이 필요합니다. 운영용 MP3는 서버가
-              원고·목소리 프로필·속도·쉼 설정을 받아 생성하고, 오디오 파일 또는 안전한 재생 주소를 반환하도록 연결합니다.
+              {t('audioDisclosureBody')}
             </p>
           </details>
         </article>

@@ -77,23 +77,79 @@ function wrapCanvasText(
   maxWidth: number,
   lineHeight: number,
   maxLines = 3,
+  align: CanvasTextAlign = 'left',
 ) {
-  const words = String(content || '').split(/\s+/)
-  let line = ''
-  const lines: string[] = []
-  for (const word of words) {
-    const test = line ? `${line} ${word}` : word
-    if (ctx.measureText(test).width > maxWidth && line) {
-      lines.push(line)
-      line = word
-    } else {
-      line = test
+  const emoSize = Math.round(lineHeight * 0.92)
+  const units: Array<{ t: 'text' | 'emo'; v?: string; id?: string }> = []
+  const re = /\[\[emo:?(\d{2})\]\]/g
+  const str = String(content || '')
+  let last = 0
+  let m: RegExpExecArray | null
+  while ((m = re.exec(str))) {
+    if (m.index > last) {
+      String(str.slice(last, m.index))
+        .split(/(\s+)/)
+        .filter(Boolean)
+        .forEach((v) => units.push({ t: 'text', v }))
     }
+    units.push({ t: 'emo', id: m[1] })
+    last = m.index + m[0].length
   }
-  if (line) lines.push(line)
-  const shown = lines.slice(0, maxLines)
-  shown.forEach((l, i) => ctx.fillText(l, x, y + i * lineHeight))
+  if (last < str.length) {
+    String(str.slice(last))
+      .split(/(\s+)/)
+      .filter(Boolean)
+      .forEach((v) => units.push({ t: 'text', v }))
+  }
+  const measure = (parts: typeof units) =>
+    parts.reduce(
+      (w, p) => w + (p.t === 'emo' ? emoSize + 6 : ctx.measureText(p.v || '').width),
+      0,
+    )
+  const lines: (typeof units)[] = [[]]
+  let width = 0
+  for (const u of units) {
+    const uw = u.t === 'emo' ? emoSize + 6 : ctx.measureText(u.v || '').width
+    const isSpace = u.t === 'text' && /^\s+$/.test(u.v || '')
+    if (width + uw > maxWidth && lines[lines.length - 1].length && !isSpace) {
+      lines.push([])
+      width = 0
+    }
+    if (isSpace && !width) continue
+    lines[lines.length - 1].push(u)
+    width += uw
+  }
+  const shown = lines.filter((l) => l.length).slice(0, maxLines)
+  const prev = ctx.textAlign
+  ctx.textAlign = 'left'
+  shown.forEach((parts, i) => {
+    const ly = y + i * lineHeight
+    let cx = align === 'center' ? x - measure(parts) / 2 : x
+    parts.forEach((p) => {
+      if (p.t === 'emo' && p.id) {
+        const img = emoCanvasImage(p.id)
+        if (img.complete && img.naturalWidth) ctx.drawImage(img, cx, ly - emoSize * 0.82, emoSize, emoSize)
+        cx += emoSize + 6
+      } else {
+        ctx.fillText(p.v || '', cx, ly)
+        cx += ctx.measureText(p.v || '').width
+      }
+    })
+  })
+  ctx.textAlign = prev
   return shown.length
+}
+
+const emoImgCache: Record<string, HTMLImageElement> = {}
+let emoRedraw: (() => void) | null = null
+function emoCanvasImage(id: string) {
+  if (emoImgCache[id]) return emoImgCache[id]
+  const img = new Image()
+  img.decoding = 'async'
+  img.src = `/emoticons/${id}.png`
+  img.onload = () => emoRedraw?.()
+  emoImgCache[id] = img
+  return img
 }
 
 function roundRect(
@@ -157,6 +213,9 @@ function readJson<T>(key: string, fallback: T): T {
 
 function fieldValue(id: string) {
   const el = document.getElementById(id) as HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement | null
+  if (el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement) {
+    window.__dawonFlushEmoticonField?.(el)
+  }
   return el?.value?.trim() || ''
 }
 
@@ -360,7 +419,7 @@ export function DawonVideoStudio({ bookId, embedded = false }: Props) {
     ctx.fillText('DAWON LIFE DESIGN', w * 0.07, h * 0.09)
     ctx.fillStyle = '#fff'
     ctx.font = `800 ${Math.max(34, w * 0.054)}px sans-serif`
-    wrapCanvasText(ctx, heading, w * 0.07, h * 0.17, w * 0.86, Math.max(44, w * 0.066), 2)
+    wrapCanvasText(ctx, heading, w * 0.07, h * 0.17, w * 0.86, Math.max(44, w * 0.066), 2, 'left')
 
     if (cfg.showCaptions) {
       ctx.fillStyle = 'rgba(0,0,0,.55)'
@@ -369,7 +428,7 @@ export function DawonVideoStudio({ bookId, embedded = false }: Props) {
       ctx.fillStyle = '#fff'
       ctx.textAlign = 'center'
       ctx.font = `700 ${Math.max(30, w * 0.045)}px sans-serif`
-      wrapCanvasText(ctx, caption, w * 0.5, h * 0.765, w * 0.78, Math.max(42, w * 0.057), 3)
+      wrapCanvasText(ctx, caption, w * 0.5, h * 0.765, w * 0.78, Math.max(42, w * 0.057), 3, 'center')
     }
     if (cfg.showBrand) {
       ctx.textAlign = 'left'
@@ -382,6 +441,8 @@ export function DawonVideoStudio({ bookId, embedded = false }: Props) {
       ctx.fillText(`${slideIndex + 1} / ${Math.max(1, slides.length)}`, w * 0.93, h * 0.96)
     }
   }, [])
+
+  emoRedraw = () => drawVideoFrame(0, 0)
 
   const updateCanvasSize = useCallback(() => {
     const dims = RATIO[settingsRef.current.ratio] || RATIO['9:16']
@@ -445,12 +506,22 @@ export function DawonVideoStudio({ bookId, embedded = false }: Props) {
 
   const importStory = useCallback(() => {
     try {
+      const ideaTitle = fieldValue('ideaTitle')
+      const ideaSource = fieldValue('ideaSource')
+      if (ideaTitle) setTitle(ideaTitle)
       const savedTitle = localStorage.getItem('dawon_dvs_title')
       const savedStory = localStorage.getItem('dawon_dvs_story')
-      if (savedTitle) setTitle(savedTitle)
+      if (!ideaTitle && savedTitle) setTitle(savedTitle)
       if (savedStory) setStory(savedStory)
       const output = document.getElementById('contentOutput')?.textContent || ''
-      if (!savedStory && output) {
+      if (!savedStory && ideaSource) {
+        const fromSource = ideaSource
+          .split(/\n+|(?<=[.!?。])\s+/)
+          .map((x) => x.trim())
+          .filter(Boolean)
+          .slice(0, 7)
+        if (fromSource.length) setStory([ideaTitle, ...fromSource].filter(Boolean).slice(0, 7).join('\n'))
+      } else if (!savedStory && output) {
         const caps = captionsFromOutput(output)
         if (caps.length) setStory(caps.join('\n'))
       }

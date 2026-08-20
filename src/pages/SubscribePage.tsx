@@ -15,6 +15,7 @@ import {
 import { siteConfig } from '../data/siteConfig'
 import { tossClientKey, tossConfigured } from '../lib/toss'
 import { createTossOrder, generateOrderId } from '../services/paymentService'
+import { dawonT, getDawonLang, type DawonLang } from '../newsite/dawonOs/i18n'
 import '../newsite/dawonOs/theme.css'
 import '../newsite/dawonOs/bridge.css'
 import '../newsite/dawonOs/dark-contrast.css'
@@ -40,74 +41,82 @@ type UiPlan = {
   cta: string
 }
 
-const UI_PLANS: UiPlan[] = [
-  {
-    id: 'free',
-    tag: '무료',
-    stage: 'STAGE 01 · 먼저 경험한다',
-    name: '무료 시작',
-    price: '0원',
-    renewal: '결제 없음',
-    items: [
-      '오늘 하나를 정하고 바로 시작',
-      '3분 오늘설계',
-      '전자책·만화·오디오북 미리보기',
-      `첫 가입 ${PRODUCT_SPEC.freeTrialDays}일 무료 전체 이용 (아이디당 1회)`,
-      '7일간 핵심 흐름 경험',
-      '브라우저 로컬 기록',
-    ],
-    period: `무료 기능 상시 · 첫 가입 ${PRODUCT_SPEC.freeTrialDays}일 체험`,
-    nextPay: '없음',
-    payProduct: null,
-    cta: '무료로 시작하기',
-  },
-  {
-    id: 'trial',
-    tag: '씨앗',
-    stage: 'STAGE 02 · 하나를 반복한다',
-    name: '2주 이용권',
-    price: '6,900원',
-    renewal: '자동갱신 없음',
-    items: [
-      '회원 기록·기기 동기화',
-      '14일 생활실천 기록',
-      '성장 확인·생활책 기반 데이터',
-      '전자책·오디오북·만화 이용',
-    ],
-    period: '결제 승인 시점부터 14일',
-    nextPay: '자동 청구하지 않음',
-    // Edge function currently supports monthly/b2b — charge working monthly pass.
-    payProduct: 'monthly',
-    cta: '이용권 결제하기',
-  },
-  {
-    id: 'monthly',
-    tag: '추천',
-    stage: 'STAGE 03 · 내 패턴을 발견한다',
-    name: '30일 이용권',
-    price: formatKrw(PRODUCT_SPEC.monthlyPriceKrw),
-    renewal: '자동갱신 없음',
-    items: ['30일 생활패턴 발견', '‘나의 30일 생활책’ 만들기', '회원 클라우드 기록', '전자책·오디오북·만화 · STUDIO'],
-    period: `결제 승인 시점부터 ${PRODUCT_SPEC.subscriptionDays}일`,
-    nextPay: '자동 청구하지 않음',
-    recommended: true,
-    payProduct: 'monthly',
-    cta: '이용권 결제하기',
-  },
-  {
-    id: 'annual',
-    tag: '연간',
-    stage: 'STAGE 04 · 내 생활방식을 만든다',
-    name: '365일 이용권',
-    price: '99,000원',
-    renewal: '자동갱신 없음',
-    items: ['365일 생활 데이터 축적', '연간 성장리포트', '‘나의 365일 생활연감’ 완성', 'STUDIO & LIBRARY 확장'],
-    period: '결제 승인 시점부터 365일',
-    nextPay: '자동 청구하지 않음',
-    payProduct: 'monthly',
-    cta: '이용권 결제하기',
-  },
-]
+function splitPlanItems(desc: string): string[] {
+  return desc
+    .split(/\n|·|\|/)
+    .map((s) => s.trim())
+    .filter(Boolean)
+}
+
+function getUiPlans(lang: DawonLang): UiPlan[] {
+  const t = (key: string) => dawonT(key, lang)
+  const days = String(PRODUCT_SPEC.freeTrialDays)
+  const subDays = String(PRODUCT_SPEC.subscriptionDays)
+
+  return [
+    {
+      id: 'free',
+      tag: t('planFreeTag'),
+      stage: t('planFreeStage'),
+      name: t('planFreeName'),
+      price: t('planFreePrice'),
+      renewal: t('planFreeRenewal'),
+      items: splitPlanItems(t('planFreeDesc')),
+      period: t('planFreePeriod').replace('{days}', days),
+      nextPay: t('planNextPayNone'),
+      payProduct: null,
+      cta: t('planFreeCta'),
+    },
+    {
+      id: 'trial',
+      tag: t('plan14Tag'),
+      stage: t('plan14Stage'),
+      name: t('plan14Name'),
+      price: t('plan14Price'),
+      renewal: t('planNoAutoRenew'),
+      items: splitPlanItems(t('plan14Desc')),
+      period: t('plan14Period'),
+      nextPay: t('planNextPayNoCharge'),
+      // Edge function currently supports monthly/b2b — charge working monthly pass.
+      payProduct: 'monthly',
+      cta: t('plan14Cta'),
+    },
+    {
+      id: 'monthly',
+      tag: t('plan30Tag'),
+      stage: t('plan30Stage'),
+      name: t('plan30Name'),
+      price: t('plan30Price'),
+      renewal: t('planNoAutoRenew'),
+      items: splitPlanItems(t('plan30Desc')),
+      period: t('plan30Period').replace('{days}', subDays),
+      nextPay: t('planNextPayNoCharge'),
+      recommended: true,
+      payProduct: 'monthly',
+      cta: t('plan30Cta'),
+    },
+    {
+      id: 'annual',
+      tag: t('plan365Tag'),
+      stage: t('plan365Stage'),
+      name: t('plan365Name'),
+      price: t('plan365Price'),
+      renewal: t('planNoAutoRenew'),
+      items: splitPlanItems(t('plan365Desc')),
+      period: t('plan365Period'),
+      nextPay: t('planNextPayNoCharge'),
+      payProduct: 'monthly',
+      cta: t('plan365Cta'),
+    },
+  ]
+}
+
+function langLocale(lang: DawonLang): string {
+  if (lang === 'en') return 'en-US'
+  if (lang === 'ja') return 'ja-JP'
+  if (lang === 'zh') return 'zh-CN'
+  return 'ko-KR'
+}
 
 export function SubscribePage() {
   const { user, configured } = useAuth()
@@ -121,6 +130,14 @@ export function SubscribePage() {
   const [agreeTerms, setAgreeTerms] = useState(false)
   const [agreeDigital, setAgreeDigital] = useState(false)
   const [selected, setSelected] = useState<UiPlanId>('monthly')
+  const [lang, setLang] = useState<DawonLang>(() => getDawonLang())
+  const t = (key: string) => dawonT(key, lang)
+
+  useEffect(() => {
+    const onLang = () => setLang(getDawonLang())
+    window.addEventListener('dawon-lang-changed', onLang)
+    return () => window.removeEventListener('dawon-lang-changed', onLang)
+  }, [])
 
   useEffect(() => {
     void refresh()
@@ -136,15 +153,17 @@ export function SubscribePage() {
   useEffect(() => {
     const id = location.hash.replace(/^#/, '')
     if (!id) return
-    const t = window.setTimeout(() => {
+    const timer = window.setTimeout(() => {
       document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
     }, 80)
-    return () => window.clearTimeout(t)
+    return () => window.clearTimeout(timer)
   }, [location.hash])
 
+  const uiPlans = useMemo(() => getUiPlans(lang), [lang])
+
   const selectedPlan = useMemo(
-    () => UI_PLANS.find((p) => p.id === selected) ?? UI_PLANS[2],
-    [selected],
+    () => uiPlans.find((p) => p.id === selected) ?? uiPlans[2],
+    [selected, uiPlans],
   )
 
   async function startPayment(uiPlan: UiPlan) {
@@ -154,11 +173,11 @@ export function SubscribePage() {
       return
     }
     if (!agreeTerms || !agreeDigital) {
-      setError('이용약관·환불정책 및 디지털 콘텐츠 청약철회 제한에 동의한 뒤 결제할 수 있습니다.')
+      setError(t('subErrConsent'))
       return
     }
     if (!tossConfigured) {
-      setError('토스 클라이언트 키(VITE_TOSS_CLIENT_KEY)가 설정되지 않았습니다.')
+      setError(t('subErrTossKey'))
       return
     }
 
@@ -184,7 +203,7 @@ export function SubscribePage() {
         customerEmail: user.email ?? undefined,
       })
     } catch (err) {
-      const msg = err instanceof Error ? err.message : '결제를 시작하지 못했습니다.'
+      const msg = err instanceof Error ? err.message : t('subErrPayment')
       if (!/취소|cancel|USER/i.test(msg)) setError(msg)
     } finally {
       setBusy(null)
@@ -201,7 +220,7 @@ export function SubscribePage() {
     try {
       await unlockWithAd()
     } catch (err) {
-      setError(err instanceof Error ? err.message : '광고 이용 권한 부여에 실패했습니다.')
+      setError(err instanceof Error ? err.message : t('subErrAd'))
     } finally {
       setBusy(null)
     }
@@ -218,6 +237,7 @@ export function SubscribePage() {
   }
 
   const canPay = agreeTerms && agreeDigital
+  const priceLabel = formatKrw(PRODUCT_SPEC.monthlyPriceKrw)
 
   return (
     <section id="subscription" className="section-soft subscribe-page dawon-os-checkout">
@@ -227,19 +247,19 @@ export function SubscribePage() {
         path={siteConfig.pages.subscribe.path}
       />
       <div className="container">
-        <aside className="store-ad-banners" aria-label="종이책 판매">
+        <aside className="store-ad-banners" aria-label={t('subStoreAria')}>
           <a
             className="store-ad-card"
             href="https://product.kyobobook.co.kr/detail/S000212731582"
             target="_blank"
             rel="noopener noreferrer"
           >
-            <img src="/ads/sotong.png" alt="자신과의 소통 표지" width="300" height="420" decoding="async" />
+            <img src="/ads/sotong.png" alt={t('adCoverSotong')} width="300" height="420" decoding="async" />
             <div className="store-ad-copy">
               <b>자신과의 소통</b>
-              <span>국립중앙도서관 선정도서</span>
-              <p>내가 정말 원하는 것부터 확인하는 대화.</p>
-              <em>교보문고에서 구매 →</em>
+              <span>{t('adSelected')}</span>
+              <p>{t('adSotongDesc')}</p>
+              <em>{t('buyKyobo')}</em>
             </div>
           </a>
           <a
@@ -248,43 +268,40 @@ export function SubscribePage() {
             target="_blank"
             rel="noopener noreferrer"
           >
-            <img src="/ads/healing.png" alt="힐링게임 표지" width="300" height="420" decoding="async" />
+            <img src="/ads/healing.png" alt={t('adCoverHealing')} width="300" height="420" decoding="async" />
             <div className="store-ad-copy">
               <b>힐링게임</b>
-              <span>국립중앙도서관 선정도서</span>
-              <p>마음을 놀이처럼 탐험하는 회복 한 판.</p>
-              <em>예스24에서 구매 →</em>
+              <span>{t('adSelected')}</span>
+              <p>{t('adHealingDesc')}</p>
+              <em>{t('buyYes24')}</em>
             </div>
           </a>
         </aside>
 
         <div className="section-head">
           <div>
-            <div className="kicker">이용권</div>
-            <h2>얼마인지, 무엇을 얻는지, 언제까지 쓰는지 먼저 확인하세요.</h2>
+            <div className="kicker">{t('subKicker')}</div>
+            <h2>{t('subTitle')}</h2>
             <p>
-              다원 하루설계의 유료상품은 기간형 이용권입니다. 원하는 기간을 선택해 이용하고, 기간이 끝난 뒤
-              필요할 때 다시 선택합니다. 전자책·오디오북·만화는{' '}
-              <Link to="/library">서재</Link>에서 이용합니다.
+              {t('subDesc')}{' '}
+              {t('subDescLibrary')}{' '}
+              <Link to="/library">{t('subLibraryLink')}</Link>
+              {t('subDescLibraryEnd')}
             </p>
           </div>
         </div>
 
-        <div className="subscription-policy-banner">
-          <b>안심 이용 안내:</b> 2주·30일·365일 모두 <strong>자동갱신·자동청구가 없는 기간형 이용권</strong>
-          입니다. 이용기간이 끝난 뒤 원할 때 다시 선택할 수 있습니다.
-        </div>
+        <div className="subscription-policy-banner">{t('subPolicyBanner')}</div>
 
         {isTestPay ? (
           <div className="subscription-policy-banner" style={{ marginTop: 10 }}>
-            <b>테스트 결제 모드:</b> 실제 카드 출금은 되지 않으며, 토스 개발자센터 테스트 결제 내역에만
-            남습니다.
+            {t('subTestPayBanner')}
           </div>
         ) : null}
 
         {!configured ? (
           <div className="subscription-policy-banner" style={{ marginTop: 10 }}>
-            <b>안내:</b> Supabase 로그인 설정 후 결제·구독 저장이 가능합니다.
+            {t('subSupabaseBanner')}
           </div>
         ) : null}
 
@@ -295,7 +312,7 @@ export function SubscribePage() {
         ) : null}
 
         <div className="plan-grid" id="plans">
-          {UI_PLANS.map((plan) => (
+          {uiPlans.map((plan) => (
             <article
               key={plan.id}
               className={`plan-card${plan.recommended ? ' recommended' : ''}${
@@ -314,10 +331,10 @@ export function SubscribePage() {
               </ul>
               <div className="plan-contract">
                 <span>
-                  <b>이용기간</b> {plan.period}
+                  <b>{t('subPeriodLabel')}</b> {plan.period}
                 </span>
                 <span>
-                  <b>다음 결제</b> {plan.nextPay}
+                  <b>{t('subNextPayLabel')}</b> {plan.nextPay}
                 </span>
               </div>
               <button
@@ -326,7 +343,7 @@ export function SubscribePage() {
                 disabled={busy !== null || (plan.payProduct !== null && !canPay)}
                 onClick={() => onPlanAction(plan)}
               >
-                {busy === plan.id ? '결제창 여는 중…' : plan.cta}
+                {busy === plan.id ? t('subPaying') : plan.cta}
               </button>
             </article>
           ))}
@@ -334,19 +351,18 @@ export function SubscribePage() {
 
         {!canPay ? (
           <p className="subscribe-consent-hint" style={{ marginTop: 14 }}>
-            아래 필수 동의에 체크해야 유료 이용권 결제가 활성화됩니다. 현재 토스 결제는{' '}
-            <strong>30일 이용권 {formatKrw(PRODUCT_SPEC.monthlyPriceKrw)}</strong>으로 안전하게
-            진행됩니다.
+            {t('subConsentHintNeed').replace('{price}', priceLabel)}
           </p>
         ) : (
           <p className="subscribe-consent-hint" style={{ marginTop: 14 }}>
-            선택: <strong>{selectedPlan.name}</strong> · 토스 결제 금액{' '}
-            <strong>{formatKrw(PRODUCT_SPEC.monthlyPriceKrw)}</strong> (자동갱신 없음)
+            {t('subConsentHintReady')
+              .replace('{name}', selectedPlan.name)
+              .replace('{price}', priceLabel)}
           </p>
         )}
 
         <div className="subscribe-consent panel panel-pad" style={{ marginTop: 18 }}>
-          <h3>결제 전 동의 (필수)</h3>
+          <h3>{t('subConsentTitle')}</h3>
           <label className="subscribe-check">
             <input
               type="checkbox"
@@ -354,18 +370,19 @@ export function SubscribePage() {
               onChange={(e) => setAgreeTerms(e.target.checked)}
             />
             <span>
+              {t('subConsentTermsPrefix')}
               <Link to="/terms" target="_blank">
-                이용약관
+                {t('subLinkTerms')}
               </Link>
-              과{' '}
+              {t('subConsentTermsMid1')}
               <Link to="/refund" target="_blank">
-                환불·청약철회 정책
+                {t('subLinkRefund')}
               </Link>
-              ,{' '}
+              {t('subConsentTermsMid2')}
               <Link to="/privacy" target="_blank">
-                개인정보처리방침
+                {t('subLinkPrivacy')}
               </Link>
-              에 동의합니다.
+              {t('subConsentTermsEnd')}
             </span>
           </label>
           <label className="subscribe-check">
@@ -375,144 +392,144 @@ export function SubscribePage() {
               onChange={(e) => setAgreeDigital(e.target.checked)}
             />
             <span>
-              본 상품은 디지털 콘텐츠·기간제 이용권이며, 전자책·만화·오디오북을{' '}
-              <strong>이용(열람·재생)한 이후</strong>에는 전자상거래법상 청약철회가 제한될 수 있음에
-              동의합니다. 미이용 시 결제일로부터 {PRODUCT_SPEC.coolingOffDays}일 이내 전액 환불이
-              가능합니다. 자동 갱신은 없습니다.
+              {t('subConsentDigitalBefore')}
+              <strong>{t('subConsentDigitalStrong')}</strong>
+              {t('subConsentDigitalAfter').replace('{days}', String(PRODUCT_SPEC.coolingOffDays))}
             </span>
           </label>
         </div>
 
-        <div className="subscription-trust-grid" aria-label="이용권 선택 핵심 확인사항">
+        <div className="subscription-trust-grid" aria-label={t('subTrustAria')}>
           <div className="subscription-trust-item">
-            <b>01 · 얼마인가?</b>
-            <strong>가격을 먼저 확인</strong>
-            <span>
-              2주 · 30일 {formatKrw(PRODUCT_SPEC.monthlyPriceKrw)} · 365일. 결제 전에 선택한 금액을 다시
-              보여드립니다.
-            </span>
+            <b>{t('subTrust1Q')}</b>
+            <strong>{t('subTrust1Title')}</strong>
+            <span>{t('subTrust1Desc')}</span>
           </div>
           <div className="subscription-trust-item">
-            <b>02 · 무엇을 얻는가?</b>
-            <strong>기록이 결과로 남습니다</strong>
-            <span>
-              3분 오늘설계, 실천 기록, 회원 기록 동기화, 성장 확인과 생활책·생활연감, 전자책·오디오북·만화로
-              이어집니다.
-            </span>
+            <b>{t('subTrust2Q')}</b>
+            <strong>{t('subTrust2Title')}</strong>
+            <span>{t('subTrust2Desc')}</span>
           </div>
           <div className="subscription-trust-item">
-            <b>03 · 언제까지 쓰는가?</b>
-            <strong>14일 · 30일 · 365일</strong>
-            <span>결제 승인 시점부터 선택한 기간 동안 이용합니다. 자동갱신과 자동청구는 없습니다.</span>
+            <b>{t('subTrust3Q')}</b>
+            <strong>{t('subTrust3Title')}</strong>
+            <span>{t('subTrust3Desc')}</span>
           </div>
         </div>
 
         <div className="subscription-layout">
           <article className="status-panel">
-            <span className="status-badge">이용권 선택 가이드</span>
+            <span className="status-badge">{t('subGuideBadge')}</span>
             <h3>
-              처음에는 무료로,
-              <br />
-              전체 이용은 7일 무료 체험으로 시작하세요.
+              {t('subGuideTitle')
+                .split('\n')
+                .map((line, i, arr) => (
+                  <span key={line}>
+                    {line}
+                    {i < arr.length - 1 ? <br /> : null}
+                  </span>
+                ))}
             </h3>
-            <p>
-              전자책·만화·오디오북은 미리보기로 먼저 확인할 수 있습니다. 첫 가입 시{' '}
-              <strong>{PRODUCT_SPEC.freeTrialDays}일 무료</strong> 전체 이용이 열리며, 아이디당 1회만
-              제공됩니다.
-            </p>
+            <p>{t('subGuideDesc')}</p>
             <div className="readiness-list">
               <div className="readiness-item">
                 <i>1</i>
-                <span>먼저 경험하기</span>
-                <strong>7일 무료 체험</strong>
+                <span>{t('subGuideStep1Label')}</span>
+                <strong>{t('subGuideStep1Value')}</strong>
               </div>
               <div className="readiness-item">
                 <i>2</i>
-                <span>한 가지를 반복해 보기</span>
-                <strong>14일</strong>
+                <span>{t('subGuideStep2Label')}</span>
+                <strong>{t('subGuideStep2Value')}</strong>
               </div>
               <div className="readiness-item">
                 <i>3</i>
-                <span>내 생활패턴을 발견하기</span>
-                <strong>30일 추천</strong>
+                <span>{t('subGuideStep3Label')}</span>
+                <strong>{t('subGuideStep3Value')}</strong>
               </div>
               <div className="readiness-item">
                 <i>4</i>
-                <span>생활기록을 장기 자산으로 만들기</span>
-                <strong>365일</strong>
+                <span>{t('subGuideStep4Label')}</span>
+                <strong>{t('subGuideStep4Value')}</strong>
               </div>
             </div>
             <div style={{ marginTop: 14 }}>
               <span className={`payment-status ${canPay ? 'ready' : 'blocked'}`}>
                 {canPay
-                  ? `토스 결제 준비됨 · ${formatKrw(PRODUCT_SPEC.monthlyPriceKrw)}`
-                  : '동의 후 토스 결제 가능'}
+                  ? t('subPayReady').replace('{price}', priceLabel)
+                  : t('subPayBlocked')}
               </span>
             </div>
           </article>
 
           <article className="status-panel" id="status">
-            <span className="status-badge">MY SUBSCRIPTION</span>
-            <h3>내 이용권·결제 상태</h3>
+            <span className="status-badge">{t('subMyBadge')}</span>
+            <h3>{t('subMyTitle')}</h3>
             <p>
               {loading
-                ? '구독 상태를 확인하는 중…'
+                ? t('subStatusLoading')
                 : user
-                  ? `현재 상태: ${statusLabel}${isPremium ? ' · 이용 가능' : ' · 잠김'}`
-                  : '로그인 후 이용권·결제 상태가 표시됩니다.'}
+                  ? `${t('subStatusCurrent').replace('{status}', t(statusLabel))} · ${
+                      isPremium ? t('subStatusAvailable') : t('subStatusLocked')
+                    }`
+                  : t('subStatusLoginHint')}
             </p>
             <div className="subscription-state-grid">
               <div className="subscription-state-item">
-                <b>상태</b>
-                <span>{user ? statusLabel : '로그인 필요'}</span>
+                <b>{t('subStatusLabel')}</b>
+                <span>{user ? t(statusLabel) : t('subStatusNeedLogin')}</span>
               </div>
               <div className="subscription-state-item">
-                <b>이용권</b>
-                <span>{isPremium ? '활성' : '-'}</span>
+                <b>{t('subPlanLabel')}</b>
+                <span>{isPremium ? t('subActive') : '-'}</span>
               </div>
               <div className="subscription-state-item">
-                <b>이용 만료</b>
+                <b>{t('subEndsLabel')}</b>
                 <span>
                   {subscription?.expires_at
-                    ? new Date(subscription.expires_at).toLocaleDateString('ko-KR')
+                    ? new Date(subscription.expires_at).toLocaleDateString(langLocale(lang))
                     : '-'}
                 </span>
               </div>
               <div className="subscription-state-item">
-                <b>자동갱신</b>
-                <span>없음</span>
+                <b>{t('subAutoRenewLabel')}</b>
+                <span>{t('subAutoRenewNone')}</span>
               </div>
               <div className="subscription-state-item">
-                <b>계정</b>
+                <b>{t('subAccountLabel')}</b>
                 <span>{user?.email ?? '-'}</span>
               </div>
               <div className="subscription-state-item">
-                <b>결제</b>
-                <span>토스페이먼츠</span>
+                <b>{t('subPaymentLabel')}</b>
+                <span>{t('subPaymentProvider')}</span>
               </div>
             </div>
             <div className="subscription-actions">
               <button className="btn btn-sm btn-soft" type="button" onClick={() => void refresh()}>
-                상태 새로고침
+                {t('subRefresh')}
               </button>
               {!user ? (
                 <Link className="btn btn-sm btn-primary" to="/login" state={{ from: '/subscribe' }}>
-                  로그인
+                  {t('authLoginSubmit')}
                 </Link>
               ) : null}
               <Link className="btn btn-sm btn-gold" to="/library">
-                서재 열기
+                {t('subOpenLibrary')}
               </Link>
             </div>
-            {user ? <div style={{ marginTop: 14 }}><SubscriptionManagePanel /></div> : null}
+            {user ? (
+              <div style={{ marginTop: 14 }}>
+                <SubscriptionManagePanel />
+              </div>
+            ) : null}
           </article>
         </div>
 
         {premiumReason === 'none' && user ? (
           <div className="subscribe-ad-alt" style={{ marginTop: 18 }}>
             <div>
-              <h3>무료로 계속 이용</h3>
-              <p>체험이 끝난 뒤에는 광고 시청(임시) 또는 월 이용권으로 프리미엄을 열 수 있습니다.</p>
+              <h3>{t('subAdTitle')}</h3>
+              <p>{t('subAdDesc')}</p>
             </div>
             <button
               type="button"
@@ -520,35 +537,32 @@ export function SubscribePage() {
               disabled={busy !== null}
               onClick={() => void onAdUnlock()}
             >
-              {busy === 'ad' ? '처리 중…' : '광고로 24시간 이용 (임시)'}
+              {busy === 'ad' ? t('loginBusy') : t('subAdCta')}
             </button>
           </div>
         ) : null}
 
         <div className="business-disclosure">
-          <h4>판매자 정보</h4>
-          <p>
-            {siteConfig.business.companyName}은 전자책·오디오북·자기확인 노트·온라인 콘텐츠·구독
-            서비스를 제공합니다.
-          </p>
+          <h4>{t('subSellerTitle')}</h4>
+          <p>{t('subSellerBlurb').replace('{company}', siteConfig.business.companyName)}</p>
           <div className="business-grid">
             <div>
-              <b>상호</b> <span>{siteConfig.business.companyName}</span>
+              <b>{t('subBizName')}</b> <span>{siteConfig.business.companyName}</span>
             </div>
             <div>
-              <b>대표자</b> <span>{siteConfig.business.representative}</span>
+              <b>{t('subBizRep')}</b> <span>{siteConfig.business.representative}</span>
             </div>
             <div>
-              <b>사업자등록번호</b> <span>{siteConfig.business.businessNumber}</span>
+              <b>{t('subBizNumber')}</b> <span>{siteConfig.business.businessNumber}</span>
             </div>
             <div>
-              <b>통신판매업 신고</b> <span>{siteConfig.business.mailOrderNumber}</span>
+              <b>{t('subBizMailOrder')}</b> <span>{siteConfig.business.mailOrderNumber}</span>
             </div>
             <div>
-              <b>고객센터</b> <span>{siteConfig.business.phone}</span>
+              <b>{t('subBizSupport')}</b> <span>{siteConfig.business.phone}</span>
             </div>
             <div>
-              <b>개인정보·환불 문의</b>{' '}
+              <b>{t('subBizPrivacy')}</b>{' '}
               <span>
                 <a href={`mailto:${PRODUCT_SPEC.supportEmail}`}>{PRODUCT_SPEC.supportEmail}</a>
               </span>
@@ -557,9 +571,9 @@ export function SubscribePage() {
         </div>
 
         <div className="launch-note">
-          <b>이용 안내:</b> 모든 유료 이용권은 자동갱신되지 않습니다. 결제 전 선택한 상품의 가격과
-          이용기간을 다시 확인할 수 있으며, 환불·해지 기준은{' '}
-          <Link to="/refund">환불정책</Link>에서 확인할 수 있습니다.
+          {t('subLaunchNoteBefore')}
+          <Link to="/refund">{t('subLaunchNoteLink')}</Link>
+          {t('subLaunchNoteAfter')}
         </div>
       </div>
     </section>

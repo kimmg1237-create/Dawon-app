@@ -2,8 +2,8 @@ import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { FEATURES } from '../data/features'
-import { siteConfig } from '../data/siteConfig'
 import { cancelDawonSectionScroll } from '../newsite/dawonOs/initDawonOs'
+import { dawonT, getDawonLang, setDawonLang, type DawonLang } from '../newsite/dawonOs/i18n'
 
 const THEME_KEY = 'dawon_os95_theme'
 
@@ -37,8 +37,12 @@ export function AppNav() {
   const [theme, setTheme] = useState<'light' | 'dark'>(() =>
     typeof document !== 'undefined' ? readTheme() : 'light',
   )
+  const [lang, setLang] = useState<DawonLang>(() =>
+    typeof document !== 'undefined' ? getDawonLang() : 'ko',
+  )
   const menuRef = useRef<HTMLDivElement>(null)
   const menuBtnRef = useRef<HTMLButtonElement>(null)
+  const t = (key: string) => dawonT(key, lang)
 
   const isLibrary =
     location.pathname.startsWith('/library') ||
@@ -49,6 +53,16 @@ export function AppNav() {
   useEffect(() => {
     applyTheme(theme)
   }, [theme])
+
+  useEffect(() => {
+    const onLang = (e: Event) => {
+      const detail = (e as CustomEvent<{ lang?: DawonLang }>).detail
+      if (detail?.lang) setLang(detail.lang)
+      else setLang(getDawonLang())
+    }
+    window.addEventListener('dawon-lang-changed', onLang)
+    return () => window.removeEventListener('dawon-lang-changed', onLang)
+  }, [])
 
   useEffect(() => {
     const modal = menuRef.current
@@ -101,35 +115,35 @@ export function AppNav() {
     closeMenu()
   }
 
-  const accountLabel = user?.email?.split('@')[0] || '게스트'
+  const accountLabel = user?.email?.split('@')[0] || t('guestName')
 
   return (
     <>
     <header className="topbar app-nav-header dawon-os-topbar">
       <div className="container nav">
-        <Link className="brand" to="/" aria-label="DAWON 다원 하루설계 홈" onClick={closeMenu}>
+        <Link className="brand" to="/" aria-label={t('brandHome')} onClick={closeMenu}>
           <img
             className="brand-mark"
             src="/brand/dawon-logo.png"
-            alt="다원 공식 금박 로고"
+            alt={t('brandLogoAlt')}
             width={50}
             height={50}
             decoding="async"
           />
           <span>
-            <b>{siteConfig.brand.full}</b>
+            <b>{t('brandNav')}</b>
             <small>1F TODAY · 2F GROW · 3F CREATE</small>
           </span>
         </Link>
-        <nav className="nav-links" aria-label="주요 메뉴">
+        <nav className="nav-links" aria-label={t('mainNav')}>
           <Link to="/today" aria-current={location.pathname === '/today' ? 'page' : undefined} onClick={closeMenu} preventScrollReset>
-            1층 · 오늘설계
+            {t('floor1')}
           </Link>
           <Link to="/school" aria-current={location.pathname === '/school' ? 'page' : undefined} onClick={closeMenu} preventScrollReset>
-            2층 · 365학교
+            {t('floor2')}
           </Link>
           <Link to="/create" aria-current={location.pathname === '/create' || location.pathname.startsWith('/movie-studio') ? 'page' : undefined} onClick={closeMenu} preventScrollReset>
-            3층 · 창작
+            {t('floor3')}
           </Link>
           <div className="nav-dropdown">
             <Link
@@ -137,12 +151,12 @@ export function AppNav() {
               className="nav-dropdown-trigger"
               aria-current={['/programs', '/institution', '/report'].includes(location.pathname) ? 'page' : undefined}
             >
-              대상별 프로그램 <span className="dropdown-arrow">▾</span>
+              {t('programs')} <span className="dropdown-arrow">▾</span>
             </Link>
             <div className="nav-dropdown-menu">
-              <Link to="/programs" onClick={closeMenu}>대상별 프로그램</Link>
-              <Link to="/institution" onClick={closeMenu}>학교·기관 도입</Link>
-              <Link to="/report" onClick={closeMenu}>성장리포트</Link>
+              <Link to="/programs" onClick={closeMenu}>{t('programs')}</Link>
+              <Link to="/institution" onClick={closeMenu}>{t('institution')}</Link>
+              <Link to="/report" onClick={closeMenu}>{t('report')}</Link>
             </div>
           </div>
           <Link
@@ -150,7 +164,7 @@ export function AppNav() {
             aria-current={isLibrary ? 'page' : undefined}
             onClick={closeMenu}
           >
-            작품관
+            {t('library')}
           </Link>
           {FEATURES.paymentsEnabled ? (
             <Link
@@ -158,7 +172,7 @@ export function AppNav() {
               aria-current={location.pathname.startsWith('/subscribe') || location.pathname === '/store' ? 'page' : undefined}
               onClick={closeMenu}
             >
-              스토어
+              {t('store')}
             </Link>
           ) : null}
           {isAdmin ? (
@@ -172,7 +186,7 @@ export function AppNav() {
             <button
               type="button"
               className="account-chip"
-              aria-label="회원 계정과 클라우드 상태 열기"
+              aria-label={t('accountOpen')}
               onClick={onAccountChip}
             >
               <i className={`cloud-dot${user ? ' online' : ''}`} title="회원·클라우드 상태" />
@@ -182,16 +196,36 @@ export function AppNav() {
           <button
             type="button"
             className="icon-btn"
-            aria-label={theme === 'dark' ? '밝은 화면으로 변경' : '어두운 화면으로 변경'}
+            aria-label={theme === 'dark' ? t('themeLight') : t('themeDark')}
             onClick={toggleTheme}
           >
             {theme === 'dark' ? '☀' : '◐'}
           </button>
+          <label className="lang-wrap">
+            <span className="sr-only">Language</span>
+            <select
+              className="dawon-lang"
+              aria-label="Language"
+              value={lang}
+              onChange={(e) => {
+                const next = e.target.value
+                if (next === 'ko' || next === 'en' || next === 'ja' || next === 'zh') {
+                  setDawonLang(next)
+                  setLang(next)
+                }
+              }}
+            >
+              <option value="ko">한국어</option>
+              <option value="en">English</option>
+              <option value="ja">日本語</option>
+              <option value="zh">中文</option>
+            </select>
+          </label>
           <button
             ref={menuBtnRef}
             type="button"
             className="icon-btn mobile-toggle"
-            aria-label="모바일 메뉴"
+            aria-label={t('mobileMenu')}
             aria-controls="appNavMenuModal"
             aria-expanded={open}
             onClick={() => {
@@ -203,11 +237,11 @@ export function AppNav() {
           </button>
           {configured ? (
             <button type="button" className="btn btn-soft" onClick={onAccountBtn}>
-              {user ? '로그아웃' : '로그인'}
+              {user ? t('logout') : t('login')}
             </button>
           ) : null}
           <Link className="btn btn-primary" to="/today" onClick={closeMenu}>
-            오늘 한 가지
+            {t('startOne')}
           </Link>
         </div>
       </div>
@@ -228,41 +262,41 @@ export function AppNav() {
       >
         <div className="modal-card">
           <div className="modal-head">
-            <h3 id="appNavMenuTitle">메뉴</h3>
-            <button type="button" className="close-btn" aria-label="메뉴 닫기" onClick={closeMenu}>
+            <h3 id="appNavMenuTitle">{t('menu')}</h3>
+            <button type="button" className="close-btn" aria-label={t('close')} onClick={closeMenu}>
               ×
             </button>
           </div>
           <div className="form-actions" style={{ display: 'grid' }}>
             <Link className="btn btn-primary" to="/today" onClick={closeMenu}>
-              오늘설계
+              {t('floor1')}
             </Link>
             <Link className="btn btn-soft" to="/school" onClick={closeMenu}>
-              365 생활습관학교
+              {t('floor2')}
             </Link>
             <Link className="btn btn-soft" to="/create" onClick={closeMenu}>
-              3층 · 창작
+              {t('floor3')}
             </Link>
             <Link className="btn btn-soft" to="/programs" onClick={closeMenu}>
-              대상별 프로그램
+              {t('programs')}
             </Link>
             <Link className="btn btn-soft" to="/institution" onClick={closeMenu}>
-              학교·기관 도입
+              {t('institution')}
             </Link>
             <Link className="btn btn-soft" to="/report" onClick={closeMenu}>
-              성장리포트
+              {t('report')}
             </Link>
             <Link className="btn btn-soft" to="/library" onClick={closeMenu}>
-              작품관
+              {t('library')}
             </Link>
             {FEATURES.paymentsEnabled ? (
               <Link className="btn btn-soft" to="/subscribe" onClick={closeMenu}>
-                스토어
+                {t('store')}
               </Link>
             ) : null}
             {isAdmin ? (
               <Link className="btn btn-soft" to="/admin" onClick={closeMenu}>
-                관리
+                {t('admin')}
               </Link>
             ) : null}
           </div>

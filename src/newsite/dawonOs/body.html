@@ -31,7 +31,7 @@
     <nav class="nav-links" aria-label="주요 메뉴">
       <a href="/today">1층 · 오늘설계</a><a href="/school">2층 · 365학교</a><a href="/create">3층 · 창작</a><div class="nav-dropdown"><a href="/programs" class="nav-dropdown-trigger">대상별 프로그램 <span class="dropdown-arrow">▾</span></a><div class="nav-dropdown-menu"><a href="/programs">대상별 프로그램</a><a href="/institution">학교·기관 도입</a><a href="/report">성장리포트</a></div></div><a href="/library">작품관</a><a href="/subscribe">스토어</a>
     </nav>
-    <div class="nav-actions account-area"><button type="button" class="account-chip" id="accountChip" aria-label="회원 계정과 클라우드 상태 열기"><i class="cloud-dot" id="cloudDot" title="회원·클라우드 상태"></i><span id="accountName">게스트</span></button><button type="button" class="icon-btn" id="themeBtn" aria-label="화면 모드 변경">◐</button><button type="button" class="icon-btn mobile-toggle" id="menuBtn" aria-label="모바일 메뉴" aria-controls="menuModal" aria-expanded="false">☰</button><button type="button" class="btn btn-soft" id="accountBtn">로그인</button><a class="btn btn-primary" href="/today">오늘 한 가지</a></div>
+    <div class="nav-actions account-area"><button type="button" class="account-chip" id="accountChip" aria-label="회원 계정과 클라우드 상태 열기"><i class="cloud-dot" id="cloudDot" title="회원·클라우드 상태"></i><span id="accountName">게스트</span></button><label class="lang-wrap" for="dawonLang"><span class="sr-only" data-i18n="langLabel">언어</span><select id="dawonLang" class="dawon-lang" aria-label="Language"><option value="ko">한국어</option><option value="en">English</option><option value="ja">日本語</option><option value="zh">中文</option></select></label><button type="button" class="icon-btn" id="themeBtn" aria-label="화면 모드 변경">◐</button><button type="button" class="icon-btn mobile-toggle" id="menuBtn" aria-label="모바일 메뉴" aria-controls="menuModal" aria-expanded="false">☰</button><button type="button" class="btn btn-soft" id="accountBtn">로그인</button><a class="btn btn-primary" href="/today">오늘 한 가지</a></div>
   </div>
 </header>
 <main id="top">
@@ -64,6 +64,43 @@
     </div>
   </section>
 
+  <section id="publisher" class="publisher-section">
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <div class="kicker">DAWON PUBLISHING × DAY DESIGN</div>
+          <h2 data-i18n="pubTitle">다원출판사 안에서, 다원 하루설계가 움직입니다.</h2>
+          <p data-i18n="pubDesc">출판과 생활설계를 둘로 나누지 않습니다. 다원출판사가 지식·이야기·노래·오디오·영상을 만들고, 다원 하루설계가 그 배움을 오늘의 행동으로 연결합니다.</p>
+        </div>
+      </div>
+      <div class="publisher-grid">
+        <article class="panel panel-pad">
+          <div class="kicker">PUBLISHING</div>
+          <h3>다원출판사</h3>
+          <p>책·전자책·오디오북·만화책·노래·영상·강의 콘텐츠를 만드는 상위 브랜드입니다.</p>
+        </article>
+        <article class="panel panel-pad">
+          <div class="kicker">DAY DESIGN</div>
+          <h3>다원 하루설계</h3>
+          <p>읽고 들은 내용에서 오늘 적용할 하나를 고르고, 스스로 방법을 찾아 직접 실천합니다.</p>
+        </article>
+        <article class="panel panel-pad">
+          <div class="kicker">GROW AGAIN</div>
+          <h3>생활에서 다시 성장</h3>
+          <p>실천 결과에서 배운 원리를 공부·일·관계·건강·창작·사업 등 다른 영역에 다시 적용합니다.</p>
+        </article>
+      </div>
+      <div class="publisher-foot">
+        <strong data-i18n="pubCta">출판사는 지식을 만들고, 하루설계는 그 지식을 생활로 옮깁니다.</strong>
+        <span class="publisher-flow" data-i18n="pubFlow">읽기·듣기 → 오늘 하나 발견 → 실천 → 결과 → 배움 → 다시 설계</span>
+        <div class="form-actions">
+          <a class="btn btn-primary" href="/today">오늘 하나 시작</a>
+          <a class="btn btn-soft" href="/library">작품관 보기</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
 
   <section id="one" class="one-section">
     <div class="container first-flow-intro" id="firstFlowOneIntro">
@@ -87,6 +124,76 @@
         <div class="today-state"><div><b id="oneDoneCount">0</b><span>최근 30일 완료</span></div><div><b id="oneRestartCount">0</b><span>다시 시작 경험</span></div></div>
         <div class="one-history" id="oneHistory"><div>아직 오늘 한 가지 기록이 없습니다.</div></div>
       </aside>
+    </div>
+
+    <div class="container one-principle" id="onePrinciple">
+      <div class="one-principle-copy">
+        <div class="kicker">ONE PRINCIPLE</div>
+        <h3 data-i18n="oneMain">하나를 배우고, 여러 곳에 적용합니다.</h3>
+        <p data-i18n="oneText">체크 개수를 늘리기보다 하나의 경험에서 방법을 발견하고 다른 생활 문제에 옮겨 쓰는 습관을 중요하게 봅니다.</p>
+        <blockquote data-i18n="oneQuote">하나부터 제대로 해봅니다. 잘된 방법은 다른 곳에도 적용합니다.</blockquote>
+      </div>
+      <div class="one-principle-steps" aria-label="하나 원리 5단계">
+        <div class="one-principle-step"><b>확인</b><span>무슨 일이 있는지 봅니다.</span></div>
+        <div class="one-principle-step"><b>선택</b><span>지금 중요한 하나를 고릅니다.</span></div>
+        <div class="one-principle-step"><b>실천</b><span>가능한 만큼 직접 해봅니다.</span></div>
+        <div class="one-principle-step"><b>배움</b><span>결과에서 잘된 방법을 찾습니다.</span></div>
+        <div class="one-principle-step"><b>적용</b><span>다른 생활에도 다시 써봅니다.</span></div>
+      </div>
+    </div>
+
+    <div class="container life-missions" id="lifeMissions">
+      <div class="section-head">
+        <div>
+          <div class="kicker">LIFE MISSIONS · 생활미션</div>
+          <h2 data-i18n="missionTitle">오늘 필요한 하나를 고르세요.</h2>
+          <p data-i18n="missionText">마음·몸·집안일·하루경영·문제해결을 하나의 자기주도 생활습관으로 연결합니다. 고른 미션은 3분 오늘설계·7일 실천으로 이어집니다.</p>
+        </div>
+      </div>
+      <div class="mission-groups">
+        <article class="panel panel-pad mission-group">
+          <h3>마음관리</h3>
+          <div class="mission-wrap">
+            <button type="button" class="mission-chip" data-mission="praise">칭찬</button>
+            <button type="button" class="mission-chip" data-mission="comfort">위로</button>
+            <button type="button" class="mission-chip" data-mission="thanks">감사</button>
+            <button type="button" class="mission-chip" data-mission="reflect">반성</button>
+            <button type="button" class="mission-chip" data-mission="meditate">명상</button>
+            <button type="button" class="mission-chip" data-mission="pray">기도</button>
+          </div>
+        </article>
+        <article class="panel panel-pad mission-group">
+          <h3>몸·생활관리</h3>
+          <div class="mission-wrap">
+            <button type="button" class="mission-chip" data-mission="exercise">운동</button>
+            <button type="button" class="mission-chip" data-mission="clean">청소</button>
+            <button type="button" class="mission-chip" data-mission="cook">요리</button>
+            <button type="button" class="mission-chip" data-mission="laundry">세탁</button>
+            <button type="button" class="mission-chip" data-mission="organize">정리정돈</button>
+          </div>
+        </article>
+        <article class="panel panel-pad mission-group">
+          <h3>하루경영</h3>
+          <div class="mission-wrap">
+            <button type="button" class="mission-chip" data-mission="today">오늘 한 일</button>
+            <button type="button" class="mission-chip" data-mission="tomorrow">내일 할 일</button>
+            <button type="button" class="mission-chip" data-mission="priority">우선순위</button>
+            <button type="button" class="mission-chip" data-mission="one">오늘 하나</button>
+          </div>
+        </article>
+        <article class="panel panel-pad mission-group">
+          <h3>문제해결·소통</h3>
+          <div class="mission-wrap">
+            <button type="button" class="mission-chip" data-mission="add">더하기</button>
+            <button type="button" class="mission-chip" data-mission="subtract">빼기</button>
+            <button type="button" class="mission-chip" data-mission="direction">방안</button>
+            <button type="button" class="mission-chip" data-mission="method">방도</button>
+            <button type="button" class="mission-chip" data-mission="alternative">대안</button>
+            <button type="button" class="mission-chip" data-mission="idea">아이디어 제안</button>
+            <button type="button" class="mission-chip" data-mission="communicate">소통</button>
+          </div>
+        </article>
+      </div>
     </div>
   </section>
 
@@ -145,6 +252,36 @@
       
       <div class="next-step"><b>정밀설계의 목적 →</b>생각을 많이 적는 것이 아니라 <b>어디를 먼저 바꿀지 판단하고 실제 행동 하나를 정하는 것</b>입니다. 정한 행동은 <a href="#challenge">7일 실천설계</a>로 보낼 수 있습니다.</div>
 
+      <div class="idea-lab" id="ideaLab">
+        <div class="idea-lab-head">
+          <div class="kicker">DAWON IDEA LAB</div>
+          <h3 data-i18n="ideaTitle">문제를 아이디어와 제안으로 바꿉니다.</h3>
+          <p data-i18n="ideaText">불평으로 끝내지 않고, 관찰한 것을 자원으로 바꾸고 방안·방도·대안을 제시합니다. 카드를 누르면 아래 정밀설계 입력란으로 이동합니다.</p>
+        </div>
+        <div class="idea-lab-grid">
+          <button type="button" class="idea-lab-card" data-idea-step="discover">
+            <span class="kicker">발견</span>
+            <strong>모든 것이 소재</strong>
+            <p>사람·자연·사물·불편·실수·실패·대화에서 문제와 기회를 발견합니다.</p>
+          </button>
+          <button type="button" class="idea-lab-card" data-idea-step="shape">
+            <span class="kicker">가공</span>
+            <strong>더하기·빼기</strong>
+            <p>무엇을 더하고, 빼고, 바꾸면 더 좋아지는지 생각합니다.</p>
+          </button>
+          <button type="button" class="idea-lab-card" data-idea-step="propose">
+            <span class="kicker">제안</span>
+            <strong>방안·방도·대안</strong>
+            <p>방향, 실제 방법, 첫 방법이 안 될 때의 다른 길까지 함께 제안합니다.</p>
+          </button>
+          <button type="button" class="idea-lab-card" data-idea-step="test">
+            <span class="kicker">실험</span>
+            <strong>해보고 다시 설계</strong>
+            <p>아이디어를 작은 행동으로 시험하고 결과를 보고 수정합니다.</p>
+          </button>
+        </div>
+      </div>
+
       <div class="precision-shell">
         <article class="panel panel-pad">
           <div class="precision-domain-grid">
@@ -193,6 +330,32 @@
       <div class="next-step"><b>다음 단계 →</b>7일의 실천 증거를 <a href="#report">성장리포트</a>에서 확인합니다.</div>
 
       <div class="challenge-grid"><article class="panel panel-pad challenge-form"><div class="field"><label for="challengeTitle">실천 이름</label><input id="challengeTitle" placeholder="예: 매일 10분 걷기"></div><div class="field"><label for="challengeReason">실천 이유</label><textarea id="challengeReason" placeholder="왜 이 행동을 지키고 싶은가요?"></textarea></div><div class="field"><label for="challengeReward">7일 후 나에게 줄 보상</label><input id="challengeReward" placeholder="예: 좋아하는 책 한 권"></div><div class="form-actions"><button type="button" class="btn btn-primary" id="saveChallenge">실천설계 저장</button><button type="button" class="btn btn-soft" id="challengeSample">예시 입력</button><button type="button" class="btn btn-danger" id="resetChallenge">초기화</button></div></article><article class="panel panel-pad"><div class="label-row"><div><div class="kicker">CURRENT 7-DAY PRACTICE</div><h3 id="challengeName">아직 시작한 실천설계가 없습니다</h3></div><strong id="challengeCount">0/7</strong></div><div class="days" id="challengeDays"></div><div class="challenge-progress"><span id="challengeBar"></span></div><div class="challenge-message" id="challengeMessage">실천 이름을 정하고 첫날을 체크해 보세요.</div></article></div>
+
+      <div class="transfer-panel" id="transfer">
+        <div class="transfer-grid">
+          <div>
+            <div class="kicker">TRANSFER · 전이</div>
+            <h3 data-i18n="transferTitle">제대로 해본 하나가 다른 일을 푸는 방법이 됩니다.</h3>
+            <p data-i18n="transferText">생활에서 익힌 원리를 공부·일·돈·관계·건강·창작·프로젝트에 옮겨봅니다.</p>
+            <div class="field"><label for="transferFrom">제대로 해본 하나 · 원리</label><input id="transferFrom" placeholder="예: 정리정돈 — 확인 → 빼기 → 중요한 것 먼저"></div>
+            <div class="field" style="margin-top:10px"><label for="transferTo">다른 곳에 적용할 곳</label><input id="transferTo" placeholder="예: 공부·일·관계·건강·창작"></div>
+            <div class="form-actions" style="margin-top:12px">
+              <button type="button" class="btn btn-primary" id="transferSave">전이 저장</button>
+              <button type="button" class="btn btn-gold" id="transferToToday">오늘설계에 반영</button>
+              <button type="button" class="btn btn-soft" id="transferToChallenge">7일 실천 이름으로</button>
+            </div>
+            <div class="status" id="transferStatus" style="margin-top:10px">전이 기록은 이 브라우저에 저장됩니다.</div>
+          </div>
+          <aside class="panel panel-pad transfer-examples">
+            <div class="kicker">적용 예시</div>
+            <div class="transfer-row"><b>정리정돈</b><span>필요한 것 확인 → 불필요한 것 빼기 → 중요한 것 먼저 배치</span></div>
+            <div class="transfer-row"><b>공부</b><span>필요한 과목 확인 → 방해요소 빼기 → 중요한 과제 먼저</span></div>
+            <div class="transfer-row"><b>일</b><span>해야 할 일 확인 → 중복업무 빼기 → 핵심 업무 먼저</span></div>
+            <div class="transfer-row"><b>관계</b><span>상황 확인 → 비난 빼기 → 설명과 공감 더하기</span></div>
+            <div class="transfer-row"><b>아이디어</b><span>현재 것 확인 → 더하기·빼기·바꾸기 → 새로운 아이템 실험</span></div>
+          </aside>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -207,6 +370,35 @@
         <article class="school-card"><b>STEP 03 · CHANGE</b><strong>90일 변화과정</strong><p>한두 번의 성과가 아니라 반복 가능한 나만의 방안·방도·대안을 찾습니다.</p><div class="school-progress"><i id="school90Bar"></i></div><small id="school90Text">0일 기록 · 성공 기준 60일</small></article>
         <article class="school-card"><b>STEP 04 · LIFE</b><strong>365일 생활설계</strong><p>나에게 맞는 생활 리듬을 만들고 기록을 연간 성장리포트와 생활자산으로 남깁니다.</p><div class="school-progress"><i id="school365Bar"></i></div><small id="school365Text">0일 기록 · 성공 기준 240일</small></article>
       </div>
+
+      <div class="school-program-panel" id="schoolProgram">
+        <div class="school-program-head">
+          <div>
+            <div class="kicker">SCHOOLS & INSTITUTIONS · 단계형 프로그램</div>
+            <h3 data-i18n="publicTitle">7일 체험에서 365일 생활학교까지</h3>
+            <p data-i18n="publicText">작은 파일럿으로 사용성과 참여도를 확인한 뒤 단계적으로 확대합니다.</p>
+          </div>
+          <a class="btn btn-soft" href="/institution">학교·기관 도입</a>
+        </div>
+        <div class="school-program-table-wrap">
+          <table class="school-program-table">
+            <thead><tr><th>기간</th><th>목표</th><th>결과물</th></tr></thead>
+            <tbody>
+              <tr><td><b>7일</b></td><td>자기확인과 오늘 하나 경험</td><td>7일 실천 카드</td></tr>
+              <tr><td><b>30일</b></td><td>하나의 생활습관 만들기</td><td>30일 성장요약</td></tr>
+              <tr><td><b>90일</b></td><td>행동-결과-배움 패턴 발견</td><td>성장리포트</td></tr>
+              <tr><td><b>365일</b></td><td>자기주도 생활설계 습관화</td><td>나의 생활책</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <aside class="school-privacy panel panel-pad">
+          <div class="kicker">PRIVACY · 운영 원칙</div>
+          <h4 data-i18n="privacyTitle">개인 일기는 보호하고, 성장 흐름은 확인합니다.</h4>
+          <p data-i18n="privacyText">민감한 개인 기록은 보호하고, 참여율·실천율·완료율·도움 요청 등 필요한 집계형 지표를 중심으로 운영합니다.</p>
+          <p class="school-global-line" data-i18n="global">자기 삶을 경영하는 힘에서 글로벌 리더십이 시작됩니다.</p>
+        </aside>
+      </div>
+
       <div class="school-tools">
         <article class="panel lesson-panel"><div class="kicker">BOOK → LESSON → ACTION</div><h3>대표 작품을 오늘의 수업으로</h3><p style="color:var(--muted);font-size:12px">책을 읽고 끝내지 않고 질문 하나와 행동 하나를 오늘설계에 바로 연결합니다.</p><div class="lesson-grid">
           <div class="lesson-card"><b>01 · 자신과의 소통</b><strong>오늘 나에게 묻기</strong><p>“지금 내가 실제로 확인해야 할 사실과 감정은 무엇인가?”</p><button type="button" data-lesson="지금 내가 실제로 확인해야 할 사실과 감정은 무엇인가?">오늘 질문으로</button></div>
@@ -257,8 +449,20 @@
 
   <section id="life">
     <div class="container">
-      <div class="section-head"><div><div class="kicker">2F · LIFE STAGE CUSTOM DESIGN</div><h2>생애맞춤설계</h2><p>인생 전체를 한 번에 계산하는 종합설계가 아니라, 같은 생활설계 원리를 나이·가족·학교·직장 환경에 맞게 질문과 실천으로 바꾸는 영역입니다.</p></div></div>
-      <div class="next-step"><b>적용 방법 →</b>내 상황에 맞는 질문을 고른 뒤 <a href="#today">3분 오늘설계</a>의 오늘 행동과 내일 계획에 적용합니다.</div>
+      <div class="section-head"><div><div class="kicker">2F · LIFE STAGE CUSTOM DESIGN</div><h2 data-i18n="audTitle">대상은 넓게, 핵심 원리는 하나로</h2><p data-i18n="audText">같은 자기주도 생활설계 원리를 각자의 상황에 맞게 쉽게 적용합니다. 생애맞춤설계는 인생 전체를 한 번에 계산하는 종합설계가 아니라, 나이·가족·학교·직장 환경에 맞게 질문과 실천으로 바꾸는 영역입니다.</p></div></div>
+      <div class="next-step"><b>적용 방법 →</b>내 상황에 맞는 질문을 고른 뒤 <a href="#today">3분 오늘설계</a>의 오늘 행동과 내일 계획에 적용합니다. 더 자세한 대상별 프로그램은 <a href="/programs">대상별 프로그램</a>에서 확인합니다.</div>
+
+      <div class="audience-bridge" id="audienceBridge" aria-label="대상별 원리">
+        <a class="audience-chip" href="/programs"><b>어린이</b><span>작은 습관과 자기선택</span></a>
+        <a class="audience-chip" href="/programs"><b>학생</b><span>학습과 자기주도</span></a>
+        <a class="audience-chip" href="/programs"><b>성인</b><span>생활과 자기경영</span></a>
+        <a class="audience-chip" href="/programs"><b>시니어</b><span>생활리듬과 인생기록</span></a>
+        <a class="audience-chip" href="/programs"><b>장애인</b><span>접근성과 자기선택</span></a>
+        <a class="audience-chip" href="/programs"><b>다문화가정</b><span>생활소통과 다국어</span></a>
+        <a class="audience-chip" href="/institution"><b>학교</b><span>교육과 성장기록</span></a>
+        <a class="audience-chip" href="/institution"><b>기관</b><span>교육·복지·공공 적용</span></a>
+      </div>
+
       <div class="life-grid">
         <article class="life-card"><b>01</b><h3>어린이·청소년</h3><p>감정 표현, 공부·생활습관, 친구 관계, 작은 책임을 쉬운 질문으로 익힙니다.</p><span>감정 · 공부 · 친구 · 책임</span></article>
         <article class="life-card"><b>02</b><h3>청년·1인가구</h3><p>진로, 돈, 건강, 청소·요리·세탁 같은 생활기술을 자기경영 습관으로 연결합니다.</p><span>진로 · 돈 · 건강 · 생활기술</span></article>
@@ -277,9 +481,31 @@
       <div class="section-head">
         <div>
           <div class="kicker">3F · LIBRARY · REWARD & EXPANSION</div>
-          <h2>다원작가 작품관 · 보상과 확장</h2>
-          <p>생활설계가 본업이고 작품관은 보상·확장 영역입니다. 처음부터 모두 볼 필요 없이, 기록과 실천이 쌓인 뒤 전자책·오디오북·만화책과 창작도구를 필요할 때 선택해 이용합니다.</p>
+          <h2 data-i18n="libraryTitle">다원출판사 작품관에서 하루설계로 바로 연결합니다.</h2>
+          <p data-i18n="libraryText">전자책·오디오북·만화책·노래·영상에서 마음에 남은 한 가지를 골라 오늘의 생활미션으로 옮깁니다. 생활설계가 본업이고 작품관은 보상·확장 영역입니다.</p>
         </div>
+      </div>
+
+      <div class="library-bridge" id="libraryBridge">
+        <article class="library-bridge-card">
+          <div class="kicker">01</div>
+          <h3>읽고 듣기</h3>
+          <p>마음에 남은 한 문장이나 아이디어를 고릅니다.</p>
+        </article>
+        <article class="library-bridge-card">
+          <div class="kicker">02</div>
+          <h3>오늘 하나 적용</h3>
+          <p>오늘 내 생활에 어떻게 써볼지 정하고 3분 하루설계에 기록합니다.</p>
+        </article>
+        <article class="library-bridge-card">
+          <div class="kicker">03</div>
+          <h3>배우고 다시 적용</h3>
+          <p>잘된 방법을 공부·일·관계·건강·창작·사업에 다시 활용합니다.</p>
+        </article>
+      </div>
+      <div class="form-actions" style="margin:0 0 18px">
+        <a class="btn btn-primary" href="/today#lifeMissions">생활미션으로 옮기기</a>
+        <a class="btn btn-gold" href="/library">작품관 열기</a>
       </div>
 
       <div class="works-hero">
@@ -510,6 +736,19 @@
     <div class="container">
       <div class="section-head"><div><div class="kicker">FIRST TIME? · USER GUIDE</div><h2>처음 오셨나요? 사용가이드</h2><p>기능 설명을 여러 화면에 반복하지 않고, 어디서 시작해 무엇으로 이어지는지와 왜 필요한지를 이곳에서 한 번에 설명합니다.</p></div></div>
 
+      <div class="guide-3min" id="guide3min" aria-label="3분 사용설명서">
+        <div class="guide-3min-head">
+          <div class="kicker">3-MINUTE STARTER</div>
+          <h3 data-i18n="guideTitle">3분 사용설명서</h3>
+        </div>
+        <div class="guide-3min-grid">
+          <article><b>1분 · 오늘 한 일</b><p>오늘 실제로 한 일을 한 줄 적습니다.</p></article>
+          <article><b>1분 · 지금 내 마음</b><p>좋고 나쁨을 판단하기보다 현재 마음을 확인합니다.</p></article>
+          <article><b>1분 · 내일 하나</b><p>내일 가장 먼저 할 행동 하나를 정합니다.</p></article>
+        </div>
+        <a class="btn btn-primary" href="/today#today">3분 오늘설계 시작</a>
+      </div>
+
       <div class="role-compare" aria-label="오늘설계 방식 비교">
         <div class="role-box"><b>QUICK · 약 3분</b><strong>3분 오늘설계</strong><p>바쁜 날의 기본 모드입니다. 오늘 한 일·감정·하나의 실천·내일 첫 행동·나에게 한마디만 빠르게 기록합니다.</p></div>
         <div class="role-box"><b>DEEP · 약 10~15분</b><strong>오늘 정밀설계</strong><p>감정·관계·돈·건강·창작·사업을 비교하고 우선순위·방해요인·방안·방도·대안까지 정합니다.</p></div>
@@ -687,6 +926,26 @@
 <div class="toast" id="toast" role="status"></div>
 <div class="modal" id="menuModal" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="menuModalTitle"><div class="modal-card"><div class="modal-head"><h3 id="menuModalTitle">메뉴</h3><button type="button" class="close-btn" id="closeMenu" aria-label="메뉴 닫기">×</button></div><div class="form-actions" style="display:grid"><a class="btn btn-primary" href="/today">오늘설계</a><a class="btn btn-soft" href="/school">365 생활습관학교</a><a class="btn btn-soft" href="/create">3층 · 창작</a><a class="btn btn-soft" href="/programs">대상별 프로그램</a><a class="btn btn-soft" href="/institution">학교·기관 도입</a><a class="btn btn-soft" href="/report">성장리포트</a><a class="btn btn-soft" href="/library">작품관</a><a class="btn btn-soft" href="/subscribe">스토어</a></div></div></div>
 
+<div class="modal" id="missionModal" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="missionModalTitle">
+  <div class="modal-card">
+    <div class="modal-head">
+      <div><div class="kicker">LIFE MISSION · TODAY ONE</div><h3 id="missionModalTitle">생활미션</h3></div>
+      <button type="button" class="close-btn" id="closeMission" aria-label="미션 창 닫기">×</button>
+    </div>
+    <p class="muted" id="missionModalLead">5가지 질문으로 오늘 하나를 확인하고, 오늘설계·7일 실천으로 이어갑니다.</p>
+    <div class="field"><label for="missionQ0"><b>1.</b> 지금 무엇을 확인했나요?</label><textarea id="missionQ0" rows="2" placeholder="사실·상황·감정을 짧게"></textarea></div>
+    <div class="field" style="margin-top:10px"><label for="missionQ1"><b>2.</b> 오늘 가장 중요한 하나는?</label><textarea id="missionQ1" rows="2" placeholder="오늘 실행할 한 가지"></textarea></div>
+    <div class="field" style="margin-top:10px"><label for="missionQ2"><b>3.</b> 어떤 방법으로 해볼까요?</label><textarea id="missionQ2" rows="2" placeholder="방안·방도·대안"></textarea></div>
+    <div class="field" style="margin-top:10px"><label for="missionQ3"><b>4.</b> 해본 결과는?</label><textarea id="missionQ3" rows="2" placeholder="실천 후 달라진 점"></textarea></div>
+    <div class="field" style="margin-top:10px"><label for="missionQ4"><b>5.</b> 무엇을 배웠고, 어디에 다시 적용할까요?</label><textarea id="missionQ4" rows="2" placeholder="배움과 전이"></textarea></div>
+    <div class="form-actions" style="margin-top:14px">
+      <button type="button" class="btn btn-primary" id="missionSave">미션 저장</button>
+      <button type="button" class="btn btn-gold" id="missionToToday">오늘설계에 넣기</button>
+      <button type="button" class="btn btn-soft" id="missionToChallenge">7일 실천으로</button>
+    </div>
+    <div class="status" id="missionSaveStatus" style="margin-top:10px"></div>
+  </div>
+</div>
 
 <div class="modal" id="authModal" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="authModalTitle">
   <div class="modal-card">

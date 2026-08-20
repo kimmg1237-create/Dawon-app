@@ -1,5 +1,6 @@
 import { useEffect, useId, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react'
 import { siteConfig } from '../data/siteConfig'
+import { dawonT, getDawonLang, type DawonLang } from '../newsite/dawonOs/i18n'
 import './HomeNoticePopup.css'
 
 const STORAGE_KEY = 'dawon_home_notice_hide_until'
@@ -40,6 +41,9 @@ export function HomeNoticePopup() {
   const [hideMode, setHideMode] = useState<HideMode>('none')
   const [offset, setOffset] = useState({ x: 0, y: 0 })
   const [dragging, setDragging] = useState(false)
+  const [lang, setLang] = useState<DawonLang>(() =>
+    typeof document !== 'undefined' ? getDawonLang() : 'ko',
+  )
   const dragRef = useRef<{
     pointerId: number
     startX: number
@@ -47,6 +51,12 @@ export function HomeNoticePopup() {
     origX: number
     origY: number
   } | null>(null)
+
+  useEffect(() => {
+    const onLang = () => setLang(getDawonLang())
+    window.addEventListener('dawon-lang-changed', onLang)
+    return () => window.removeEventListener('dawon-lang-changed', onLang)
+  }, [])
 
   useEffect(() => {
     const t = window.setTimeout(() => {
@@ -114,7 +124,8 @@ export function HomeNoticePopup() {
 
   if (!open) return null
 
-  const { brand, urls } = siteConfig
+  const { urls } = siteConfig
+  const t = (key: string) => dawonT(key, lang)
 
   return (
     <div className="home-notice" role="dialog" aria-modal="false" aria-labelledby={titleId}>
@@ -127,19 +138,16 @@ export function HomeNoticePopup() {
         onPointerCancel={endDrag}
       >
         <div className="home-notice-handle" aria-hidden="true" />
-        <button type="button" className="home-notice-close" aria-label="닫기" onClick={close}>
+        <button type="button" className="home-notice-close" aria-label={t('close')} onClick={close}>
           ×
         </button>
         <img className="home-notice-logo" src="/brand/dawon-logo.png" alt="" width={72} height={72} />
-        <p className="home-notice-kicker">{brand.full}</p>
-        <h2 id={titleId}>여기가 다원 하루설계 홈입니다</h2>
-        <p className="home-notice-copy">
-          오늘 바꿀 딱 한 가지를 정하고, 3분 기록·7일 실천으로 성장을 확인하세요.
-          출판·작가 소개는 출판사 사이트에서 따로 볼 수 있습니다.
-        </p>
+        <p className="home-notice-kicker">{t('brandNav')}</p>
+        <h2 id={titleId}>{t('noticeTitle')}</h2>
+        <p className="home-notice-copy">{t('noticeCopy')}</p>
         <div className="home-notice-actions">
           <a className="btn btn-primary home-notice-cta" href="#one" onClick={() => close()}>
-            오늘설계 시작하기
+            {t('noticeStart')}
           </a>
           <a
             className="btn btn-soft"
@@ -148,17 +156,17 @@ export function HomeNoticePopup() {
             rel="noopener noreferrer"
             onClick={() => persistHide()}
           >
-            출판사 사이트 ↗
+            {t('noticePublisher')}
           </a>
         </div>
-        <div className="home-notice-hide" role="group" aria-label="다시 보지 않기">
+        <div className="home-notice-hide" role="group" aria-label={t('noticeHideGroup')}>
           <label>
             <input
               type="checkbox"
               checked={hideMode === 'today'}
               onChange={(e) => setHideMode(e.target.checked ? 'today' : 'none')}
             />
-            오늘 하루 안보기
+            {t('noticeHideToday')}
           </label>
           <label>
             <input
@@ -166,7 +174,7 @@ export function HomeNoticePopup() {
               checked={hideMode === 'hours6'}
               onChange={(e) => setHideMode(e.target.checked ? 'hours6' : 'none')}
             />
-            6시간 안보기
+            {t('noticeHide6h')}
           </label>
         </div>
       </div>

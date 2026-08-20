@@ -5,11 +5,14 @@ import { useSubscription } from '../context/SubscriptionContext'
 import { confirmTossPayment } from '../services/paymentService'
 import { formatKrw } from '../data/productSpec'
 import { tossClientKey } from '../lib/toss'
+import { dawonT, getDawonLang, type DawonLang } from '../newsite/dawonOs/i18n'
 
 export function PaymentSuccessPage() {
   const [params] = useSearchParams()
   const { user, loading: authLoading } = useAuth()
   const { refresh, statusLabel, isPremium } = useSubscription()
+  const [lang, setLang] = useState<DawonLang>(() => getDawonLang())
+  const t = (key: string) => dawonT(key, lang)
   const [state, setState] = useState<'loading' | 'done' | 'error'>('loading')
   const [message, setMessage] = useState('')
   const isTestPay = tossClientKey.startsWith('test_')
@@ -18,6 +21,12 @@ export function PaymentSuccessPage() {
   const orderId = params.get('orderId') ?? ''
   const amount = Number(params.get('amount') ?? '0')
   const returnTo = `/payment/success?${params.toString()}`
+
+  useEffect(() => {
+    const onLang = () => setLang(getDawonLang())
+    window.addEventListener('dawon-lang-changed', onLang)
+    return () => window.removeEventListener('dawon-lang-changed', onLang)
+  }, [])
 
   useEffect(() => {
     if (!paymentKey || !orderId || !amount) {
@@ -80,7 +89,7 @@ export function PaymentSuccessPage() {
                   <br />
                   결제금액: <strong>{formatKrw(amount)}</strong>
                   <br />
-                  이용 상태: <strong>{statusLabel}</strong>
+                  이용 상태: <strong>{t(statusLabel)}</strong>
                   <br />
                   프리미엄: <strong>{isPremium ? '이용 가능' : '아직 잠김 — 구독 페이지에서 상태 확인'}</strong>
                 </p>
