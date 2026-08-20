@@ -115,7 +115,7 @@ export function AppNav() {
     closeMenu()
   }
 
-  const accountLabel = user?.email?.split('@')[0] || t('guestName')
+  const accountLabel = user?.email?.split('@')[0] || ''
 
   return (
     <>
@@ -182,14 +182,14 @@ export function AppNav() {
           ) : null}
         </nav>
         <div className="nav-actions account-area">
-          {configured ? (
+          {configured && user ? (
             <button
               type="button"
               className="account-chip"
               aria-label={t('accountOpen')}
               onClick={onAccountChip}
             >
-              <i className={`cloud-dot${user ? ' online' : ''}`} title="회원·클라우드 상태" />
+              <i className="cloud-dot online" title="회원·클라우드 상태" />
               <span>{accountLabel}</span>
             </button>
           ) : null}

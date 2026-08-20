@@ -279,20 +279,26 @@ export function syncDawonOsAccount(root: HTMLElement | null, state: DawonOsAccou
 
   if (!state.configured) {
     btn.hidden = true
+    if (chip instanceof HTMLElement) chip.hidden = true
     return
   }
   btn.hidden = false
 
   if (state.email) {
-    const label = state.email.split('@')[0] || dawonT('guestName', getDawonLang())
+    const label = state.email.split('@')[0] || state.email
     btn.textContent = dawonT('logout', getDawonLang())
     if (name) name.textContent = label
-    chip?.classList.add('show')
+    if (chip instanceof HTMLElement) {
+      chip.hidden = false
+      chip.classList.add('show')
+    }
     dot?.classList.add('online')
   } else {
     btn.textContent = dawonT('login', getDawonLang())
-    if (name) name.textContent = dawonT('guestName', getDawonLang())
-    chip?.classList.remove('show')
+    if (chip instanceof HTMLElement) {
+      chip.hidden = true
+      chip.classList.remove('show')
+    }
     dot?.classList.remove('online')
   }
 }

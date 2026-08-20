@@ -568,10 +568,6 @@ export function applyOsUiStrings(root: ParentNode, lang: UiLang) {
 
   // Menu modal / account
   text(root, '#menuModalTitle', 'menu', lang)
-  const accountName = root.querySelector('#accountName')
-  if (accountName && /게스트|Guest|ゲスト|访客/.test(accountName.textContent || '')) {
-    accountName.textContent = u(lang, 'guestName')
-  }
   const accountBtn = root.querySelector('#accountBtn')
   if (accountBtn) {
     const cur = accountBtn.textContent || ''
