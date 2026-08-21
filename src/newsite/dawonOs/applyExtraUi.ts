@@ -207,7 +207,12 @@ export function applyExtraUi(root: ParentNode, lang: UiLang) {
     }
   })
 
-  // Subscription (marketing chrome; skip business registration numbers as footer-like)
+  // Subscription (marketing chrome; skip business registration numbers as footer-like).
+  // React SubscribePage (.subscribe-page) owns its own DOM — rewriting it causes white-screen crashes.
+  const subSection = root.querySelector('#subscription')
+  if (subSection?.classList.contains('subscribe-page')) {
+    /* skip React store page */
+  } else {
   setText(root.querySelector('#subscription .section-head h2'), x(lang, 'subTitle'))
   setText(root.querySelector('#subscription .section-head p'), x(lang, 'subDesc'))
   setHtml(root.querySelector('#subscription .subscription-policy-banner'), x(lang, 'subPolicyBanner'))
@@ -334,6 +339,7 @@ export function applyExtraUi(root: ParentNode, lang: UiLang) {
       if (b) b.textContent = x(lang, key)
     })
   }
+  } // end OS subscription (skip React .subscribe-page)
 
   // Works featured — keep book1/2 titles Hangul; translate featured3 title + blurbs
   setText(root.querySelector('#works .works-featured > .kicker'), x(lang, 'worksFeaturedKicker'))

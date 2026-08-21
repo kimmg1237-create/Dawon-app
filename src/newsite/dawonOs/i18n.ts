@@ -588,6 +588,17 @@ function syncLangSelects(root: ParentNode, lang: DawonLang) {
   })
 }
 
+/** DOM hosts that are safe to rewrite with innerHTML / textContent. */
+function i18nMutationTargets(root: ParentNode): ParentNode[] {
+  // Explicit host (programs/institution/report HTML mounts, or OS root passed from install).
+  if (!(root instanceof Document) && root !== document) return [root]
+
+  // Document-wide apply must not touch React trees (AppNav, SubscribePage, Library, …).
+  // Those pages re-render from dawon-lang-changed + dawonT themselves.
+  const osRoots = [...document.querySelectorAll('.dawon-os-root')]
+  return osRoots.length ? osRoots : []
+}
+
 export function applyDawonI18n(root: ParentNode = document) {
   const lang = getDawonLang()
   document.documentElement.lang = lang === 'zh' ? 'zh-CN' : lang
@@ -614,21 +625,25 @@ export function applyDawonI18n(root: ParentNode = document) {
     /* core may not be ready yet */
   }
 
-  applyDataAttrs(root, lang)
-  applyPublisher(root, lang)
-  applyOnePrinciple(root, lang)
-  applyMissions(root, lang)
-  applyTransfer(root, lang)
-  applyIdeaLab(root, lang)
-  applySchoolProgram(root, lang)
-  applyAudience(root, lang)
-  applyLibraryBridge(root, lang)
-  applyGuide(root, lang)
-  applyShellNav(root, lang)
-  applyOsUiStrings(root, lang)
-  applyExtraUi(root, lang)
-  applySubpageStrings(root, lang)
-  syncLangSelects(root, lang)
+  for (const target of i18nMutationTargets(root)) {
+    applyDataAttrs(target, lang)
+    applyPublisher(target, lang)
+    applyOnePrinciple(target, lang)
+    applyMissions(target, lang)
+    applyTransfer(target, lang)
+    applyIdeaLab(target, lang)
+    applySchoolProgram(target, lang)
+    applyAudience(target, lang)
+    applyLibraryBridge(target, lang)
+    applyGuide(target, lang)
+    applyShellNav(target, lang)
+    applyOsUiStrings(target, lang)
+    applyExtraUi(target, lang)
+    applySubpageStrings(target, lang)
+  }
+
+  // Lang selects live in React AppNav too — sync values only, never rewrite their trees.
+  syncLangSelects(document, lang)
 
   // Refresh dynamic access/subscription chrome after __dawonI18n is ready.
   try {
