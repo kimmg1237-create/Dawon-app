@@ -133,26 +133,44 @@ Deno.serve(async (req) => {
       }, 400)
     }
 
+    const now = new Date().toISOString()
     await admin
       .from("payment_orders")
       .update({
         status: "refunded",
-        refunded_at: new Date().toISOString(),
+        refunded_at: now,
         refund_reason: cancelReason,
         raw_response: cancelBody,
+        fulfillment_status: "revoked",
       })
       .eq("order_id", orderId)
 
-    await admin.from("user_subscriptions").upsert({
-      user_id: user.id,
-      plan: "free",
-      status: "cancelled",
-      expires_at: new Date().toISOString(),
-      cancel_at_period_end: false,
-      cancelled_at: new Date().toISOString(),
-      source: "toss",
-      updated_at: new Date().toISOString(),
+    await admin
+      .from("user_entitlements")
+      .update({ revoked_at: now })
+      .eq("order_id", orderId)
+      .is("revoked_at", null)
+
+    await admin.from("order_events").insert({
+      order_id: orderId,
+      event_type: "refunded",
+      payload: { cancelReason, amount: order.amount },
     })
+
+    const isBook = order.product === "sotong" || order.product === "healing"
+
+    if (!isBook) {
+      await admin.from("user_subscriptions").upsert({
+        user_id: user.id,
+        plan: "free",
+        status: "cancelled",
+        expires_at: new Date().toISOString(),
+        cancel_at_period_end: false,
+        cancelled_at: new Date().toISOString(),
+        source: "toss",
+        updated_at: new Date().toISOString(),
+      })
+    }
 
     await admin.from("refund_requests").insert({
       user_id: user.id,

@@ -3,7 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useSubscription } from '../context/SubscriptionContext'
 import { confirmTossPayment } from '../services/paymentService'
-import { formatKrw } from '../data/productSpec'
+import { formatKrw, isBookProduct } from '../data/productSpec'
 import { tossClientKey } from '../lib/toss'
 import { dawonT, getDawonLang, type DawonLang } from '../newsite/dawonOs/i18n'
 
@@ -14,8 +14,11 @@ export function PaymentSuccessPage() {
   const [lang, setLang] = useState<DawonLang>(() => getDawonLang())
   const t = (key: string) => dawonT(key, lang)
   const [state, setState] = useState<'loading' | 'done' | 'error'>('loading')
+  const [product, setProduct] = useState('')
+  const [receiptNo, setReceiptNo] = useState('')
   const [message, setMessage] = useState('')
   const isTestPay = tossClientKey.startsWith('test_')
+  const bookPaid = isBookProduct(product)
 
   const paymentKey = params.get('paymentKey') ?? ''
   const orderId = params.get('orderId') ?? ''
@@ -50,6 +53,8 @@ export function PaymentSuccessPage() {
         if (cancelled) return
         await refresh()
         setMessage(result.message || '결제가 완료되었습니다.')
+        setProduct(result.product || '')
+        setReceiptNo(result.receiptNo || '')
         setState('done')
       } catch (err) {
         if (cancelled) return
@@ -72,7 +77,7 @@ export function PaymentSuccessPage() {
 
       <div className={`payment-result-card ${state}`}>
         {state === 'loading' ? (
-          <p>토스페이먼츠 승인 및 구독 반영 중입니다. 잠시만 기다려 주세요.</p>
+          <p>토스페이먼츠 승인 중입니다. 잠시만 기다려 주세요.</p>
         ) : (
           <>
             <p>{message}</p>
@@ -86,15 +91,33 @@ export function PaymentSuccessPage() {
                 ) : null}
                 <p>
                   주문번호: <code>{orderId}</code>
+                  {receiptNo ? (
+                    <>
+                      <br />
+                      영수증: <strong>{receiptNo}</strong>
+                    </>
+                  ) : null}
                   <br />
                   결제금액: <strong>{formatKrw(amount)}</strong>
-                  <br />
-                  이용 상태: <strong>{t(statusLabel)}</strong>
-                  <br />
-                  프리미엄: <strong>{isPremium ? '이용 가능' : '아직 잠김 — 구독 페이지에서 상태 확인'}</strong>
+                  {bookPaid ? (
+                    <>
+                      <br />
+                      상품: <strong>{product === 'healing' ? '힐링게임' : '자신과의 소통'}</strong>
+                    </>
+                  ) : (
+                    <>
+                      <br />
+                      이용 상태: <strong>{t(statusLabel)}</strong>
+                      <br />
+                      프리미엄: <strong>{isPremium ? '이용 가능' : '아직 잠김 — 구독 페이지에서 상태 확인'}</strong>
+                    </>
+                  )}
                 </p>
                 <div className="payment-result-actions">
-                  <Link to="/library" className="btn btn-primary">
+                  <Link to={`/orders/${orderId}`} className="btn btn-primary">
+                    주문서 보기
+                  </Link>
+                  <Link to="/library" className="btn btn-light">
                     라이브러리 열기
                   </Link>
                   <Link to="/subscribe" className="btn btn-light">
@@ -119,6 +142,8 @@ export function PaymentSuccessPage() {
                         .then(async (result) => {
                           await refresh()
                           setMessage(result.message || '결제가 완료되었습니다.')
+                          setProduct(result.product || '')
+                          setReceiptNo(result.receiptNo || '')
                           setState('done')
                         })
                         .catch((err) => {

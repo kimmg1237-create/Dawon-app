@@ -12,21 +12,22 @@ import {
   cancelDawonSectionScroll,
   syncDawonOsAccess,
   syncDawonOsAccount,
+  syncDawonOsAdmin,
 } from '../newsite/dawonOs/initDawonOs'
 
 export function HomePage() {
   const host = useRef<HTMLDivElement>(null)
   const navigate = useNavigate()
   const location = useLocation()
-  const { user, signOut, configured } = useAuth()
+  const { user, isAdmin, signOut, configured } = useAuth()
   const { isPremium, statusLabel, subscription } = useSubscription()
-  const authRef = useRef({ user, signOut, configured, isPremium, statusLabel, subscription })
-  authRef.current = { user, signOut, configured, isPremium, statusLabel, subscription }
+  const authRef = useRef({ user, signOut, configured, isPremium, statusLabel, subscription, isAdmin })
+  authRef.current = { user, signOut, configured, isPremium, statusLabel, subscription, isAdmin }
 
   useEffect(() => {
     const el = host.current
     if (!el) return
-    return mountDawonOs(el, navigate, {
+    const unmount = mountDawonOs(el, navigate, {
       isLoggedIn: () => Boolean(authRef.current.user),
       onSignOut: () => {
         void authRef.current.signOut()
@@ -45,6 +46,8 @@ export function HomePage() {
           null,
       },
     })
+    syncDawonOsAdmin(el, authRef.current.isAdmin)
+    return unmount
   }, [navigate])
 
   useEffect(() => {
@@ -52,13 +55,14 @@ export function HomePage() {
       email: user?.email ?? null,
       configured,
     })
+    syncDawonOsAdmin(host.current, isAdmin)
     syncDawonOsAccess({
       authenticated: Boolean(user),
       active: isPremium,
       planName: statusLabel,
       endsAt: subscription?.expires_at ?? subscription?.trial_ends_at ?? null,
     })
-  }, [user, configured, isPremium, statusLabel, subscription])
+  }, [user, configured, isPremium, statusLabel, subscription, isAdmin])
 
   useEffect(() => {
     const hash = location.hash.replace(/^#/, '')

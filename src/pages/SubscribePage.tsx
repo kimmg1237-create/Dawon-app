@@ -15,6 +15,9 @@ import {
 import { siteConfig } from '../data/siteConfig'
 import { tossClientKey, tossConfigured } from '../lib/toss'
 import { createTossOrder, generateOrderId } from '../services/paymentService'
+import { loadBuyerProfile, saveBuyerProfile } from '../services/orderService'
+import { OrderBuyerFields } from '../components/OrderBuyerFields'
+import { validateBuyer, type OrderBuyer } from '../data/orderBuyer'
 import { dawonT, getDawonLang, type DawonLang } from '../newsite/dawonOs/i18n'
 import '../newsite/dawonOs/theme.css'
 import '../newsite/dawonOs/bridge.css'
@@ -125,12 +128,13 @@ export function SubscribePage() {
   const navigate = useNavigate()
   const location = useLocation()
   const [params] = useSearchParams()
-  const [busy, setBusy] = useState<UiPlanId | 'ad' | null>(null)
+  const [lang, setLang] = useState<DawonLang>(() => getDawonLang())
+  const [busy, setBusy] = useState<UiPlanId | 'ad' | 'sotong' | 'healing' | null>(null)
   const [error, setError] = useState('')
   const [agreeTerms, setAgreeTerms] = useState(false)
   const [agreeDigital, setAgreeDigital] = useState(false)
   const [selected, setSelected] = useState<UiPlanId>('monthly')
-  const [lang, setLang] = useState<DawonLang>(() => getDawonLang())
+  const [buyer, setBuyer] = useState<OrderBuyer>({ name: '', email: '', phone: '' })
   const t = (key: string) => dawonT(key, lang)
 
   useEffect(() => {
@@ -142,6 +146,11 @@ export function SubscribePage() {
   useEffect(() => {
     void refresh()
   }, [refresh])
+
+  useEffect(() => {
+    if (!user) return
+    void loadBuyerProfile(user.id, user.email || '').then(setBuyer)
+  }, [user])
 
   useEffect(() => {
     const plan = params.get('plan')
@@ -158,6 +167,13 @@ export function SubscribePage() {
     }, 80)
     return () => window.clearTimeout(timer)
   }, [location.hash])
+
+  useEffect(() => {
+    const buy = params.get('buy')
+    if (buy !== 'sotong' && buy !== 'healing') return
+    if (!user) return
+    navigate(`/checkout?item=${buy}`, { replace: true })
+  }, [params, user, navigate])
 
   const uiPlans = useMemo(() => getUiPlans(lang), [lang])
 
@@ -176,6 +192,11 @@ export function SubscribePage() {
       setError(t('subErrConsent'))
       return
     }
+    const buyerErr = validateBuyer(buyer)
+    if (buyerErr) {
+      setError(buyerErr)
+      return
+    }
     if (!tossConfigured) {
       setError(t('subErrTossKey'))
       return
@@ -185,10 +206,11 @@ export function SubscribePage() {
     setError('')
 
     try {
+      await saveBuyerProfile(user.id, buyer)
       const product = uiPlan.payProduct
       const orderId = generateOrderId(user.id)
       const amount = productAmount(product)
-      const order = await createTossOrder(product, orderId)
+      const order = await createTossOrder(product, orderId, buyer)
 
       const tossPayments = await loadTossPayments(tossClientKey)
       const payment = tossPayments.payment({ customerKey: order.customerKey })
@@ -200,7 +222,8 @@ export function SubscribePage() {
         orderName: `${PRODUCT_SPEC.productName} · ${uiPlan.name} · ${productLabel(product)}`,
         successUrl: `${window.location.origin}/payment/success`,
         failUrl: `${window.location.origin}/payment/fail`,
-        customerEmail: user.email ?? undefined,
+        customerEmail: buyer.email || user.email || undefined,
+        customerName: buyer.name,
       })
     } catch (err) {
       const msg = err instanceof Error ? err.message : t('subErrPayment')
@@ -208,6 +231,14 @@ export function SubscribePage() {
     } finally {
       setBusy(null)
     }
+  }
+
+  function openBookCheckout(product: 'sotong' | 'healing') {
+    if (!user) {
+      navigate('/login', { state: { from: `/checkout?item=${product}` } })
+      return
+    }
+    navigate(`/checkout?item=${product}`)
   }
 
   async function onAdUnlock() {
@@ -247,35 +278,35 @@ export function SubscribePage() {
         path={siteConfig.pages.subscribe.path}
       />
       <div className="container">
-        <aside className="store-ad-banners" aria-label={t('subStoreAria')}>
-          <a
+        <aside className="store-ad-banners" id="book-shop" aria-label={t('subBookAria')}>
+          <button
+            type="button"
             className="store-ad-card"
-            href="https://product.kyobobook.co.kr/detail/S000212731582"
-            target="_blank"
-            rel="noopener noreferrer"
+            disabled={busy !== null}
+            onClick={() => openBookCheckout('sotong')}
           >
-            <img src="/ads/sotong.png" alt={t('adCoverSotong')} width="300" height="420" decoding="async" />
+            <img src="/store-books/sotong.png" alt={t('adCoverSotong')} width="300" height="420" decoding="async" />
             <div className="store-ad-copy">
               <b>자신과의 소통</b>
               <span>{t('adSelected')}</span>
               <p>{t('adSotongDesc')}</p>
-              <em>{t('buyKyobo')}</em>
+              <em>{t('buyBookNow')}</em>
             </div>
-          </a>
-          <a
+          </button>
+          <button
+            type="button"
             className="store-ad-card"
-            href="https://www.yes24.com/product/goods/125541447"
-            target="_blank"
-            rel="noopener noreferrer"
+            disabled={busy !== null}
+            onClick={() => openBookCheckout('healing')}
           >
-            <img src="/ads/healing.png" alt={t('adCoverHealing')} width="300" height="420" decoding="async" />
+            <img src="/store-books/healing.png" alt={t('adCoverHealing')} width="300" height="420" decoding="async" />
             <div className="store-ad-copy">
               <b>힐링게임</b>
               <span>{t('adSelected')}</span>
               <p>{t('adHealingDesc')}</p>
-              <em>{t('buyYes24')}</em>
+              <em>{t('buyBookNow')}</em>
             </div>
-          </a>
+          </button>
         </aside>
 
         <div className="section-head">
@@ -363,6 +394,7 @@ export function SubscribePage() {
 
         <div className="subscribe-consent panel panel-pad" style={{ marginTop: 18 }}>
           <h3>{t('subConsentTitle')}</h3>
+          <OrderBuyerFields value={buyer} onChange={setBuyer} disabled={busy !== null} />
           <label className="subscribe-check">
             <input
               type="checkbox"

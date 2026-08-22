@@ -1,6 +1,8 @@
 import { supabase } from '../lib/supabase'
 import type { PayProduct } from '../data/productSpec'
 import { productAmount } from '../data/productSpec'
+import type { BookFormat, OrderBuyer } from '../data/orderBuyer'
+import { normalizeBuyer } from '../data/orderBuyer'
 
 export function generateOrderId(userId: string): string {
   const stamp = Date.now().toString(36)
@@ -13,12 +15,17 @@ type CreateOrderResult = {
   amount: number
   customerKey: string
   product: PayProduct
+  productName?: string
 }
 
 type ConfirmResult = {
   message: string
   orderId?: string
   paymentKey?: string
+  product?: string
+  productName?: string
+  receiptNo?: string
+  buyerName?: string
 }
 
 async function waitForAccessToken(retries = 8): Promise<string> {
@@ -82,9 +89,36 @@ async function invoke<T>(name: string, body: Record<string, unknown>): Promise<T
   return payload
 }
 
-export async function createTossOrder(product: PayProduct, orderId: string): Promise<CreateOrderResult> {
+export async function createTossOrder(
+  product: PayProduct,
+  orderId: string,
+  buyer: OrderBuyer,
+  extras?: { format?: BookFormat },
+): Promise<CreateOrderResult> {
   const amount = productAmount(product)
-  return invoke<CreateOrderResult>('create-toss-order', { orderId, amount, product })
+  const next = normalizeBuyer(buyer)
+  return invoke<CreateOrderResult>('create-toss-order', {
+    orderId,
+    amount,
+    product,
+    buyer: next,
+    format: extras?.format || 'none',
+    shipping: {
+      zip: next.zip,
+      address1: next.address1,
+      address2: next.address2,
+      receiverName: next.receiverName,
+    },
+  })
+}
+
+export async function recordOrderPaymentFail(orderId: string, failCode: string, failMessage: string) {
+  return invoke<{ message?: string }>('create-toss-order', {
+    action: 'fail',
+    orderId,
+    failCode,
+    failMessage,
+  })
 }
 
 export async function confirmTossPayment(

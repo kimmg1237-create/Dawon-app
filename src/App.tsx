@@ -18,6 +18,10 @@ import { ResetPasswordPage } from './pages/ResetPasswordPage'
 import { SubscribePage } from './pages/SubscribePage'
 import { PaymentSuccessPage } from './pages/PaymentSuccessPage'
 import { PaymentFailPage } from './pages/PaymentFailPage'
+import { CheckoutPage } from './pages/CheckoutPage'
+import { MyPage } from './pages/MyPage'
+import { OrdersPage } from './pages/OrdersPage'
+import { OrderReceiptPage } from './pages/OrderReceiptPage'
 import { TermsPage } from './pages/TermsPage'
 import { RefundPolicyPage } from './pages/RefundPolicyPage'
 import { PrivacyPage } from './pages/PrivacyPage'
@@ -66,7 +70,7 @@ function AppRoutes() {
           <Route path="audiobooks" element={<LibraryPage initialTab="audio" seoPage="audiobooks" />} />
           <Route path="comics" element={<LibraryPage initialTab="comic" seoPage="comics" />} />
           <Route path="store" element={FEATURES.paymentsEnabled ? <SubscribePage /> : <Navigate to="/" replace />} />
-          <Route path="profile" element={<Navigate to="/login" replace />} />
+          <Route path="profile" element={<Navigate to="/mypage" replace />} />
           <Route path="board" element={<Navigate to="/" replace />} />
           <Route path="operations" element={<OperationsPage />} />
           <Route path="survey" element={<Navigate to="/quick-design#survey" replace />} />
@@ -86,6 +90,13 @@ function AppRoutes() {
             path="payment/fail"
             element={FEATURES.paymentsEnabled ? <PaymentFailPage /> : <Navigate to="/" replace />}
           />
+          <Route path="orders" element={FEATURES.paymentsEnabled ? <OrdersPage /> : <Navigate to="/" replace />} />
+          <Route
+            path="orders/:orderId"
+            element={FEATURES.paymentsEnabled ? <OrderReceiptPage /> : <Navigate to="/" replace />}
+          />
+          <Route path="checkout" element={FEATURES.paymentsEnabled ? <CheckoutPage /> : <Navigate to="/" replace />} />
+          <Route path="mypage" element={<MyPage />} />
           <Route path="terms" element={<TermsPage />} />
           <Route path="refund" element={<RefundPolicyPage />} />
           <Route path="refund-policy" element={<Navigate to="/refund" replace />} />

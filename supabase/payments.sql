@@ -5,7 +5,7 @@ create table if not exists public.payment_orders (
   order_id text primary key,
   user_id uuid not null references auth.users(id) on delete cascade,
   amount integer not null check (amount > 0),
-  product text not null default 'monthly' check (product in ('monthly', 'b2b')),
+  product text not null default 'monthly' check (product in ('monthly', 'b2b', 'sotong', 'healing')),
   status text not null default 'pending'
     check (status in ('pending', 'paid', 'failed', 'cancelled', 'refunded')),
   payment_key text,

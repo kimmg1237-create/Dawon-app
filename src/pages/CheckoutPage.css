@@ -1,0 +1,285 @@
+.checkout-page,
+.mypage-page {
+  padding: 28px 0 80px;
+  color: #14241f;
+}
+
+.checkout-wrap,
+.mypage-wrap {
+  display: grid;
+  gap: 18px;
+}
+
+.checkout-head h1,
+.mypage-head h1 {
+  margin: 8px 0 6px;
+  color: #14241f;
+}
+
+.checkout-head p,
+.mypage-head p {
+  margin: 0;
+  color: #3d4f48;
+}
+
+.checkout-grid,
+.mypage-grid {
+  display: grid;
+  gap: 14px;
+}
+
+.checkout-card,
+.mypage-card {
+  background: #fff;
+  border: 1px solid #d5ddd8;
+  border-radius: 16px;
+  padding: 18px;
+  display: grid;
+  gap: 12px;
+  color: #14241f;
+}
+
+.checkout-card h2,
+.mypage-card h2 {
+  margin: 0;
+  font-size: 18px;
+  color: #14241f;
+}
+
+.checkout-card label,
+.mypage-card label {
+  display: grid;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #3d4f48;
+}
+
+.checkout-card input,
+.mypage-card input,
+.mypage-card textarea {
+  border: 1px solid #cfd6d1;
+  border-radius: 10px;
+  padding: 11px 12px;
+  font: inherit;
+  color: #14241f;
+  background: #fff;
+}
+
+.checkout-product {
+  display: grid;
+  grid-template-columns: 72px 1fr;
+  gap: 12px;
+  align-items: center;
+}
+
+.checkout-product img {
+  border-radius: 8px;
+}
+
+.checkout-product strong {
+  display: block;
+  margin-top: 6px;
+  font-size: 20px;
+}
+
+.checkout-formats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.checkout-formats button {
+  text-align: left;
+  border: 1px solid #cfd6d1;
+  background: #fff;
+  border-radius: 14px;
+  padding: 12px;
+  color: #14241f;
+}
+
+.checkout-formats button b,
+.checkout-formats button span,
+.checkout-formats button em {
+  display: block;
+  color: #14241f;
+}
+
+.checkout-formats button span {
+  font-size: 12px;
+  color: #3d4f48;
+  margin: 4px 0;
+}
+
+.checkout-formats button.is-on {
+  border-color: #0c8877;
+  box-shadow: inset 0 0 0 1px #0c8877;
+  background: #f3fbf8;
+}
+
+.address-search {
+  display: grid;
+  gap: 12px;
+}
+
+.address-search-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  align-items: end;
+}
+
+.address-search-row .btn {
+  height: 44px;
+  white-space: nowrap;
+}
+
+.checkout-error {
+  background: #ffecec;
+  color: #8a1f16;
+  padding: 12px;
+  border-radius: 12px;
+  font-weight: 700;
+}
+
+.checkout-paybar {
+  position: sticky;
+  bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+  background: #fff;
+  border: 1px solid #d5ddd8;
+  border-radius: 16px;
+  padding: 14px 16px;
+}
+
+.checkout-paybar strong {
+  display: block;
+  font-size: 22px;
+  color: #14241f;
+}
+
+.checkout-paybar-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.mypage-meta {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+}
+
+.mypage-meta div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 14px;
+}
+
+.mypage-orders {
+  display: grid;
+  gap: 8px;
+}
+
+.mypage-order {
+  display: grid;
+  gap: 2px;
+  padding: 12px;
+  border: 1px solid #e4ebe7;
+  border-radius: 12px;
+  color: #14241f;
+  background: #fafcfb;
+}
+
+.mypage-shelf {
+  display: grid;
+  gap: 12px;
+}
+
+.mypage-shelf-card {
+  display: grid;
+  grid-template-columns: 92px 1fr;
+  gap: 12px;
+  align-items: center;
+}
+
+.mypage-shelf-card img {
+  border-radius: 8px;
+}
+
+.mypage-shelf-card b,
+.mypage-shelf-card small,
+.mypage-shelf-card span {
+  display: block;
+  color: #14241f;
+}
+
+.mypage-shelf-card small,
+.mypage-shelf-card span {
+  margin: 4px 0 8px;
+  color: #3d4f48;
+}
+
+@media (max-width: 720px) {
+  .checkout-formats {
+    grid-template-columns: 1fr;
+  }
+}
+
+body.dawon-os-active.dark .checkout-head h1,
+body.dawon-os-active.dark .mypage-head h1 {
+  color: #fff8ee !important;
+}
+
+body.dawon-os-active.dark .checkout-head p,
+body.dawon-os-active.dark .mypage-head p {
+  color: #e8f2ec !important;
+}
+
+body.dawon-os-active.dark .checkout-card,
+body.dawon-os-active.dark .mypage-card,
+body.dawon-os-active.dark .checkout-paybar,
+body.dawon-os-active.dark .checkout-formats button,
+body.dawon-os-active.dark .mypage-order {
+  background: #fff !important;
+  color: #111 !important;
+}
+
+body.dawon-os-active.dark .checkout-card h2,
+body.dawon-os-active.dark .mypage-card h2,
+body.dawon-os-active.dark .checkout-card b,
+body.dawon-os-active.dark .checkout-card strong,
+body.dawon-os-active.dark .checkout-card label,
+body.dawon-os-active.dark .mypage-card label,
+body.dawon-os-active.dark .checkout-card span,
+body.dawon-os-active.dark .checkout-check,
+body.dawon-os-active.dark .checkout-check span,
+body.dawon-os-active.dark .checkout-formats button b,
+body.dawon-os-active.dark .checkout-formats button span,
+body.dawon-os-active.dark .checkout-formats button em,
+body.dawon-os-active.dark .checkout-paybar small,
+body.dawon-os-active.dark .checkout-paybar strong,
+body.dawon-os-active.dark .mypage-order b,
+body.dawon-os-active.dark .mypage-order small {
+  color: #111 !important;
+}
+
+body.dawon-os-active.dark .checkout-card input:not([type='checkbox']):not([type='radio']),
+body.dawon-os-active.dark .mypage-card input:not([type='checkbox']):not([type='radio']),
+body.dawon-os-active.dark .mypage-card textarea {
+  color: #111 !important;
+  background: #fff !important;
+  border: 1px solid #8a968f !important;
+  caret-color: #111;
+}
+
+body.dawon-os-active.dark .checkout-card input::placeholder,
+body.dawon-os-active.dark .mypage-card input::placeholder {
+  color: #5c6b65 !important;
+  opacity: 1;
+}

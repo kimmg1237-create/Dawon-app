@@ -285,12 +285,14 @@ export function syncDawonOsAccount(root: HTMLElement | null, state: DawonOsAccou
   btn.hidden = false
 
   if (state.email) {
-    const label = state.email.split('@')[0] || state.email
+    const label = dawonT('mypage', getDawonLang())
     btn.textContent = dawonT('logout', getDawonLang())
     if (name) name.textContent = label
     if (chip instanceof HTMLElement) {
       chip.hidden = false
       chip.classList.add('show')
+      chip.setAttribute('aria-label', label)
+      chip.setAttribute('title', state.email)
     }
     dot?.classList.add('online')
   } else {
@@ -301,6 +303,14 @@ export function syncDawonOsAccount(root: HTMLElement | null, state: DawonOsAccou
     }
     dot?.classList.remove('online')
   }
+}
+
+export function syncDawonOsAdmin(root: HTMLElement | null, isAdmin: boolean) {
+  if (!root) return
+  root.querySelectorAll<HTMLElement>('[data-admin-nav]').forEach((el) => {
+    el.hidden = !isAdmin
+    el.style.display = isAdmin ? '' : 'none'
+  })
 }
 
 function bindAccountControl(
@@ -319,7 +329,7 @@ function bindAccountControl(
       e.stopImmediatePropagation()
       if (auth?.isLoggedIn()) {
         if (mode === 'button') auth.onSignOut()
-        else navigate('/subscribe')
+        else navigate('/mypage')
         return
       }
       navigate('/login')

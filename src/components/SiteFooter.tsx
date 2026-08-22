@@ -38,6 +38,7 @@ export function SiteFooter() {
           <Link to="/create">3층 · 창작</Link>
           <Link to={paths.library}>작품관</Link>
           {FEATURES.paymentsEnabled ? <Link to={paths.subscribe}>스토어</Link> : null}
+          <Link to="/mypage">마이페이지</Link>
           <Link to={paths.terms}>이용약관</Link>
           <Link to={paths.privacy}>개인정보처리방침</Link>
           <Link to={paths.refund}>환불·청약철회</Link>

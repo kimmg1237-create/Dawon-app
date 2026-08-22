@@ -4,7 +4,7 @@ export type PaymentOrderRow = {
   order_id: string
   user_id: string
   amount: number
-  product: 'monthly' | 'b2b'
+  product: 'monthly' | 'b2b' | 'sotong' | 'healing'
   status: 'pending' | 'paid' | 'failed' | 'cancelled' | 'refunded'
   payment_key: string | null
   paid_at: string | null

@@ -18,9 +18,11 @@ import {
   type LibraryUploadKind,
 } from '../services/libraryService'
 import { AdminResponsesPanel } from '../components/AdminResponsesPanel'
+import { AdminOrdersPanel } from '../components/AdminOrdersPanel'
+import { AdminStoreBooksPanel } from '../components/AdminStoreBooksPanel'
 import './AdminPage.css'
 
-type Tab = 'copy' | 'library' | 'responses'
+type Tab = 'copy' | 'library' | 'responses' | 'orders' | 'storebooks'
 
 const PAGE_KEYS = ['strategy', 'lifeStage', 'quickDesign', 'records', 'library', 'operations'] as const
 const PAGE_LABELS: Record<(typeof PAGE_KEYS)[number], string> = {
@@ -57,10 +59,10 @@ function emptyItem(id: string): LibraryItemRow {
 export function AdminPage() {
   const { user, isAdmin, loading, configured } = useAuth()
   const [params, setParams] = useSearchParams()
-  const tab = (params.get('tab') as Tab) || 'copy'
+  const tab = (params.get('tab') as Tab) || 'orders'
 
   function setTab(next: Tab) {
-    setParams(next === 'copy' ? {} : { tab: next })
+    setParams({ tab: next })
   }
 
   if (loading) return <div className="container page-banner">권한 확인 중…</div>
@@ -81,17 +83,23 @@ export function AdminPage() {
   return (
     <div className="admin-page container">
       <div className="page-banner">
-        <div className="eyebrow">ADMIN</div>
-        <h1>관리자</h1>
-        <p>사이트 문구를 고치고, 전자책·만화·오디오북 파일을 올립니다. 본인만 접근할 수 있습니다.</p>
+        <div className="eyebrow">SELLER CENTER</div>
+        <h1>판매관리</h1>
+        <p>주문·구매자·결제를 한곳에서 확인하고, 문구와 서재 상품도 이어서 관리합니다.</p>
       </div>
 
       <div className="admin-tabs" role="tablist" aria-label="관리 메뉴">
-        <button type="button" className={tab === 'copy' ? 'active' : ''} onClick={() => setTab('copy')}>
-          문구 수정
+        <button type="button" className={tab === 'orders' ? 'active' : ''} onClick={() => setTab('orders')}>
+          주문관리
         </button>
         <button type="button" className={tab === 'library' ? 'active' : ''} onClick={() => setTab('library')}>
-          전자책·만화·오디오북
+          상품·서재
+        </button>
+        <button type="button" className={tab === 'storebooks' ? 'active' : ''} onClick={() => setTab('storebooks')}>
+          스토어 책
+        </button>
+        <button type="button" className={tab === 'copy' ? 'active' : ''} onClick={() => setTab('copy')}>
+          문구 수정
         </button>
         <button type="button" className={tab === 'responses' ? 'active' : ''} onClick={() => setTab('responses')}>
           설문 응답
@@ -100,7 +108,9 @@ export function AdminPage() {
 
       {tab === 'copy' ? <AdminCopyPanel /> : null}
       {tab === 'library' ? <AdminLibraryPanel /> : null}
+      {tab === 'storebooks' ? <AdminStoreBooksPanel /> : null}
       {tab === 'responses' ? <AdminResponsesPanel /> : null}
+      {tab === 'orders' ? <AdminOrdersPanel /> : null}
     </div>
   )
 }

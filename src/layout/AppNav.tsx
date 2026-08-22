@@ -44,12 +44,6 @@ export function AppNav() {
   const menuBtnRef = useRef<HTMLButtonElement>(null)
   const t = (key: string) => dawonT(key, lang)
 
-  const isLibrary =
-    location.pathname.startsWith('/library') ||
-    location.pathname.startsWith('/ebooks') ||
-    location.pathname.startsWith('/audiobooks') ||
-    location.pathname.startsWith('/comics')
-
   useEffect(() => {
     applyTheme(theme)
   }, [theme])
@@ -104,7 +98,7 @@ export function AppNav() {
   }
 
   function onAccountChip() {
-    if (user) navigate('/subscribe')
+    if (user) navigate('/mypage')
     else navigate('/login')
     closeMenu()
   }
@@ -136,7 +130,7 @@ export function AppNav() {
           </span>
         </Link>
         <nav className="nav-links" aria-label={t('mainNav')}>
-          <Link to="/today" aria-current={location.pathname === '/today' ? 'page' : undefined} onClick={closeMenu} preventScrollReset>
+          <Link className="nav-cta" to="/today" aria-current={location.pathname === '/today' ? 'page' : undefined} onClick={closeMenu} preventScrollReset>
             {t('floor1')}
           </Link>
           <Link to="/school" aria-current={location.pathname === '/school' ? 'page' : undefined} onClick={closeMenu} preventScrollReset>
@@ -159,13 +153,6 @@ export function AppNav() {
               <Link to="/report" onClick={closeMenu}>{t('report')}</Link>
             </div>
           </div>
-          <Link
-            to="/library"
-            aria-current={isLibrary ? 'page' : undefined}
-            onClick={closeMenu}
-          >
-            {t('library')}
-          </Link>
           {FEATURES.paymentsEnabled ? (
             <Link
               to="/subscribe"
@@ -176,8 +163,13 @@ export function AppNav() {
             </Link>
           ) : null}
           {isAdmin ? (
-            <Link to="/admin" onClick={closeMenu}>
-              관리
+            <Link
+              className="nav-admin"
+              to="/admin"
+              aria-current={location.pathname.startsWith('/admin') ? 'page' : undefined}
+              onClick={closeMenu}
+            >
+              {t('admin')}
             </Link>
           ) : null}
         </nav>
@@ -186,11 +178,12 @@ export function AppNav() {
             <button
               type="button"
               className="account-chip"
-              aria-label={t('accountOpen')}
+              aria-label={t('mypage')}
+              title={accountLabel}
               onClick={onAccountChip}
             >
               <i className="cloud-dot online" title="회원·클라우드 상태" />
-              <span>{accountLabel}</span>
+              <span>{t('mypage')}</span>
             </button>
           ) : null}
           <button
@@ -240,9 +233,6 @@ export function AppNav() {
               {user ? t('logout') : t('login')}
             </button>
           ) : null}
-          <Link className="btn btn-primary" to="/today" onClick={closeMenu}>
-            {t('startOne')}
-          </Link>
         </div>
       </div>
     </header>
@@ -286,16 +276,16 @@ export function AppNav() {
             <Link className="btn btn-soft" to="/report" onClick={closeMenu}>
               {t('report')}
             </Link>
-            <Link className="btn btn-soft" to="/library" onClick={closeMenu}>
-              {t('library')}
-            </Link>
             {FEATURES.paymentsEnabled ? (
               <Link className="btn btn-soft" to="/subscribe" onClick={closeMenu}>
                 {t('store')}
               </Link>
             ) : null}
+            <Link className="btn btn-soft" to="/mypage" onClick={closeMenu}>
+              {t('mypage')}
+            </Link>
             {isAdmin ? (
-              <Link className="btn btn-soft" to="/admin" onClick={closeMenu}>
+              <Link className="btn btn-primary" to="/admin" onClick={closeMenu}>
                 {t('admin')}
               </Link>
             ) : null}

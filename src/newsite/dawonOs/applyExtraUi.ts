@@ -120,6 +120,7 @@ export function applyExtraUi(root: ParentNode, lang: UiLang) {
     ['a[href="/report"]', 'menuReport'],
     ['a[href="/library"]', 'menuLibrary'],
     ['a[href="/subscribe"]', 'menuStore'],
+    ['a[href="/mypage"]', 'menuMypage'],
   ]
   const menu = root.querySelector('#menuModal')
   if (menu) {
@@ -399,7 +400,7 @@ export function applyExtraUi(root: ParentNode, lang: UiLang) {
     const copy = card.querySelector('.home-ad-copy, .store-ad-copy')
     if (!copy) return
     setText(copy.querySelector('span'), x(lang, 'adSelected'))
-    setText(copy.querySelector('em'), x(lang, 'adStoreCta'))
+    setText(copy.querySelector('em'), x(lang, 'buyBookNow'))
     const p = copy.querySelector('p')
     if (p) p.textContent = x(lang, i === 0 ? 'adSotongDesc' : 'adHealingDesc')
   })

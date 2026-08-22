@@ -23,14 +23,25 @@ export const BUSINESS_INFO = {
   mailOrderNumber: siteConfig.business.mailOrderNumber,
 } as const
 
-export type PayProduct = 'monthly' | 'b2b'
+export type PayProduct = 'monthly' | 'b2b' | 'sotong' | 'healing'
+
+export const BOOK_PRICE_KRW = 13000
+
+export function isBookProduct(product: string): product is 'sotong' | 'healing' {
+  return product === 'sotong' || product === 'healing'
+}
 
 export function productAmount(product: PayProduct): number {
-  return product === 'b2b' ? PRODUCT_SPEC.b2bPriceKrw : PRODUCT_SPEC.monthlyPriceKrw
+  if (product === 'b2b') return PRODUCT_SPEC.b2bPriceKrw
+  if (isBookProduct(product)) return BOOK_PRICE_KRW
+  return PRODUCT_SPEC.monthlyPriceKrw
 }
 
 export function productLabel(product: PayProduct): string {
-  return product === 'b2b' ? '기관·B2B 이용권' : '월 구독 (30일)'
+  if (product === 'b2b') return '기관·B2B 이용권'
+  if (product === 'sotong') return '자신과의 소통'
+  if (product === 'healing') return '힐링게임'
+  return '월 구독 (30일)'
 }
 
 export function formatKrw(amount: number): string {

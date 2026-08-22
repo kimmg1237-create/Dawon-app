@@ -158,11 +158,14 @@ body.dawon-os-active.dark .footer-links a {
   color: #d5e4f6 !important;
 }
 
-body.dawon-os-active.dark .nav-links a:hover,
-body.dawon-os-active.dark .nav-links a.active,
-body.dawon-os-active.dark .app-nav-links a:hover,
-body.dawon-os-active.dark .app-nav-links a.nav-active {
-  color: var(--mint) !important;
+body.dawon-os-active.dark .nav-links a.nav-cta,
+body.dawon-os-active.dark .nav-links a.nav-cta:hover,
+body.dawon-os-active.dark .nav-links a.nav-cta[aria-current="page"],
+body.dawon-os-active.dark .nav-links a.nav-admin,
+body.dawon-os-active.dark .nav-links a.nav-admin:hover,
+body.dawon-os-active.dark .nav-links a.nav-admin[aria-current="page"] {
+  color: #111 !important;
+  background: linear-gradient(135deg, #f2df9b, #cba64d) !important;
 }
 
 /* Cards / chips that inherited black or navy */
@@ -1142,4 +1145,51 @@ body.dawon-os-active.dark .site-footer {
   background: var(--bg-strong);
   border-top-color: var(--line);
   color: var(--ink);
+}
+
+body.dawon-os-active.dark .checkout-head h1,
+body.dawon-os-active.dark .mypage-head h1 {
+  color: #fff8ee !important;
+}
+body.dawon-os-active.dark .checkout-head p,
+body.dawon-os-active.dark .mypage-head p {
+  color: #e8f2ec !important;
+}
+body.dawon-os-active.dark .checkout-card input:not([type='checkbox']):not([type='radio']),
+body.dawon-os-active.dark .mypage-card input:not([type='checkbox']):not([type='radio']),
+body.dawon-os-active.dark .mypage-card textarea {
+  color: #111 !important;
+  background: #fff !important;
+  border-color: #8a968f !important;
+}
+
+body.dawon-os-active.dark .order-sheet {
+  background: #fff !important;
+  color: #14241f !important;
+}
+
+body.dawon-os-active.dark .order-sheet h1,
+body.dawon-os-active.dark .order-sheet h2,
+body.dawon-os-active.dark .order-sheet h3,
+body.dawon-os-active.dark .order-sheet p,
+body.dawon-os-active.dark .order-sheet small,
+body.dawon-os-active.dark .order-sheet strong,
+body.dawon-os-active.dark .order-sheet b,
+body.dawon-os-active.dark .order-sheet span,
+body.dawon-os-active.dark .order-sheet dt,
+body.dawon-os-active.dark .order-sheet dd,
+body.dawon-os-active.dark .order-sheet li,
+body.dawon-os-active.dark .order-sheet code,
+body.dawon-os-active.dark .order-sheet a {
+  color: #14241f !important;
+}
+
+body.dawon-os-active.dark .order-sheet dt,
+body.dawon-os-active.dark .order-sheet header small,
+body.dawon-os-active.dark .order-timeline span {
+  color: #3d4f48 !important;
+}
+
+body.dawon-os-active.dark .order-sheet-page > p {
+  color: #e8f2ec !important;
 }

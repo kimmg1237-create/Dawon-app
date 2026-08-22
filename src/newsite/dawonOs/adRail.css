@@ -140,6 +140,10 @@
   align-items: center;
   overflow: hidden;
   padding: 10px;
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
   border: 1px solid var(--line, #dce4e6);
   border-radius: 16px;
   background: var(--paper, #fff);
@@ -147,6 +151,15 @@
   color: inherit;
   text-decoration: none;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.store-ad-card:disabled {
+  cursor: not-allowed;
+  opacity: 0.72;
+}
+
+.store-ad-card:disabled:hover {
+  transform: none;
 }
 
 .store-ad-card:hover {

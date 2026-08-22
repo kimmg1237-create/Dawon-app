@@ -30,7 +30,10 @@ export function AppShell() {
   const isStore =
     location.pathname.startsWith('/subscribe') ||
     location.pathname === '/store' ||
-    location.pathname.startsWith('/payment')
+    location.pathname.startsWith('/payment') ||
+    location.pathname.startsWith('/checkout') ||
+    location.pathname.startsWith('/mypage') ||
+    location.pathname.startsWith('/orders')
   const osLook = isHome || isFloor
 
   useEffect(() => {

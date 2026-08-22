@@ -41,14 +41,15 @@ const MISSION_KEYS = [
 /** Extra chrome strings not in the marketing HTML dictionary. */
 const SHELL: Record<DawonLang, Record<string, string>> = {
   ko: {
-    floor1: '1층 · 오늘설계',
-    floor2: '2층 · 365학교',
-    floor3: '3층 · 창작',
+    floor1: '오늘설계',
+    floor2: '365학교',
+    floor3: '창작',
     programs: '대상별 프로그램',
     institution: '학교·기관 도입',
     report: '성장리포트',
     library: '작품관',
     store: '스토어',
+    mypage: '마이페이지',
     login: '로그인',
     logout: '로그아웃',
     guest: '게스트',
@@ -93,14 +94,15 @@ const SHELL: Record<DawonLang, Record<string, string>> = {
     noticeHide6h: '6시간 안보기',
   },
   en: {
-    floor1: '1F · Today',
-    floor2: '2F · 365 School',
-    floor3: '3F · Create',
+    floor1: 'Today',
+    floor2: '365 School',
+    floor3: 'Create',
     programs: 'Programs',
     institution: 'Schools & Institutions',
     report: 'Growth Report',
     library: 'Library',
     store: 'Store',
+    mypage: 'My page',
     login: 'Log in',
     logout: 'Log out',
     guest: 'Guest',
@@ -145,14 +147,15 @@ const SHELL: Record<DawonLang, Record<string, string>> = {
     noticeHide6h: 'Hide for 6 hours',
   },
   ja: {
-    floor1: '1F · 今日設計',
-    floor2: '2F · 365学校',
-    floor3: '3F · 創作',
+    floor1: '今日設計',
+    floor2: '365学校',
+    floor3: '創作',
     programs: '対象別プログラム',
     institution: '学校・機関',
     report: '成長レポート',
     library: '作品館',
     store: 'ストア',
+    mypage: 'マイページ',
     login: 'ログイン',
     logout: 'ログアウト',
     guest: 'ゲスト',
@@ -197,14 +200,15 @@ const SHELL: Record<DawonLang, Record<string, string>> = {
     noticeHide6h: '6時間表示しない',
   },
   zh: {
-    floor1: '1F · 今日设计',
-    floor2: '2F · 365学校',
-    floor3: '3F · 创作',
+    floor1: '今日设计',
+    floor2: '365学校',
+    floor3: '创作',
     programs: '对象项目',
     institution: '学校·机构',
     report: '成长报告',
     library: '作品馆',
     store: '商店',
+    mypage: '我的页面',
     login: '登录',
     logout: '退出',
     guest: '访客',
@@ -527,7 +531,6 @@ function applyShellNav(root: ParentNode, lang: DawonLang) {
     ['a[href="/programs"]', 'programs'],
     ['a[href="/institution"]', 'institution'],
     ['a[href="/report"]', 'report'],
-    ['a[href="/library"]', 'library'],
     ['a[href="/subscribe"]', 'store'],
   ]
   // Only rewrite top-level nav links that match exactly one key text slot
@@ -540,11 +543,14 @@ function applyShellNav(root: ParentNode, lang: DawonLang) {
   root.querySelectorAll('.nav-links > a[href="/create"]').forEach((el) => {
     el.textContent = dawonT('floor3', lang)
   })
-  root.querySelectorAll('.nav-links a[href="/library"]').forEach((el) => {
-    el.textContent = dawonT('library', lang)
-  })
   root.querySelectorAll('.nav-links a[href="/subscribe"]').forEach((el) => {
     el.textContent = dawonT('store', lang)
+  })
+  root.querySelectorAll('.nav-links a[href="/mypage"]').forEach((el) => {
+    el.textContent = dawonT('mypage', lang)
+  })
+  root.querySelectorAll('a[href="/admin"]').forEach((el) => {
+    el.textContent = dawonT('admin', lang)
   })
   root.querySelectorAll('.nav-dropdown-menu a[href="/programs"]').forEach((el) => {
     el.textContent = dawonT('programs', lang)

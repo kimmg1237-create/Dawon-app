@@ -247,6 +247,9 @@ export function SubscriptionManagePanel() {
       {orders.length > 0 ? (
         <div className="subscribe-orders">
           <h4>결제·환불 내역</h4>
+          <p className="subscribe-manage-hint">
+            주문서를 보려면 주문번호를 누르거나 <Link to="/orders">주문 목록</Link>으로 이동하세요.
+          </p>
           {isAdmin ? (
             <p className="subscribe-manage-hint">관리자: 행의 삭제로 테스트·실패 주문을 정리할 수 있습니다.</p>
           ) : null}
@@ -266,7 +269,9 @@ export function SubscriptionManagePanel() {
                 {orders.map((o) => (
                   <tr key={o.order_id}>
                     <td>
-                      <code>{o.order_id}</code>
+                      <Link to={`/orders/${o.order_id}`}>
+                        <code>{o.order_id}</code>
+                      </Link>
                     </td>
                     <td>{o.product}</td>
                     <td>{formatKrw(o.amount)}</td>
