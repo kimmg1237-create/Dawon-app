@@ -41,9 +41,10 @@ function loadDaumScript(): Promise<void> {
 
 export async function openRoadAddressSearch(): Promise<Pick<OrderBuyer, 'zip' | 'address1'> | null> {
   await loadDaumScript()
-  if (!window.daum?.Postcode) throw new Error('주소 검색을 사용할 수 없습니다.')
+  const Postcode = window.daum?.Postcode
+  if (!Postcode) throw new Error('주소 검색을 사용할 수 없습니다.')
   return new Promise((resolve) => {
-    new window.daum.Postcode({
+    new Postcode({
       oncomplete(data) {
         const road = data.roadAddress || data.autoRoadAddress || data.jibunAddress || ''
         const building = data.buildingName ? ` (${data.buildingName})` : ''
